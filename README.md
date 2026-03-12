@@ -25,7 +25,7 @@ The primary users are college students seeking supplemental academic resources, 
 - **Abir Mahmood** (Scrum Master) – GitHub: [link](https://github.com/abirmahmood6)  
 - **Mohamed Mudawi** (Product Owner) – GitHub: TBD  
 - **Yusef Moustafa** – GitHub: TBD  
-- **Richmond** – GitHub: TBD  
+- **Richmond** – GitHub: [link](https://github.com/iam-agyenim)  
 
 > All team members serve as Developers. Scrum Master and Product Owner roles rotate every Sprint.
 
