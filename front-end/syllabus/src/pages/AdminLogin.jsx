@@ -26,8 +26,8 @@ function AdminLogin() {
 
   return (
     <AuthCard
-      title="Admin Login"
-      subtitle="Access the admin dashboard"
+      title="Campus Rep Login"
+      subtitle="Access the Rep dashboard"
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <AuthInput
@@ -36,7 +36,7 @@ function AdminLogin() {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Enter your admin email"
+          placeholder="Enter your campus rep email"
         />
 
         <AuthInput
@@ -63,7 +63,7 @@ function AdminLogin() {
         </button>
 
         <p className="auth-footer-text">
-          Not an admin? <Link to="/login">Log in as student</Link>
+          Not an Campus Rep? <Link to="/login">Log in as student</Link>
         </p>
       </form>
     </AuthCard>
