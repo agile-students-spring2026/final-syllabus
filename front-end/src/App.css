@@ -17,6 +17,13 @@
   }
 }
 
+.header {
+  background-color: aqua;
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
 .hero {
   position: relative;
 
@@ -167,7 +174,7 @@
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: -4.5px;
     border: 5px solid transparent;
