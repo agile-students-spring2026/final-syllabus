@@ -27,7 +27,7 @@ function Login() {
   return (
     <AuthCard
       title="LOGO"
-      subtitle="Log in / Sign up  to access your study resources on Syllabus+"
+      subtitle="Log in / Sign in to access your study resources on Syllabus+"
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <AuthInput
