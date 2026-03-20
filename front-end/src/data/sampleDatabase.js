@@ -1,0 +1,51 @@
+export const courses = [
+  {
+    id: 1,
+    name: "CS 101: Intro to Computer Science",
+    description:
+      "Learn the basics of programming, algorithms, and data structures.",
+    category: "Computer Science",
+    school: "NYU",
+    recent: "Today",
+  },
+  {
+    id: 2,
+    name: "MATH 201: Calculus II",
+    description: "Advanced integration, series, and applications of calculus.",
+    category: "Mathematics",
+    school: "Tulsa University",
+    recent: "This Week",
+  },
+  {
+    id: 3,
+    name: "HIST 301: Modern History",
+    description: "Study major global events in the 20th century.",
+    category: "History",
+    school: "NYU",
+    recent: "This Month",
+  },
+  {
+    id: 4,
+    name: "ENG 102: English Literature",
+    description: "Explore classic and modern English literature texts.",
+    category: "Literature",
+    school: "NYU",
+    recent: "Today",
+  },
+  {
+    id: 5,
+    name: "BIO 150: Introduction to Biology",
+    description: "Learn about cells, genetics, evolution, and ecology.",
+    category: "Biology",
+    school: "Tulsa University",
+    recent: "This Week",
+  },
+  {
+    id: 6,
+    name: "PHYS 210: Physics II",
+    description: "Electricity, magnetism, and modern physics concepts.",
+    category: "Physics",
+    school: "NYU",
+    recent: "This Month",
+  },
+];
