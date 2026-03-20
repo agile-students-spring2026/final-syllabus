@@ -61,11 +61,11 @@ function Login() {
             Forgot password?
           </button>
         </div>
-
+        <Link to="/home">
         <button type="submit" className="primary-btn">
-          Log in
+          Log in 
         </button>
-
+        </Link>
         <p className="auth-footer-text">
           Don&apos;t have an account? <Link to="/signup">Sign up</Link>
         </p>
