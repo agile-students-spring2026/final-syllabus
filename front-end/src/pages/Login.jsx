@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
@@ -9,6 +9,7 @@ function Login() {
     password: "",
   });
 
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   function handleChange(event) {
@@ -21,7 +22,7 @@ function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    alert("Student login UI submitted");
+    navigate("/home");
   }
 
   return (
@@ -61,22 +62,22 @@ function Login() {
             Forgot password?
           </button>
         </div>
-        <Link to="/home">
-        <button type="submit" className="primary-btn">
-          Log in 
-        </button>
-        </Link>
         <p className="auth-footer-text">
           Don&apos;t have an account? <Link to="/signup">Sign up</Link>
         </p>
+        <button type="submit" className="primary-btn">
+          Log in
+        </button>
 
         <div className="divider">Or continue with</div>
 
         <div className="social-buttons">
           <button type="button" className="social-btn">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="20" height="20" />
             Sign in with Google
           </button>
           <button type="button" className="social-btn">
+            <img src="https://www.svgrepo.com/show/452229/apple.svg" alt="Apple" width="20" height="20" style={{filter: "invert(1)"}} />
             Sign in with Apple
           </button>
         </div>
