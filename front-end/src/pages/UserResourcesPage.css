@@ -1,0 +1,156 @@
+.userResPage {
+  min-height: 100vh;
+  background: #0c1020;
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 20px 120px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.userResHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.logoStub {
+  background: #d9dce3;
+  color: #0a0d18;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconBtn {
+  background: #0a0d18;
+  color: #8fe9e6;
+  border: 1px solid #8fe9e6;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profileStub {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #d9dce3;
+}
+
+.userResMain {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.userResTitleRow h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  color: #ffffff;
+}
+
+.userResSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionPill {
+  display: inline-flex;
+  padding: 8px 14px;
+  border: 1px solid #8fe9e6;
+  border-radius: 18px;
+  color: #8fe9e6;
+  background: transparent;
+  font-weight: 700;
+}
+
+.viewAll {
+  background: none;
+  border: none;
+  color: #8fe9e6;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sectionCard {
+  border: 1px solid #0a0d18;
+  background: #d9dce3;
+  color: #0a0d18;
+  border-radius: 6px;
+  padding: 14px 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fieldRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0a0d18;
+}
+
+.fieldBox {
+  border: 1px solid #0a0d18;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #f3f4f7;
+  color: #0a0d18;
+  min-height: 38px;
+}
+
+.navBar {
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.homeLink {
+  margin-top: 12px;
+}
+
+.homeLink a {
+  color: #8fe9e6;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.homeLink a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .userResPage {
+    padding: 24px 16px 110px;
+  }
+
+  .logoStub {
+    padding: 9px 14px;
+  }
+
+  .userResTitleRow h1 {
+    font-size: 1.6rem;
+  }
+}

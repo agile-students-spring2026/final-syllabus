@@ -4,6 +4,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
 import AdminLogin from "./pages/AdminLogin";
 import CourseDetails from "./pages/CourseDetail";
+import ResourcePage from "./pages/ResourcePage";
+import UserResourcesPage from "./pages/UserResourcesPage";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -20,6 +22,8 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/courses/:courseId" element ={<CourseDetails/>} />
+      <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
+      <Route path="/resources" element={<UserResourcesPage />} />
     </Routes>
     </main>
     <Footer/>

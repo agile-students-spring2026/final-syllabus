@@ -109,6 +109,32 @@ export const courses = [
     category: "Literature",
     school: "NYU",
     recent: "Today",
+    resources: [
+      {
+        id: "eng102-poems",
+        title: "Poetry close-reading cheat sheet",
+        type: "Notes",
+        format: "PDF",
+        added: "Today",
+        link: "https://example.com/eng102-poems.pdf",
+      },
+      {
+        id: "eng102-themes",
+        title: "Theme tracker template (Google Doc)",
+        type: "Template",
+        format: "Doc",
+        added: "This Week",
+        link: "https://example.com/eng102-theme-template",
+      },
+      {
+        id: "eng102-quotes",
+        title: "Quote bank: Shakespeare + Woolf",
+        type: "Quotes",
+        format: "PDF",
+        added: "This Month",
+        link: "https://example.com/eng102-quotes.pdf",
+      },
+    ],
   },
   {
     id: 5,
@@ -177,5 +203,38 @@ export const courses = [
         link: "https://example.com/phys210-practice.pdf",
       },
     ],
+  },
+];
+
+export const userResources = [
+  {
+    id: "note-1",
+    title: "Midterm review outline (loops/arrays)",
+    course: "CS 101",
+    category: "Notes",
+  },
+  {
+    id: "note-2",
+    title: "Cold War timeline cheat sheet",
+    course: "HIST 301",
+    category: "Notes",
+  },
+  {
+    id: "flash-1",
+    title: "Big-O flash deck (20 cards)",
+    course: "CS 101",
+    category: "Flashcards",
+  },
+  {
+    id: "vid-1",
+    title: "Integration by parts walk-through",
+    course: "MATH 201",
+    category: "Videos",
+  },
+  {
+    id: "prac-1",
+    title: "Gauss/Ampere practice set (10 Qs)",
+    course: "PHYS 210",
+    category: "Practice Questions",
   },
 ];
