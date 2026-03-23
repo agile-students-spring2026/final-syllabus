@@ -6,6 +6,8 @@ import AdminLogin from "./pages/AdminLogin";
 import CourseDetails from "./pages/CourseDetail";
 import ResourcePage from "./pages/ResourcePage";
 import UserResourcesPage from "./pages/UserResourcesPage";
+import CreateCoursePage from "./pages/CreateCoursePage";
+import CreateResourcePage from "./pages/CreateResourcePage";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -24,6 +26,8 @@ function App() {
       <Route path="/courses/:courseId" element ={<CourseDetails/>} />
       <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
       <Route path="/resources" element={<UserResourcesPage />} />
+      <Route path="/create-course" element={<CreateCoursePage />} />
+      <Route path="/create-resource" element={<CreateResourcePage />} />
     </Routes>
     </main>
     <Footer/>

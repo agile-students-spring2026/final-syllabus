@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { userResources } from "../data/sampleDatabase";
 import "./UserResourcesPage.css";
+import { useState } from "react";
 
 const categories = [
   "Notes",
@@ -11,6 +12,7 @@ const categories = [
 ];
 
 const UserResourcesPage = () => {
+  const [showFabMenu, setShowFabMenu] = useState(false);
   const grouped = categories.map((cat) => ({
     name: cat,
     items: userResources.filter((item) => item.category === cat),
@@ -22,7 +24,25 @@ const UserResourcesPage = () => {
         <div className="logoStub">LOGO</div>
         <div className="headerRight">
           <button className="iconBtn" aria-label="spell check">AB</button>
-          <button className="iconBtn" aria-label="add resource">+</button>
+          <div className="fabWrap">
+            <button
+              className="iconBtn"
+              aria-label="add resource"
+              onClick={() => setShowFabMenu((prev) => !prev)}
+            >
+              +
+            </button>
+            {showFabMenu && (
+              <div className="fabMenu">
+                <Link to="/create-course" className="fabItem">
+                  Create Course
+                </Link>
+                <Link to="/create-resource" className="fabItem">
+                  Create Resource
+                </Link>
+              </div>
+            )}
+          </div>
           <div className="profileStub" aria-hidden="true" />
         </div>
       </header>
@@ -66,6 +86,7 @@ const UserResourcesPage = () => {
       <div className="homeLink">
         <Link to="/home">Back home</Link>
       </div>
+
     </div>
   );
 };
