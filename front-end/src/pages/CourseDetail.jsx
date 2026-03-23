@@ -33,7 +33,7 @@ const CourseDetails = () =>{
             </div>
             <div className='infoArea'>
                 <div className='innerCourseTitle'>
-                    <p>Course Name: {course.title}</p>
+                    <p>Course Name: {course.name}</p>
                 </div>
                 <div className='description'>
                     <p>Description: {course.description}</p>

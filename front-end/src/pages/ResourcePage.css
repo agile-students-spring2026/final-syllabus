@@ -1,0 +1,164 @@
+.resourcePage {
+  min-height: 100vh;
+  background: #0c1020;
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px 120px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.resourceHeader {
+  width: 100%;
+  max-width: 640px;
+  text-align: left;
+  margin-bottom: 28px;
+}
+
+.resourceEyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: 0.8rem;
+  color: #8fe9e6;
+}
+
+.resourceHeader h2 {
+  margin: 0 0 8px;
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.resourceSub {
+  margin: 0;
+  color: #d1d4e0;
+  line-height: 1.5;
+  font-size: 1rem;
+}
+
+.resourceList {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.resourceCard {
+  display: block;
+  background: #d9dce3;
+  color: #0a0d18;
+  border-radius: 6px;
+  padding: 18px 18px 16px;
+  text-decoration: none;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.resourceCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+}
+
+.resourceMeta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #0c1020;
+  color: #8fe9e6;
+  border: 1px solid #0c1020;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.pillGhost {
+  background: #e6e8ee;
+  border-color: #0c1020;
+  color: #0c1020;
+}
+
+.when {
+  background: #14182c;
+  color: #d1d4e0;
+}
+
+.resourceCard h3 {
+  margin: 0 0 6px;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #0c1020;
+}
+
+.resourceHint {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #1f1f1f;
+  line-height: 1.45;
+}
+
+.resourceEmpty {
+  width: 100%;
+  background: rgba(217, 220, 227, 0.18);
+  border: 1px dashed #8fe9e6;
+  border-radius: 6px;
+  padding: 18px;
+  color: #cdd2df;
+  text-align: center;
+}
+
+.resourceActions {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.resourceBack {
+  color: #8fe9e6;
+  border: 2px solid #8fe9e6;
+  border-radius: 6px;
+  padding: 10px 18px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.resourceBack:hover {
+  background: #8fe9e6;
+  color: #0a0d18;
+}
+
+.navBar {
+  width: 100%;
+  max-width: 640px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+@media (max-width: 600px) {
+  .resourcePage {
+    padding: 36px 16px 120px;
+  }
+
+  .resourceHeader h2 {
+    font-size: 1.8rem;
+  }
+
+  .pill {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+  }
+}
