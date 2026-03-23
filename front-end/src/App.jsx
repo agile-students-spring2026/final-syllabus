@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
 import AdminLogin from "./pages/AdminLogin";
+import CourseDetails from "./pages/CourseDetail";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -18,6 +19,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/courses/:courseId" element ={<CourseDetails/>} />
     </Routes>
     </main>
     <Footer/>
