@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
@@ -10,6 +10,8 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
+  
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -22,13 +24,14 @@ function Signup() {
   }
 
   function handleSubmit(event) {
-    event.preventDefault();
-    alert("Sign-up UI submitted");
-  }
+  event.preventDefault();
+  navigate("/role-selection");
+}
+
 
   return (
     <AuthCard
-      title="Create account"
+      title="LOGO"
       subtitle="Join Syllabus+ and start learning from peer-created resources"
     >
       <form className="auth-form" onSubmit={handleSubmit}>
