@@ -8,6 +8,11 @@ import StudentDetailsScreen from "./pages/StudentDetails-signup";
 import CampusRepDetailsScreen from "./pages/CampusRepDetails";
 import SuccessScreen from "./pages/SuccessScreen";
 import VerifyingScreen from "./pages/Verifying";
+import CourseDetails from "./pages/CourseDetail";
+import ResourcePage from "./pages/ResourcePage";
+import UserResourcesPage from "./pages/UserResourcesPage";
+import CreateCoursePage from "./pages/CreateCoursePage";
+import CreateResourcePage from "./pages/CreateResourcePage";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -32,6 +37,11 @@ function App() {
       <Route path="/campus-rep-details" element={<CampusRepDetailsScreen />} />
       <Route path="/verifying" element={<VerifyingScreen />} />
       <Route path="/success" element={<SuccessScreen />} />
+      <Route path="/courses/:courseId" element ={<CourseDetails/>} />
+      <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
+      <Route path="/resources" element={<UserResourcesPage />} />
+      <Route path="/create-course" element={<CreateCoursePage />} />
+      <Route path="/create-resource" element={<CreateResourcePage />} />
     </Routes>
     </main>
     {!isAuthPage && <Footer />}
