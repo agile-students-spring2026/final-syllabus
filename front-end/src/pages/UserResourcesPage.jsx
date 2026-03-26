@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { userResources } from "../data/sampleDatabase";
-import "./UserResourcesPage.css";
 import { useState } from "react";
 
 const categories = [
