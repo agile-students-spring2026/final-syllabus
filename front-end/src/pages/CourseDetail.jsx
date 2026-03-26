@@ -3,7 +3,6 @@ import Navbar from '../components/Navbar';
 import placeHolderImage from '../assets/placeHolderImage.png'
 import { Link, useParams } from 'react-router-dom';
 import { courses } from '../data/sampleDatabase';
-import './CourseDetails.css';
 
 //What is Course Overview Button, does it link anywhere
 //What is notes, flashcards Hardcode

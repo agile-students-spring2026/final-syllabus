@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { courses } from "../data/sampleDatabase";
-import "./ResourcePage.css";
 
 const ResourcePage = () => {
   const { courseId } = useParams();
