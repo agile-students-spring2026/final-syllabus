@@ -3,6 +3,16 @@ import { courses, userResources } from "../data/sampleDatabase";
 
 const FILTERS = ["Recent", "Pending+", "Category+"];
 
+const pendingCourses = courses
+  .filter((c) => !c.verified)
+  .map((c) => ({ id: `course-${c.id}`, topic: c.topic, name: c.name, category: c.category, kind: "Course" }));
+
+const pendingResources = userResources
+  .filter((r) => !r.verified)
+  .map((r) => ({ id: r.id, topic: r.topic, name: r.title, category: r.category, kind: "Resource" }));
+
+const pendingItems = [...pendingCourses, ...pendingResources];
+
 const CampRepDashboard = () => {
   const [activeFilter, setActiveFilter] = useState(null);
 
@@ -41,6 +51,22 @@ const CampRepDashboard = () => {
           <div className="campRepStatRow">
             <span className="campRepStatLabel">Verified Resources</span>
             <span className="campRepStatValue">{verifiedResources}</span>
+          </div>
+        </div>
+
+        <div className="campRepReviewSection">
+          <h2 className="campRepReviewTitle">Pending Review</h2>
+          <div className="campRepReviewList">
+            {pendingItems.map((item) => (
+              <div key={item.id} className="campRepReviewCard">
+                <div className="campRepReviewCardTop">
+                  <span className="campRepReviewTopic">{item.topic}</span>
+                  <span className="campRepPendingBadge">Pending</span>
+                </div>
+                <p className="campRepReviewName">{item.name}</p>
+                <span className="campRepReviewCategory">{item.category}</span>
+              </div>
+            ))}
           </div>
         </div>
       </main>

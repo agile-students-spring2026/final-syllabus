@@ -73,6 +73,7 @@ export const courses = [
   {
     id: 3,
     verified: false,
+    topic: "World History",
     name: "HIST 301: Modern History",
     description: "Study major global events in the 20th century.",
     category: "History",
@@ -178,6 +179,7 @@ export const courses = [
   {
     id: 6,
     verified: false,
+    topic: "Electromagnetism",
     name: "PHYS 210: Physics II",
     description: "Electricity, magnetism, and modern physics concepts.",
     category: "Physics",
@@ -223,6 +225,7 @@ export const userResources = [
   {
     id: "note-2",
     verified: false,
+    topic: "Cold War",
     title: "Cold War timeline cheat sheet",
     course: "HIST 301",
     category: "Notes",

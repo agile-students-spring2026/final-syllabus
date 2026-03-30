@@ -966,6 +966,89 @@
   color: #0c1020;
 }
 
+.campRepReviewSection {
+  margin-top: 28px;
+}
+
+.campRepReviewTitle {
+  margin: 0 0 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #8fe9e6;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+}
+
+.campRepReviewList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 340px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.campRepReviewList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.campRepReviewList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.campRepReviewList::-webkit-scrollbar-thumb {
+  background: rgba(143, 233, 230, 0.3);
+  border-radius: 4px;
+}
+
+.campRepReviewCard {
+  background: #d9dce3;
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.campRepReviewCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.campRepReviewTopic {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #444;
+}
+
+.campRepPendingBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(255, 170, 50, 0.18);
+  color: #b36b00;
+  border: 1px solid rgba(179, 107, 0, 0.35);
+}
+
+.campRepReviewName {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0c1020;
+  line-height: 1.35;
+}
+
+.campRepReviewCategory {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #444;
+}
+
 .campRepStatDivider {
   height: 1px;
   background: rgba(10, 13, 24, 0.15);
