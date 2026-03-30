@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./CreateCoursePage.css";
 
 const CreateCoursePage = () => {
+  const navigate = useNavigate();
   return (
     <div className="createFormPage">
       <header className="createHeader">
-        <div className="logoStub">LOGO</div>
+        <Link to="/home" className="logoStub">LOGO</Link>
         <Link to="/resources" className="backLink">
             Back
         </Link>
@@ -44,18 +45,17 @@ const CreateCoursePage = () => {
             <input className="textInput" placeholder="Upload from browser" />
           </label>
 
-          <button className="pillButton" type="button">
+          <Link to="/create-resource" className="pillButton">
             Add resources
-          </button>
+          </Link>
 
           <div className="formActions">
-            <button className="submitBtn" type="button">
+            <button className="submitBtn" type="button" onClick={() => navigate('/submission-confirm')}>
               Submit
             </button>
           </div>
         </form>
       </main>
-
     </div>
   );
 };

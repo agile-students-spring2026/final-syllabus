@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
 import AdminLogin from "./pages/AdminLogin";
@@ -13,9 +14,12 @@ import ResourcePage from "./pages/ResourcePage";
 import UserResourcesPage from "./pages/UserResourcesPage";
 import CreateCoursePage from "./pages/CreateCoursePage";
 import CreateResourcePage from "./pages/CreateResourcePage";
+import VerificationPage from "./pages/VerificationPage";
+import SubmissionConfirmPage from "./pages/SubmissionConfirmPage";
+import ProfilePage from "./pages/ProfilePage";
 import "./App.css";
-import Header from "./components/Header";
 import Navbar from "./components/Navbar";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
@@ -24,27 +28,31 @@ function App() {
 
   return (
     <div className="app-container">
-    {!isAuthPage && <Header />}
+      <Toaster />
       <main className="app-content">
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} /> 
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/role-selection" element={<RoleSelectionScreen />} />
-      <Route path="/student-details" element={<StudentDetailsScreen />} />
-      <Route path="/campus-rep-details" element={<CampusRepDetailsScreen />} />
-      <Route path="/verifying" element={<VerifyingScreen />} />
-      <Route path="/success" element={<SuccessScreen />} />
-      <Route path="/courses/:courseId" element ={<CourseDetails/>} />
-      <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
-      <Route path="/resources" element={<UserResourcesPage />} />
-      <Route path="/create-course" element={<CreateCoursePage />} />
-      <Route path="/create-resource" element={<CreateResourcePage />} />
-    </Routes>
-    </main>
-    {!isAuthPage && <Navbar />}
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/saved" element={<SavedCourses />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/role-selection" element={<RoleSelectionScreen />} />
+          <Route path="/student-details" element={<StudentDetailsScreen />} />
+          <Route path="/campus-rep-details" element={<CampusRepDetailsScreen />} />
+          <Route path="/verifying" element={<VerifyingScreen />} />
+          <Route path="/success" element={<SuccessScreen />} />
+          <Route path="/courses/:courseId" element={<CourseDetails />} />
+          <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
+          <Route path="/resources" element={<UserResourcesPage />} />
+          <Route path="/create-course" element={<CreateCoursePage />} />
+          <Route path="/create-resource" element={<CreateResourcePage />} />
+          <Route path="/verification" element={<VerificationPage />} />
+          <Route path="/submission-confirm" element={<SubmissionConfirmPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+        </Routes>
+      </main>
+      {!isAuthPage && <Navbar />}
     </div>
   );
 }
