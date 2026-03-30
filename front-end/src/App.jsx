@@ -14,6 +14,7 @@ import ResourcePage from "./pages/ResourcePage";
 import UserResourcesPage from "./pages/UserResourcesPage";
 import CreateCoursePage from "./pages/CreateCoursePage";
 import CreateResourcePage from "./pages/CreateResourcePage";
+import CampRepDashboard from "./pages/CampRepDashboard";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
@@ -21,7 +22,7 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
-  const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying', '/admin-login'];
+  const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying', '/admin-login', '/camp-rep-dashboard'];
   const isAuthPage = authPages.includes(location.pathname);
 
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/resources" element={<UserResourcesPage />} />
           <Route path="/create-course" element={<CreateCoursePage />} />
           <Route path="/create-resource" element={<CreateResourcePage />} />
+          <Route path="/camp-rep-dashboard" element={<CampRepDashboard />} />
         </Routes>
       </main>
       {!isAuthPage && <Footer />}

@@ -870,6 +870,56 @@
   }
 }
 
+/* ── Campus Rep Dashboard ── */
+.campRepDash {
+  min-height: 100vh;
+  background: #0c1020;
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 20px 120px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.campRepDashHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.campRepDashMain {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campRepDashEyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  font-size: 0.8rem;
+  color: #8fe9e6;
+}
+
+.campRepDashTitle {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .campRepDash {
+    padding: 24px 16px 110px;
+  }
+
+  .campRepDashTitle {
+    font-size: 1.6rem;
+  }
+}
+
 .ticks {
   position: relative;
   width: 100%;
