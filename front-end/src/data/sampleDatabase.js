@@ -1,6 +1,7 @@
 export const courses = [
   {
     id: 1,
+    verified: true,
     name: "CS 101: Intro to Computer Science",
     description:
       "Learn the basics of programming, algorithms, and data structures.",
@@ -36,6 +37,7 @@ export const courses = [
   },
   {
     id: 2,
+    verified: true,
     name: "MATH 201: Calculus II",
     description: "Advanced integration, series, and applications of calculus.",
     category: "Mathematics",
@@ -70,6 +72,7 @@ export const courses = [
   },
   {
     id: 3,
+    verified: false,
     name: "HIST 301: Modern History",
     description: "Study major global events in the 20th century.",
     category: "History",
@@ -104,6 +107,7 @@ export const courses = [
   },
   {
     id: 4,
+    verified: true,
     name: "ENG 102: English Literature",
     description: "Explore classic and modern English literature texts.",
     category: "Literature",
@@ -138,6 +142,7 @@ export const courses = [
   },
   {
     id: 5,
+    verified: true,
     name: "BIO 150: Introduction to Biology",
     description: "Learn about cells, genetics, evolution, and ecology.",
     category: "Biology",
@@ -172,6 +177,7 @@ export const courses = [
   },
   {
     id: 6,
+    verified: false,
     name: "PHYS 210: Physics II",
     description: "Electricity, magnetism, and modern physics concepts.",
     category: "Physics",
@@ -209,30 +215,35 @@ export const courses = [
 export const userResources = [
   {
     id: "note-1",
+    verified: true,
     title: "Midterm review outline (loops/arrays)",
     course: "CS 101",
     category: "Notes",
   },
   {
     id: "note-2",
+    verified: false,
     title: "Cold War timeline cheat sheet",
     course: "HIST 301",
     category: "Notes",
   },
   {
     id: "flash-1",
+    verified: true,
     title: "Big-O flash deck (20 cards)",
     course: "CS 101",
     category: "Flashcards",
   },
   {
     id: "vid-1",
+    verified: true,
     title: "Integration by parts walk-through",
     course: "MATH 201",
     category: "Videos",
   },
   {
     id: "prac-1",
+    verified: true,
     title: "Gauss/Ampere practice set (10 Qs)",
     course: "PHYS 210",
     category: "Practice Questions",

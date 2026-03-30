@@ -1,4 +1,9 @@
+import { courses, userResources } from "../data/sampleDatabase";
+
 const CampRepDashboard = () => {
+  const verifiedCourses = courses.filter((c) => c.verified).length;
+  const verifiedResources = userResources.filter((r) => r.verified).length;
+
   return (
     <div className="campRepDash">
       <header className="campRepDashHeader">
@@ -9,6 +14,18 @@ const CampRepDashboard = () => {
       <main className="campRepDashMain">
         <p className="campRepDashEyebrow">CMP1001</p>
         <h1 className="campRepDashTitle">Dash board</h1>
+
+        <div className="campRepStatsCard">
+          <div className="campRepStatRow">
+            <span className="campRepStatLabel">Verified Course</span>
+            <span className="campRepStatValue">{verifiedCourses}</span>
+          </div>
+          <div className="campRepStatDivider" />
+          <div className="campRepStatRow">
+            <span className="campRepStatLabel">Verified Resources</span>
+            <span className="campRepStatValue">{verifiedResources}</span>
+          </div>
+        </div>
       </main>
     </div>
   );

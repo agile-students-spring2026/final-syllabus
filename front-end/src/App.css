@@ -910,6 +910,38 @@
   color: #ffffff;
 }
 
+.campRepStatsCard {
+  margin-top: 24px;
+  background: #d9dce3;
+  border-radius: 14px;
+  padding: 20px 22px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+}
+
+.campRepStatRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.campRepStatLabel {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111;
+}
+
+.campRepStatValue {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0c1020;
+}
+
+.campRepStatDivider {
+  height: 1px;
+  background: rgba(10, 13, 24, 0.15);
+}
+
 @media (max-width: 600px) {
   .campRepDash {
     padding: 24px 16px 110px;
