@@ -123,9 +123,13 @@
   justify-content: center;
 }
 
+.navBar {
+  display: none;
+}
+
 @media (max-width: 600px) {
   .courseDetails {
-    padding: 36px 16px 120px;
+    padding: 36px 16px 100px;
   }
 
   .title h2 {
@@ -133,8 +137,10 @@
   }
 
   .coursePhoto {
-    width: 210px;
-    height: 165px;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 4 / 3;
   }
 
   .courseTitle h2 {

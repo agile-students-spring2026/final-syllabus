@@ -1,5 +1,4 @@
 import React from 'react'
-import Navbar from '../components/Navbar';
 import placeHolderImage from '../assets/placeHolderImage.png'
 import { Link, useParams } from 'react-router-dom';
 import { courses } from '../data/sampleDatabase';
@@ -50,9 +49,6 @@ const CourseDetails = () =>{
           </Link>
         </div>
 
-        <div className='navBar'>
-            <Navbar/>
-        </div>
         </div>
     )
 

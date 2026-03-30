@@ -55,12 +55,14 @@
 
 .textInput,
 .textArea {
+  width: 100%;
   border: 1px solid #0a0d18;
   border-radius: 6px;
   padding: 10px 12px;
   background: #f3f4f7;
   color: #0a0d18;
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 .textArea {
@@ -94,8 +96,7 @@
 }
 
 .navBar {
-  margin-top: auto;
-  padding-top: 18px;
+  display: none;
 }
 
 @media (max-width: 600px) {

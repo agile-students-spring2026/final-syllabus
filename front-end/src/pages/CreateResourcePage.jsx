@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import "./CreateResourcePage.css";
 
 const CreateResourcePage = () => {
@@ -57,9 +56,6 @@ const CreateResourcePage = () => {
         </form>
       </main>
 
-      <div className="navBar">
-        <Navbar />
-      </div>
     </div>
   );
 };

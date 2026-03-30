@@ -1,5 +1,4 @@
 import { Link, useParams } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { courses } from "../data/sampleDatabase";
 import "./ResourcePage.css";
 
@@ -65,9 +64,6 @@ const ResourcePage = () => {
         </Link>
       </div>
 
-      <div className="navBar">
-        <Navbar />
-      </div>
     </div>
   );
 };

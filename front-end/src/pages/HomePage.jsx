@@ -1,6 +1,4 @@
-import React from 'react'
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
-import Navbar from '../components/Navbar';
 import { courses } from "../data/sampleDatabase";
 import CourseCard from '../components/CourseCard';
 
@@ -51,7 +49,6 @@ const HomePage = () => {
         ))}
       </div>
 
-      <Navbar /> {/* place it at bottom of the page */}
     </div>
   )
 }

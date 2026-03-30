@@ -14,8 +14,8 @@ import UserResourcesPage from "./pages/UserResourcesPage";
 import CreateCoursePage from "./pages/CreateCoursePage";
 import CreateResourcePage from "./pages/CreateResourcePage";
 import "./App.css";
-import Footer from "./components/Footer";
 import Header from "./components/Header";
+import Navbar from "./components/Navbar";
 
 function App() {
   const location = useLocation();
@@ -44,7 +44,7 @@ function App() {
       <Route path="/create-resource" element={<CreateResourcePage />} />
     </Routes>
     </main>
-    {!isAuthPage && <Footer />}
+    {!isAuthPage && <Navbar />}
     </div>
   );
 }
