@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import HomePage from "./pages/HomePage";
+import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
 import AdminLogin from "./pages/AdminLogin";
@@ -16,6 +17,7 @@ import CreateResourcePage from "./pages/CreateResourcePage";
 import "./App.css";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
@@ -24,27 +26,29 @@ function App() {
 
   return (
     <div className="app-container">
-    {!isAuthPage && <Header />}
+      <Toaster />
+      {!isAuthPage && <Header />}
       <main className="app-content">
-    <Routes>
-      <Route path="/" element={<Navigate to="/login" replace />} /> 
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/admin-login" element={<AdminLogin />} />
-      <Route path="/role-selection" element={<RoleSelectionScreen />} />
-      <Route path="/student-details" element={<StudentDetailsScreen />} />
-      <Route path="/campus-rep-details" element={<CampusRepDetailsScreen />} />
-      <Route path="/verifying" element={<VerifyingScreen />} />
-      <Route path="/success" element={<SuccessScreen />} />
-      <Route path="/courses/:courseId" element ={<CourseDetails/>} />
-      <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
-      <Route path="/resources" element={<UserResourcesPage />} />
-      <Route path="/create-course" element={<CreateCoursePage />} />
-      <Route path="/create-resource" element={<CreateResourcePage />} />
-    </Routes>
-    </main>
-    {!isAuthPage && <Footer />}
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/saved" element={<SavedCourses />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/role-selection" element={<RoleSelectionScreen />} />
+          <Route path="/student-details" element={<StudentDetailsScreen />} />
+          <Route path="/campus-rep-details" element={<CampusRepDetailsScreen />} />
+          <Route path="/verifying" element={<VerifyingScreen />} />
+          <Route path="/success" element={<SuccessScreen />} />
+          <Route path="/courses/:courseId" element={<CourseDetails />} />
+          <Route path="/courses/:courseId/resources" element={<ResourcePage />} />
+          <Route path="/resources" element={<UserResourcesPage />} />
+          <Route path="/create-course" element={<CreateCoursePage />} />
+          <Route path="/create-resource" element={<CreateResourcePage />} />
+        </Routes>
+      </main>
+      {!isAuthPage && <Footer />}
     </div>
   );
 }
