@@ -5,7 +5,7 @@ This document contains the elements of UX. It follows the requirements in the fo
 - [instructions-0b-prototyping.md](instructions-0b-prototyping.md)
 
 ## Prototype
-- Figma prototype (mobile): [instructions-0b-prototyping.md](https://www.figma.com/proto/7yWqCcVscmOe9qnbFZPaC3/Student-Expense-Tracker-App---Wireframe?node-id=47-129&p=f&t=GGNZIUIjtlwsmozZ-0&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=47%3A129)
+- Figma prototype (mobile): [Figma Prototype](https://www.figma.com/proto/4xFE0PJ6WTPCc1GMrZNcJy/Syllabus--Wireframe-Prototype?node-id=69-377&p=f&t=KCwQLp5e7zaeW2Bf-0&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=69%3A377)
 - Every navigation/action should be clickable, including overlays; update the link above after publishing
 
 ## App Map
