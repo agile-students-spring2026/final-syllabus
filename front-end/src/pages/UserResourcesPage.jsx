@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { userResources } from "../data/sampleDatabase";
 import { useState } from "react";
+import "./UserResourcesPage.css";
 
 const categories = [
   "Notes",
@@ -20,9 +20,9 @@ const UserResourcesPage = () => {
   return (
     <div className="userResPage">
       <header className="userResHeader">
-        <div className="logoStub">LOGO</div>
+        <Link to="/home" className="logoStub">LOGO</Link>
         <div className="headerRight">
-          <button className="iconBtn" aria-label="spell check">AB</button>
+          <Link to="/verification" className="iconBtn" style={{ textDecoration: 'none' }}>AB</Link>
           <div className="fabWrap">
             <button
               className="iconBtn"
@@ -36,13 +36,13 @@ const UserResourcesPage = () => {
                 <Link to="/create-course" className="fabItem">
                   Create Course
                 </Link>
-                <Link to="/create-resource" className="fabItem">
+                <Link to="/create-resource?from=direct" className="fabItem">
                   Create Resource
                 </Link>
               </div>
             )}
           </div>
-          <div className="profileStub" aria-hidden="true" />
+          <Link to="/profile" className="profileStub" aria-label="profile" />
         </div>
       </header>
 
@@ -78,13 +78,6 @@ const UserResourcesPage = () => {
         ))}
       </main>
 
-      <div className="navBar">
-        <Navbar />
-      </div>
-
-      <div className="homeLink">
-        <Link to="/home">Back home</Link>
-      </div>
 
     </div>
   );

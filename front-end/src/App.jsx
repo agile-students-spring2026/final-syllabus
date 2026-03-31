@@ -14,9 +14,11 @@ import ResourcePage from "./pages/ResourcePage";
 import UserResourcesPage from "./pages/UserResourcesPage";
 import CreateCoursePage from "./pages/CreateCoursePage";
 import CreateResourcePage from "./pages/CreateResourcePage";
+import VerificationPage from "./pages/VerificationPage";
+import SubmissionConfirmPage from "./pages/SubmissionConfirmPage";
+import ProfilePage from "./pages/ProfilePage";
 import "./App.css";
-import Footer from "./components/Footer";
-import Header from "./components/Header";
+import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
 
 function App() {
@@ -27,7 +29,6 @@ function App() {
   return (
     <div className="app-container">
       <Toaster />
-      {!isAuthPage && <Header />}
       <main className="app-content">
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
@@ -46,9 +47,12 @@ function App() {
           <Route path="/resources" element={<UserResourcesPage />} />
           <Route path="/create-course" element={<CreateCoursePage />} />
           <Route path="/create-resource" element={<CreateResourcePage />} />
+          <Route path="/verification" element={<VerificationPage />} />
+          <Route path="/submission-confirm" element={<SubmissionConfirmPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Routes>
       </main>
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && <Navbar />}
     </div>
   );
 }

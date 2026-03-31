@@ -1,0 +1,118 @@
+.createFormPage {
+  min-height: 100vh;
+  background: #0c1020;
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 20px 120px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.createHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.logoStub {
+  background: #d9dce3;
+  color: #0a0d18;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.backLink {
+  color: #8fe9e6;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.createMain h1 {
+  margin: 0 0 12px;
+  font-size: 1.8rem;
+}
+
+.createForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fieldLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.textInput {
+  width: 100%;
+  border: 1px solid #0a0d18;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #f3f4f7;
+  color: #0a0d18;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.selectMock {
+  width: 100%;
+  border: 1px solid #0a0d18;
+  border-radius: 6px;
+  padding: 10px 12px;
+  background: #f3f4f7;
+  color: #0a0d18;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.caret {
+  font-size: 0.9rem;
+}
+
+.uploadBox {
+  width: 100%;
+  border: 1px solid #0a0d18;
+  border-radius: 6px;
+  padding: 18px 12px;
+  background: #f3f4f7;
+  color: #6b6b6b;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submitBtn {
+  border: 1px solid #0a0d18;
+  background: #d9dce3;
+  color: #0a0d18;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.navBar {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .createFormPage {
+    padding: 24px 16px 110px;
+  }
+}

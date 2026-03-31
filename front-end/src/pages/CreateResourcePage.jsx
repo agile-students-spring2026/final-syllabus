@@ -1,11 +1,15 @@
-import { Link } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import "./CreateResourcePage.css";
 
 const CreateResourcePage = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const fromDirect = searchParams.get('from') === 'direct';
+
   return (
     <div className="createFormPage">
       <header className="createHeader">
-        <div className="logoStub">LOGO</div>
+        <Link to="/home" className="logoStub">LOGO</Link>
         <Link to="/resources" className="backLink">
           Back
         </Link>
@@ -49,16 +53,12 @@ const CreateResourcePage = () => {
           </label>
 
           <div className="formActions">
-            <button className="submitBtn" type="button">
-              Submit
+            <button className="submitBtn" type="button" onClick={() => fromDirect ? navigate('/submission-confirm') : navigate(-1)}>
+              Add
             </button>
           </div>
         </form>
       </main>
-
-      <div className="navBar">
-        <Navbar />
-      </div>
     </div>
   );
 };
