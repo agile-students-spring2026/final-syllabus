@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { courses, userResources } from "../data/sampleDatabase";
 
-const FILTERS = ["Recent", "Pending+", "Category+"];
+const FILTERS = ["Recent", "Pending", "Category"];
 
 const pendingCourses = courses
   .filter((c) => !c.verified)
