@@ -69,6 +69,11 @@ const ReviewCourse = () => {
             </ol>
           </div>
         </section>
+
+        <div className="reviewCourseActions">
+          <button className="reviewCourseBtn reviewCourseBtn--reject">Reject</button>
+          <button className="reviewCourseBtn reviewCourseBtn--accept">Accept</button>
+        </div>
       </main>
     </div>
   );

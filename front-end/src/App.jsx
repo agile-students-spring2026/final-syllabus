@@ -18,6 +18,7 @@ import VerificationPage from "./pages/VerificationPage";
 import SubmissionConfirmPage from "./pages/SubmissionConfirmPage";
 import ProfilePage from "./pages/ProfilePage";
 import ReviewCourse from "./pages/ReviewCourse";
+import CampRepDashboard from "./pages/CampRepDashboard";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -52,6 +53,7 @@ function App() {
           <Route path="/submission-confirm" element={<SubmissionConfirmPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/review-course/:courseId" element={<ReviewCourse />} />
+          <Route path="/camp-rep-dashboard" element={<CampRepDashboard />} />
         </Routes>
       </main>
       {!isAuthPage && <Navbar />}
