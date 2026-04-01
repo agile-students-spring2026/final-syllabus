@@ -7,7 +7,7 @@ const FILTERS = ["Recent", "Pending+", "Category+"];
 
 const pendingCourses = courses
   .filter((c) => !c.verified)
-  .map((c) => ({ id: `course-${c.id}`, topic: c.topic, name: c.name, category: c.category, kind: "Course" }));
+  .map((c) => ({ id: `course-${c.id}`, courseId: c.id, topic: c.topic, name: c.name, category: c.category, kind: "Course" }));
 
 const pendingResources = userResources
   .filter((r) => !r.verified)
@@ -59,16 +59,31 @@ const CampRepDashboard = () => {
         <div className="campRepReviewSection">
           <h2 className="campRepReviewTitle">Pending Review</h2>
           <div className="campRepReviewList">
-            {pendingItems.map((item) => (
-              <div key={item.id} className="campRepReviewCard">
-                <div className="campRepReviewCardTop">
-                  <span className="campRepReviewTopic">{item.topic}</span>
-                  <span className="campRepPendingBadge">Pending</span>
+            {pendingItems.map((item) => {
+              const inner = (
+                <>
+                  <div className="campRepReviewCardTop">
+                    <span className="campRepReviewTopic">{item.topic}</span>
+                    <span className="campRepPendingBadge">Pending</span>
+                  </div>
+                  <p className="campRepReviewName">{item.name}</p>
+                  <span className="campRepReviewCategory">{item.category}</span>
+                </>
+              );
+              return item.kind === "Course" ? (
+                <Link
+                  key={item.id}
+                  to={`/review-course/${item.courseId}`}
+                  className="campRepReviewCard campRepReviewCard--link"
+                >
+                  {inner}
+                </Link>
+              ) : (
+                <div key={item.id} className="campRepReviewCard">
+                  {inner}
                 </div>
-                <p className="campRepReviewName">{item.name}</p>
-                <span className="campRepReviewCategory">{item.category}</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </main>

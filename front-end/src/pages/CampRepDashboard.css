@@ -156,6 +156,18 @@
   border-radius: 4px;
 }
 
+.campRepReviewCard--link {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.campRepReviewCard--link:hover {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  transform: translateY(-2px);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
 .campRepReviewCard {
   background: #d9dce3;
   border-radius: 10px;
