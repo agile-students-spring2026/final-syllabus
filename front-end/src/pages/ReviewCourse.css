@@ -106,3 +106,117 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+
+/* ── Course Overview ── */
+.reviewCourseOverview {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.reviewOverviewHeading {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.reviewOverviewDescription {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #d1d4e0;
+  line-height: 1.55;
+}
+
+.reviewOverviewMeta {
+  background: #d9dce3;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.reviewOverviewMetaItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.reviewOverviewMetaDivider {
+  height: 1px;
+  background: rgba(10, 13, 24, 0.12);
+  margin: 0 16px;
+}
+
+.reviewOverviewMetaLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #444;
+}
+
+.reviewOverviewMetaValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0c1020;
+}
+
+.reviewOverviewBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviewOverviewBlockTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #8fe9e6;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.reviewOverviewBullets {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reviewOverviewBullet {
+  font-size: 0.9rem;
+  color: #d1d4e0;
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.reviewOverviewBullet::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #8fe9e6;
+  font-weight: 700;
+}
+
+.reviewOverviewModules {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  counter-reset: module-counter;
+}
+
+.reviewOverviewModule {
+  font-size: 0.9rem;
+  color: #d1d4e0;
+  line-height: 1.5;
+  padding: 10px 14px;
+  background: rgba(217, 220, 227, 0.08);
+  border-radius: 8px;
+  border-left: 3px solid #8fe9e6;
+}

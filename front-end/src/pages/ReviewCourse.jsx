@@ -28,6 +28,47 @@ const ReviewCourse = () => {
             <span className="reviewCourseBadge">Pending</span>
           </div>
         </div>
+
+        <section className="reviewCourseOverview">
+          <h2 className="reviewOverviewHeading">Course Overview</h2>
+
+          <p className="reviewOverviewDescription">{course.description}</p>
+
+          <div className="reviewOverviewMeta">
+            <div className="reviewOverviewMetaItem">
+              <span className="reviewOverviewMetaLabel">Instructor</span>
+              <span className="reviewOverviewMetaValue">{course.instructor}</span>
+            </div>
+            <div className="reviewOverviewMetaDivider" />
+            <div className="reviewOverviewMetaItem">
+              <span className="reviewOverviewMetaLabel">Duration</span>
+              <span className="reviewOverviewMetaValue">{course.duration}</span>
+            </div>
+            <div className="reviewOverviewMetaDivider" />
+            <div className="reviewOverviewMetaItem">
+              <span className="reviewOverviewMetaLabel">Level</span>
+              <span className="reviewOverviewMetaValue">{course.level}</span>
+            </div>
+          </div>
+
+          <div className="reviewOverviewBlock">
+            <h3 className="reviewOverviewBlockTitle">What You'll Learn</h3>
+            <ul className="reviewOverviewBullets">
+              {course.whatYoullLearn.map((item, i) => (
+                <li key={i} className="reviewOverviewBullet">{item}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="reviewOverviewBlock">
+            <h3 className="reviewOverviewBlockTitle">Modules</h3>
+            <ol className="reviewOverviewModules">
+              {course.modules.map((mod, i) => (
+                <li key={i} className="reviewOverviewModule">{mod}</li>
+              ))}
+            </ol>
+          </div>
+        </section>
       </main>
     </div>
   );
