@@ -17,6 +17,7 @@ import CreateResourcePage from "./pages/CreateResourcePage";
 import VerificationPage from "./pages/VerificationPage";
 import SubmissionConfirmPage from "./pages/SubmissionConfirmPage";
 import ProfilePage from "./pages/ProfilePage";
+import ReviewCourse from "./pages/ReviewCourse";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -50,6 +51,7 @@ function App() {
           <Route path="/verification" element={<VerificationPage />} />
           <Route path="/submission-confirm" element={<SubmissionConfirmPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/review-course/:courseId" element={<ReviewCourse />} />
         </Routes>
       </main>
       {!isAuthPage && <Navbar />}
