@@ -107,6 +107,15 @@
   flex-shrink: 0;
 }
 
+/* ── Content preview ── */
+.reviewResPreview {
+  width: 100%;
+  min-height: 340px;
+  background: #14182c;
+  border-radius: 10px;
+  border: 1px dashed #2e3a52;
+}
+
 /* ── Resource type filter ── */
 .reviewResFilterRow {
   display: flex;

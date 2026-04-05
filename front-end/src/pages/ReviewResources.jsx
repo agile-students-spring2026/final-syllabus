@@ -41,6 +41,8 @@ const ReviewResources = () => {
           </div>
         </div>
 
+        <div className="reviewResPreview" aria-label="Content preview" />
+
         <div className="reviewResFilterRow">
           <span className="reviewResFilterLabel">Resource type</span>
           <div className="reviewResChips">
