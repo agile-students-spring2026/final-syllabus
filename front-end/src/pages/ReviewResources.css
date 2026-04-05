@@ -1,0 +1,221 @@
+.reviewResPage {
+  min-height: 100vh;
+  background: #0c1020;
+  color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 20px 100px;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.reviewResHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.reviewResHeader .logoStub {
+  background: #d9dce3;
+  color: #0a0d18;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.reviewResHeader .profileStub {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #d9dce3;
+}
+
+.reviewResBackBtn {
+  margin-bottom: 20px;
+}
+
+.reviewResBackBtn a {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 2px solid #8fe9e6;
+  padding: 6px 14px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+.reviewResBackBtn a:hover {
+  background: #8fe9e6;
+  color: #0a0d18;
+}
+
+.reviewResMain {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reviewResCard {
+  background: #d9dce3;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.reviewResThumbnail {
+  width: 100%;
+  height: 180px;
+  background: #b8bcc8;
+}
+
+.reviewResCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  gap: 10px;
+}
+
+.reviewResTitle {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0a0d18;
+}
+
+.reviewResTypes {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #444;
+}
+
+.reviewResBadge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 2px solid #0a0d18;
+  color: #0a0d18;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Content preview ── */
+.reviewResPreview {
+  width: 100%;
+  min-height: 340px;
+  background: #14182c;
+  border-radius: 10px;
+  border: 1px dashed #2e3a52;
+}
+
+/* ── Resource type filter ── */
+.reviewResFilterRow {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviewResFilterLabel {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #8a9ab5;
+}
+
+.reviewResChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.reviewResChip {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid #8fe9e6;
+  background: transparent;
+  color: #8fe9e6;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reviewResChip:hover {
+  background: rgba(143, 233, 230, 0.12);
+}
+
+.reviewResChip--active {
+  background: #8fe9e6;
+  color: #0c1020;
+}
+
+.reviewResChipAdd {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #8fe9e6;
+  background: transparent;
+  color: #8fe9e6;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reviewResChipAdd:hover {
+  background: rgba(143, 233, 230, 0.12);
+}
+
+/* ── Actions ── */
+.reviewResActions {
+  display: flex;
+  gap: 12px;
+}
+
+.reviewResBtn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid;
+  font-family: Arial, Helvetica, sans-serif;
+  transition: all 0.2s ease;
+}
+
+.reviewResBtn--accept {
+  background: #8fe9e6;
+  border-color: #8fe9e6;
+  color: #0c1020;
+}
+
+.reviewResBtn--accept:hover {
+  background: #6dd9d6;
+  border-color: #6dd9d6;
+}
+
+.reviewResBtn--reject {
+  background: transparent;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.reviewResBtn--reject:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
