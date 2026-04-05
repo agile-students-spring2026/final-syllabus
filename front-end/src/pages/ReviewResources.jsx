@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { courses } from "../data/sampleDatabase";
+import { useVerification } from "../context/VerificationContext";
 import "./ReviewResources.css";
 
 const ReviewResources = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
+  const { incrementResources } = useVerification();
   const course = courses.find((c) => String(c.id) === courseId) ?? courses[0];
+
+  const handleAccept = () => {
+    incrementResources();
+    navigate("/camp-rep-dashboard");
+  };
 
   const allTypes = [...new Set(course.resources.map((r) => r.type))];
   const resourceTypes = allTypes.join(", ");
@@ -60,7 +68,7 @@ const ReviewResources = () => {
         </div>
         <div className="reviewResActions">
           <button className="reviewResBtn reviewResBtn--reject">Reject</button>
-          <button className="reviewResBtn reviewResBtn--accept">Accept</button>
+          <button className="reviewResBtn reviewResBtn--accept" onClick={handleAccept}>Accept</button>
         </div>
       </main>
     </div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { courses, userResources } from "../data/sampleDatabase";
+import { useVerification } from "../context/VerificationContext";
 import "./CampRepDashboard.css";
 
 const FILTERS = ["Recent", "Pending+", "Category+"];
@@ -26,6 +27,7 @@ const pendingItems = [
 
 const CampRepDashboard = () => {
   const [activeFilter, setActiveFilter] = useState(null);
+  const { verifiedCourses, verifiedResources } = useVerification();
 
   return (
     <div className="campRepDash">
@@ -53,12 +55,12 @@ const CampRepDashboard = () => {
         <div className="campRepStatsCard">
           <div className="campRepStatRow">
             <span className="campRepStatLabel">Verified Course</span>
-            <span className="campRepStatValue">{courses.length}</span>
+            <span className="campRepStatValue">{verifiedCourses}</span>
           </div>
           <div className="campRepStatDivider" />
           <div className="campRepStatRow">
             <span className="campRepStatLabel">Verified Resources</span>
-            <span className="campRepStatValue">{userResources.length}</span>
+            <span className="campRepStatValue">{verifiedResources}</span>
           </div>
         </div>
 

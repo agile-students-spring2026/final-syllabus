@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { VerificationProvider } from "./context/VerificationContext";
 import HomePage from "./pages/HomePage";
 import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
@@ -30,6 +31,7 @@ function App() {
   const isAuthPage = authPages.includes(location.pathname);
 
   return (
+    <VerificationProvider>
     <div className="app-container">
       <Toaster />
       <main className="app-content">
@@ -60,6 +62,7 @@ function App() {
       </main>
       {!isAuthPage && <Navbar />}
     </div>
+    </VerificationProvider>
   );
 }
 
