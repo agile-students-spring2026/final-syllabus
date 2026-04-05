@@ -28,7 +28,9 @@ import { Toaster } from "react-hot-toast";
 function App() {
   const location = useLocation();
   const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying', '/admin-login'];
+  const campRepPages = ['/camp-rep-dashboard', '/review-course', '/review-resources', '/profile'];
   const isAuthPage = authPages.includes(location.pathname);
+  const isCampRepPage = campRepPages.some((p) => location.pathname.startsWith(p));
 
   return (
     <VerificationProvider>
@@ -60,7 +62,7 @@ function App() {
           <Route path="/review-resources/:courseId" element={<ReviewResources />} />
         </Routes>
       </main>
-      {!isAuthPage && <Navbar />}
+      {!isAuthPage && !isCampRepPage && <Navbar />}
     </div>
     </VerificationProvider>
   );
