@@ -31,6 +31,10 @@
   height: 36px;
   border-radius: 50%;
   background: #d9dce3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a0d18;
 }
 
 .campRepDashMain {

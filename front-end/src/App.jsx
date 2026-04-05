@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { VerificationProvider } from "./context/VerificationContext";
+import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
@@ -33,6 +34,7 @@ function App() {
   const isCampRepPage = campRepPages.some((p) => location.pathname.startsWith(p));
 
   return (
+    <AuthProvider>
     <VerificationProvider>
     <div className="app-container">
       <Toaster />
@@ -65,6 +67,7 @@ function App() {
       {!isAuthPage && !isCampRepPage && <Navbar />}
     </div>
     </VerificationProvider>
+    </AuthProvider>
   );
 }
 

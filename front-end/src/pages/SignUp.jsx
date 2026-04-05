@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
@@ -12,6 +13,7 @@ function Signup() {
   });
   
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -23,10 +25,32 @@ function Signup() {
     }));
   }
 
-  function handleSubmit(event) {
-  event.preventDefault();
-  navigate("/role-selection");
-}
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError("");
+
+    try {
+      const res = await fetch("http://localhost:3001/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Signup failed");
+        return;
+      }
+
+      login(data.user);
+      navigate("/role-selection");
+    } catch {
+      setError("Could not connect to server");
+    }
+  }
 
 
   return (
@@ -79,6 +103,8 @@ function Signup() {
             {showPassword ? "Hide password" : "Show password"}
           </button>
         </div>
+
+        {error && <p className="auth-error">{error}</p>}
 
         <button type="submit" className="primary-btn">
           Create account
