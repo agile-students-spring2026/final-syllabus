@@ -209,30 +209,35 @@ export const courses = [
 export const userResources = [
   {
     id: "note-1",
+    courseId: 1,
     title: "Midterm review outline (loops/arrays)",
     course: "CS 101",
     category: "Notes",
   },
   {
     id: "note-2",
+    courseId: 3,
     title: "Cold War timeline cheat sheet",
     course: "HIST 301",
     category: "Notes",
   },
   {
     id: "flash-1",
+    courseId: 1,
     title: "Big-O flash deck (20 cards)",
     course: "CS 101",
     category: "Flashcards",
   },
   {
     id: "vid-1",
+    courseId: 2,
     title: "Integration by parts walk-through",
     course: "MATH 201",
     category: "Videos",
   },
   {
     id: "prac-1",
+    courseId: 6,
     title: "Gauss/Ampere practice set (10 Qs)",
     course: "PHYS 210",
     category: "Practice Questions",

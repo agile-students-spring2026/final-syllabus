@@ -58,6 +58,10 @@ const ReviewResources = () => {
             <button className="reviewResChipAdd" aria-label="Add resource type">+</button>
           </div>
         </div>
+        <div className="reviewResActions">
+          <button className="reviewResBtn reviewResBtn--reject">Reject</button>
+          <button className="reviewResBtn reviewResBtn--accept">Accept</button>
+        </div>
       </main>
     </div>
   );
