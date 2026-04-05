@@ -17,7 +17,7 @@ const ReviewCourse = () => {
   return (
     <div className="reviewCoursePage">
       <header className="reviewCourseHeader">
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
         <Link to="/profile" className="profileStub" aria-label="profile" />
       </header>
 
