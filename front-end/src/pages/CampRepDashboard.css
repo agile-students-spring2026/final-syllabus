@@ -36,7 +36,6 @@
 .campRepDashMain {
   display: flex;
   flex-direction: column;
-  gap: 0;
 }
 
 .campRepDashEyebrow {
@@ -64,8 +63,8 @@
 
 .campRepFilterBtn {
   padding: 8px 18px;
-  border: 1px solid #8fe9e6;
   border-radius: 999px;
+  border: 1px solid #8fe9e6;
   background: transparent;
   color: #8fe9e6;
   font-family: Arial, Helvetica, sans-serif;
@@ -156,18 +155,6 @@
   border-radius: 4px;
 }
 
-.campRepReviewCard--link {
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.campRepReviewCard--link:hover {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
-  transform: translateY(-2px);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
 .campRepReviewCard {
   background: #d9dce3;
   border-radius: 10px;
@@ -176,6 +163,13 @@
   flex-direction: column;
   gap: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.campRepReviewCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
 }
 
 .campRepReviewCardTop {
@@ -184,7 +178,7 @@
   align-items: center;
 }
 
-.campRepReviewTopic {
+.campRepReviewKind {
   font-size: 0.78rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -218,10 +212,56 @@
 
 @media (max-width: 600px) {
   .campRepDash {
-    padding: 20px 16px 110px;
+    padding: 16px 14px 40px;
   }
 
   .campRepDashTitle {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
+  }
+
+  .campRepDashEyebrow {
+    font-size: 0.75rem;
+  }
+
+  .campRepFilters {
+    gap: 8px;
+  }
+
+  .campRepFilterBtn {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+  }
+
+  .campRepStatsCard {
+    margin-bottom: 20px;
+  }
+
+  .campRepStatRow {
+    padding: 10px 14px;
+  }
+
+  .campRepStatLabel {
+    font-size: 0.88rem;
+  }
+
+  .campRepStatValue {
+    font-size: 0.95rem;
+  }
+
+  .campRepReviewList {
+    max-height: none;
+  }
+
+  .campRepReviewCard {
+    padding: 12px 14px;
+  }
+
+  .campRepReviewName {
+    font-size: 0.88rem;
+  }
+
+  .campRepDashHeader .profileStub {
+    width: 32px;
+    height: 32px;
   }
 }

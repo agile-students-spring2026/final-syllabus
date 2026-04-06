@@ -1,15 +1,23 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { courses } from "../data/sampleDatabase";
+import { useVerification } from "../context/VerificationContext";
 import "./ReviewCourse.css";
 
 const ReviewCourse = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
+  const { incrementCourses } = useVerification();
   const course = courses.find((c) => String(c.id) === courseId) ?? courses[0];
+
+  const handleAccept = () => {
+    incrementCourses();
+    navigate("/camp-rep-dashboard");
+  };
 
   return (
     <div className="reviewCoursePage">
       <header className="reviewCourseHeader">
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
         <Link to="/profile" className="profileStub" aria-label="profile" />
       </header>
 
@@ -72,7 +80,7 @@ const ReviewCourse = () => {
 
         <div className="reviewCourseActions">
           <button className="reviewCourseBtn reviewCourseBtn--reject">Reject</button>
-          <button className="reviewCourseBtn reviewCourseBtn--accept">Accept</button>
+          <button className="reviewCourseBtn reviewCourseBtn--accept" onClick={handleAccept}>Accept</button>
         </div>
       </main>
     </div>

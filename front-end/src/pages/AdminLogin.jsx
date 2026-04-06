@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
 function AdminLogin() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,7 +22,7 @@ function AdminLogin() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    alert("Admin login UI submitted");
+    navigate("/camp-rep-dashboard");
   }
 
   return (
@@ -59,7 +60,7 @@ function AdminLogin() {
         </div>
 
         <button type="submit" className="primary-btn">
-          Sign in as Admin
+          Sign in as Campus Rep
         </button>
 
         <p className="auth-footer-text">

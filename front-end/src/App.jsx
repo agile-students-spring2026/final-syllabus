@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { VerificationProvider } from "./context/VerificationContext";
 import HomePage from "./pages/HomePage";
 import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
@@ -17,8 +18,9 @@ import CreateResourcePage from "./pages/CreateResourcePage";
 import VerificationPage from "./pages/VerificationPage";
 import SubmissionConfirmPage from "./pages/SubmissionConfirmPage";
 import ProfilePage from "./pages/ProfilePage";
-import ReviewCourse from "./pages/ReviewCourse";
 import CampRepDashboard from "./pages/CampRepDashboard";
+import ReviewCourse from "./pages/ReviewCourse";
+import ReviewResources from "./pages/ReviewResources";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -26,9 +28,12 @@ import { Toaster } from "react-hot-toast";
 function App() {
   const location = useLocation();
   const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying', '/admin-login'];
+  const campRepPages = ['/camp-rep-dashboard', '/review-course', '/review-resources', '/profile'];
   const isAuthPage = authPages.includes(location.pathname);
+  const isCampRepPage = campRepPages.some((p) => location.pathname.startsWith(p));
 
   return (
+    <VerificationProvider>
     <div className="app-container">
       <Toaster />
       <main className="app-content">
@@ -52,12 +57,14 @@ function App() {
           <Route path="/verification" element={<VerificationPage />} />
           <Route path="/submission-confirm" element={<SubmissionConfirmPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/review-course/:courseId" element={<ReviewCourse />} />
           <Route path="/camp-rep-dashboard" element={<CampRepDashboard />} />
+          <Route path="/review-course/:courseId" element={<ReviewCourse />} />
+          <Route path="/review-resources/:courseId" element={<ReviewResources />} />
         </Routes>
       </main>
-      {!isAuthPage && <Navbar />}
+      {!isAuthPage && !isCampRepPage && <Navbar />}
     </div>
+    </VerificationProvider>
   );
 }
 

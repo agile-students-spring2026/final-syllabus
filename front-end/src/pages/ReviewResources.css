@@ -1,4 +1,4 @@
-.reviewCoursePage {
+.reviewResPage {
   min-height: 100vh;
   background: #0c1020;
   color: #f5f5f5;
@@ -9,14 +9,14 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
-.reviewCourseHeader {
+.reviewResHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16px;
 }
 
-.reviewCourseHeader .logoStub {
+.reviewResHeader .logoStub {
   background: #d9dce3;
   color: #0a0d18;
   padding: 10px 18px;
@@ -26,18 +26,18 @@
   display: inline-block;
 }
 
-.reviewCourseHeader .profileStub {
+.reviewResHeader .profileStub {
   width: 36px;
   height: 36px;
   border-radius: 50%;
   background: #d9dce3;
 }
 
-.reviewCourseBackBtn {
+.reviewResBackBtn {
   margin-bottom: 20px;
 }
 
-.reviewCourseBackBtn a {
+.reviewResBackBtn a {
   color: #ffffff;
   text-decoration: none;
   font-weight: 700;
@@ -51,31 +51,31 @@
   transition: all 0.2s ease;
 }
 
-.reviewCourseBackBtn a:hover {
+.reviewResBackBtn a:hover {
   background: #8fe9e6;
   color: #0a0d18;
 }
 
-.reviewCourseMain {
+.reviewResMain {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.reviewCourseCard {
+.reviewResCard {
   background: #d9dce3;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.reviewCourseThumbnail {
+.reviewResThumbnail {
   width: 100%;
   height: 180px;
   background: #b8bcc8;
 }
 
-.reviewCourseCardFooter {
+.reviewResCardFooter {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -83,20 +83,20 @@
   gap: 10px;
 }
 
-.reviewCourseTitle {
+.reviewResTitle {
   margin: 0 0 4px;
   font-size: 0.95rem;
   font-weight: 700;
   color: #0a0d18;
 }
 
-.reviewCourseCategory {
+.reviewResTypes {
   margin: 0;
   font-size: 0.85rem;
   color: #444;
 }
 
-.reviewCourseBadge {
+.reviewResBadge {
   padding: 6px 14px;
   border-radius: 999px;
   font-size: 0.85rem;
@@ -107,124 +107,86 @@
   flex-shrink: 0;
 }
 
-/* ── Course Overview ── */
-.reviewCourseOverview {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.reviewOverviewHeading {
-  margin: 0;
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.reviewOverviewDescription {
-  margin: 0;
-  font-size: 0.95rem;
-  color: #d1d4e0;
-  line-height: 1.55;
-}
-
-.reviewOverviewMeta {
-  background: #d9dce3;
+/* ── Content preview ── */
+.reviewResPreview {
+  width: 100%;
+  min-height: 340px;
+  background: #14182c;
   border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px dashed #2e3a52;
 }
 
-.reviewOverviewMetaItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-}
-
-.reviewOverviewMetaDivider {
-  height: 1px;
-  background: rgba(10, 13, 24, 0.12);
-  margin: 0 16px;
-}
-
-.reviewOverviewMetaLabel {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #444;
-}
-
-.reviewOverviewMetaValue {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #0c1020;
-}
-
-.reviewOverviewBlock {
+/* ── Resource type filter ── */
+.reviewResFilterRow {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.reviewOverviewBlockTitle {
-  margin: 0;
+.reviewResFilterLabel {
   font-size: 0.8rem;
-  font-weight: 800;
-  color: #8fe9e6;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1.2px;
+  color: #8a9ab5;
 }
 
-.reviewOverviewBullets {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.reviewResChips {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.reviewOverviewBullet {
-  font-size: 0.9rem;
-  color: #d1d4e0;
-  line-height: 1.5;
-  padding-left: 16px;
-  position: relative;
-}
-
-.reviewOverviewBullet::before {
-  content: "•";
-  position: absolute;
-  left: 0;
+.reviewResChip {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1px solid #8fe9e6;
+  background: transparent;
   color: #8fe9e6;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.88rem;
   font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.reviewOverviewModules {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.reviewResChip:hover {
+  background: rgba(143, 233, 230, 0.12);
+}
+
+.reviewResChip--active {
+  background: #8fe9e6;
+  color: #0c1020;
+}
+
+.reviewResChipAdd {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #8fe9e6;
+  background: transparent;
+  color: #8fe9e6;
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.reviewOverviewModule {
-  font-size: 0.9rem;
-  color: #d1d4e0;
-  line-height: 1.5;
-  padding: 10px 14px;
-  background: rgba(217, 220, 227, 0.08);
-  border-radius: 8px;
-  border-left: 3px solid #8fe9e6;
+.reviewResChipAdd:hover {
+  background: rgba(143, 233, 230, 0.12);
 }
 
-.reviewCourseActions {
+/* ── Actions ── */
+.reviewResActions {
   display: flex;
   gap: 12px;
 }
 
-.reviewCourseBtn {
+.reviewResBtn {
   flex: 1;
   padding: 14px;
   border-radius: 999px;
@@ -236,24 +198,24 @@
   transition: all 0.2s ease;
 }
 
-.reviewCourseBtn--accept {
+.reviewResBtn--accept {
   background: #8fe9e6;
   border-color: #8fe9e6;
   color: #0c1020;
 }
 
-.reviewCourseBtn--accept:hover {
+.reviewResBtn--accept:hover {
   background: #6dd9d6;
   border-color: #6dd9d6;
 }
 
-.reviewCourseBtn--reject {
+.reviewResBtn--reject {
   background: transparent;
   border-color: #dc2626;
   color: #dc2626;
 }
 
-.reviewCourseBtn--reject:hover {
+.reviewResBtn--reject:hover {
   background: #dc2626;
   color: #ffffff;
 }
