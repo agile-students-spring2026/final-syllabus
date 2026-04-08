@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { VerificationProvider } from "./context/VerificationContext";
+import { AuthProvider } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
@@ -28,9 +29,12 @@ import { Toaster } from "react-hot-toast";
 function App() {
   const location = useLocation();
   const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying', '/admin-login'];
+  const campRepPages = ['/camp-rep-dashboard', '/review-course', '/review-resources', '/profile'];
   const isAuthPage = authPages.includes(location.pathname);
+  const isCampRepPage = campRepPages.some((p) => location.pathname.startsWith(p));
 
   return (
+    <AuthProvider>
     <VerificationProvider>
     <div className="app-container">
       <Toaster />
@@ -60,9 +64,10 @@ function App() {
           <Route path="/review-resources/:courseId" element={<ReviewResources />} />
         </Routes>
       </main>
-      {!isAuthPage && <Navbar />}
+      {!isAuthPage && !isCampRepPage && <Navbar />}
     </div>
     </VerificationProvider>
+    </AuthProvider>
   );
 }
 

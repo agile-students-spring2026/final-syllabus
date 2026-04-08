@@ -110,8 +110,11 @@
   height: 36px;
   border-radius: 50%;
   background: #d9dce3;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  color: #0a0d18;
 }
 
 .profileCircleLink {
@@ -125,6 +128,10 @@
   height: 36px;
   border-radius: 50%;
   background: #d9dce3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a0d18;
 }
 
 /* ── HomePage ── */
@@ -413,6 +420,13 @@
 
 .primary-btn:hover {
   opacity: 0.9;
+}
+
+.auth-error {
+  color: #ff6b6b;
+  font-size: 13px;
+  text-align: center;
+  margin: 0;
 }
 
 .auth-footer-text {
