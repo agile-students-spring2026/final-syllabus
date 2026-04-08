@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
@@ -10,6 +11,7 @@ function Login() {
   });
 
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
 
   function handleChange(event) {
@@ -20,9 +22,31 @@ function Login() {
     }));
   }
 
-  function handleSubmit(event) {
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    navigate("/home");
+    setError("");
+
+    try {
+      const res = await fetch("http://localhost:3001/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed");
+        return;
+      }
+
+      login(data.user);
+      navigate("/home");
+    } catch {
+      setError("Could not connect to server");
+    }
   }
 
   return (
@@ -65,6 +89,8 @@ function Login() {
         <p className="auth-footer-text">
           Don&apos;t have an account? <Link to="/signup">Sign up</Link>
         </p>
+        {error && <p className="auth-error">{error}</p>}
+
         <button type="submit" className="primary-btn">
           Log in
         </button>
