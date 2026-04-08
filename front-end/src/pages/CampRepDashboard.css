@@ -31,6 +31,10 @@
   height: 36px;
   border-radius: 50%;
   background: #d9dce3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #0a0d18;
 }
 
 .campRepDashMain {
@@ -212,10 +216,56 @@
 
 @media (max-width: 600px) {
   .campRepDash {
-    padding: 20px 16px 110px;
+    padding: 16px 14px 40px;
   }
 
   .campRepDashTitle {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
+  }
+
+  .campRepDashEyebrow {
+    font-size: 0.75rem;
+  }
+
+  .campRepFilters {
+    gap: 8px;
+  }
+
+  .campRepFilterBtn {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+  }
+
+  .campRepStatsCard {
+    margin-bottom: 20px;
+  }
+
+  .campRepStatRow {
+    padding: 10px 14px;
+  }
+
+  .campRepStatLabel {
+    font-size: 0.88rem;
+  }
+
+  .campRepStatValue {
+    font-size: 0.95rem;
+  }
+
+  .campRepReviewList {
+    max-height: none;
+  }
+
+  .campRepReviewCard {
+    padding: 12px 14px;
+  }
+
+  .campRepReviewName {
+    font-size: 0.88rem;
+  }
+
+  .campRepDashHeader .profileStub {
+    width: 32px;
+    height: 32px;
   }
 }
