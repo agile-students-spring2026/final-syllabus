@@ -1,8 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./ProfilePage.css";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   return (
     <div className="profilePage">
@@ -13,13 +15,14 @@ const ProfilePage = () => {
 
       <div className="profileIdentity">
         <div className="profileAvatar">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
           </svg>
         </div>
         <div>
-          <p className="profileName">John Doe</p>
-          <p className="profileEmail">johndoe@gmail.com</p>
+          <p className="profileName">{user?.fullName || user?.name || "User"}</p>
+          <p className="profileEmail">{user?.email || ""}</p>
         </div>
       </div>
 
@@ -36,7 +39,7 @@ const ProfilePage = () => {
       </nav>
 
       <div className="profileLogoutWrap">
-        <Link to="/login" className="profileLogout">Log out</Link>
+        <Link to="/login" className="profileLogout" onClick={logout}>Log out</Link>
       </div>
     </div>
   );

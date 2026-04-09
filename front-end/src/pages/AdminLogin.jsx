@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
 function AdminLogin() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -19,9 +22,31 @@ function AdminLogin() {
     }));
   }
 
-  function handleSubmit(event) {
+  const [error, setError] = useState("");
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    alert("Admin login UI submitted");
+    setError("");
+
+    try {
+      const res = await fetch("http://localhost:3001/api/auth/campus-rep/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "Login failed");
+        return;
+      }
+
+      login(data.user);
+      navigate("/camp-rep-dashboard");
+    } catch {
+      setError("Could not connect to server");
+    }
   }
 
   return (
@@ -58,8 +83,10 @@ function AdminLogin() {
           </button>
         </div>
 
+        {error && <p className="auth-error">{error}</p>}
+
         <button type="submit" className="primary-btn">
-          Sign in as Admin
+          Sign in as Campus Rep
         </button>
 
         <p className="auth-footer-text">
