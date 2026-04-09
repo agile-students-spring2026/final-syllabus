@@ -1,33 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { courses, userResources } from "../data/sampleDatabase";
 import { useVerification } from "../context/VerificationContext";
 import "./CampRepDashboard.css";
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 const FILTERS = ["Recent", "Pending+", "Category+"];
-
-const pendingItems = [
-  ...courses.slice(0, 2).map((c) => ({
-    id: `course-${c.id}`,
-    courseId: c.id,
-    kind: "Course",
-    name: c.name,
-    category: c.category,
-    to: `/review-course/${c.id}`,
-  })),
-  ...userResources.slice(0, 2).map((r) => ({
-    id: r.id,
-    courseId: r.courseId,
-    kind: "Resource",
-    name: r.title,
-    category: r.category,
-    to: `/review-resources/${r.courseId}`,
-  })),
-];
 
 const CampRepDashboard = () => {
   const [activeFilter, setActiveFilter] = useState(null);
+  const [pendingItems, setPendingItems] = useState([]);
   const { verifiedCourses, verifiedResources } = useVerification();
+
+  useEffect(() => {
+    fetch(`${API_BASE}/admin/pending`)
+      .then((res) => res.json())
+      .then((data) => {
+        const items = data.map((item) => ({
+          ...item,
+          to:
+            item.kind === "Course"
+              ? `/review-course/${item.courseId}`
+              : `/review-resources/${item.courseId}`,
+        }));
+        setPendingItems(items);
+      })
+      .catch(() => {
+        // Fallback: leave list empty on error
+      });
+  }, []);
 
   return (
     <div className="campRepDash">
@@ -73,11 +73,7 @@ const CampRepDashboard = () => {
           <h2 className="campRepReviewTitle">Pending Review</h2>
           <div className="campRepReviewList">
             {pendingItems.map((item) => (
-              <Link
-                key={item.id}
-                to={item.to}
-                className="campRepReviewCard"
-              >
+              <Link key={item.id} to={item.to} className="campRepReviewCard">
                 <div className="campRepReviewCardTop">
                   <span className="campRepReviewKind">{item.kind}</span>
                   <span className="campRepPendingBadge">Pending</span>

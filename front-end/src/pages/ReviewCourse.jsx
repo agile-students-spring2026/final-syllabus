@@ -1,18 +1,48 @@
+import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { courses } from "../data/sampleDatabase";
 import { useVerification } from "../context/VerificationContext";
 import "./ReviewCourse.css";
+
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const ReviewCourse = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { incrementCourses } = useVerification();
-  const course = courses.find((c) => String(c.id) === courseId) ?? courses[0];
+
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/admin/courses/${courseId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setCourse(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [courseId]);
 
   const handleAccept = () => {
+    fetch(`${API_BASE}/admin/courses/${courseId}/approve`, { method: "POST" }).catch(() => {});
     incrementCourses();
     navigate("/camp-rep-dashboard");
   };
+
+  const handleReject = () => {
+    fetch(`${API_BASE}/admin/courses/${courseId}/reject`, { method: "POST" }).catch(() => {});
+    navigate("/camp-rep-dashboard");
+  };
+
+  if (loading) return <div className="reviewCoursePage" />;
+
+  if (!course || course.error) {
+    return (
+      <div className="reviewCoursePage">
+        <p style={{ color: "#f5f5f5", padding: 24 }}>Course not found.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="reviewCoursePage">
@@ -84,7 +114,7 @@ const ReviewCourse = () => {
         </section>
 
         <div className="reviewCourseActions">
-          <button className="reviewCourseBtn reviewCourseBtn--reject">Reject</button>
+          <button className="reviewCourseBtn reviewCourseBtn--reject" onClick={handleReject}>Reject</button>
           <button className="reviewCourseBtn reviewCourseBtn--accept" onClick={handleAccept}>Accept</button>
         </div>
       </main>

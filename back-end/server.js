@@ -7,6 +7,7 @@ const courseRoutes = require("./routes/courses.js");
 const resourceRoutes = require("./routes/resources.js");
 const homeRoutes = require("./routes/homeRoutes");
 const savedCoursesRoutes = require("./routes/savedCoursesRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -23,6 +24,7 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/resources", resourceRoutes);
 app.use("/api", homeRoutes);
 app.use("/api/saved-courses", savedCoursesRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
