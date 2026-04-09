@@ -11,7 +11,7 @@ const VerifyingScreen = () => {
       <div className="success-content mb-auto flex flex-col items-center">
         <h2 className="success-title mb-6">Verifying your account</h2>
         <p className="auth-footer-text">We are reviewing your transcript. You will be notified once your campus rep account is verified.</p>
-        <button className="primary-btn mt-8" onClick={() => navigate('/success')}>Done</button>
+        <button className="primary-btn mt-8" onClick={() => navigate('/camp-rep-dashboard')}>Done</button>
       </div>
     </div>
   );

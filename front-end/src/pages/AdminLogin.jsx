@@ -29,7 +29,7 @@ function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3001/api/auth/campus-rep/login", {
+      const res = await fetch("http://localhost:5001/api/auth/campus-rep/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

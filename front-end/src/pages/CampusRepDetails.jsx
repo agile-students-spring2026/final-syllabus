@@ -23,7 +23,7 @@ const CampusRepDetailsScreen = () => {
             <input type="text" placeholder="Computer Science" />
           </div>
 
-          <button className="primary-btn" onClick={() => navigate('/verifying')}>
+          <button className="primary-btn" onClick={() => navigate('/camp-rep-dashboard')}>
             Next
           </button>
 

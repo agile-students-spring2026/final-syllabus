@@ -29,7 +29,7 @@ function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:3001/api/auth/login", {
+      const res = await fetch("http://localhost:5001/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -95,7 +95,7 @@ function Login() {
           Log in
         </button>
 
-        <div className="divider">Or continue with</div>
+        {/* <div className="divider">Or continue with</div>
 
         <div className="social-buttons">
           <button type="button" className="social-btn">
@@ -106,7 +106,7 @@ function Login() {
             <img src="https://www.svgrepo.com/show/452229/apple.svg" alt="Apple" width="20" height="20" style={{filter: "invert(1)"}} />
             Sign in with Apple
           </button>
-        </div>
+        </div> */}
 
         <p className="auth-footer-text">
           Sign in as a <Link to="/admin-login">Campus Rep</Link>
