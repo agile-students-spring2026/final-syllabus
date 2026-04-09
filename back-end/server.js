@@ -4,6 +4,8 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth.js");
 const homeRoutes = require("./routes/homeRoutes");
+const courseRoutes = require("./routes/course");
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -23,6 +25,8 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/home", homeRoutes);
+app.use("/courses", courseRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
