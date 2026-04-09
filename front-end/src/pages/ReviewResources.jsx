@@ -1,24 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { courses } from "../data/sampleDatabase";
 import { useVerification } from "../context/VerificationContext";
 import "./ReviewResources.css";
+
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const ReviewResources = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
   const { incrementResources } = useVerification();
-  const course = courses.find((c) => String(c.id) === courseId) ?? courses[0];
 
-  const handleAccept = () => {
-    incrementResources();
-    navigate("/camp-rep-dashboard");
-  };
+  const [resourceData, setResourceData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [activeTypes, setActiveTypes] = useState([]);
 
-  const allTypes = [...new Set(course.resources.map((r) => r.type))];
-  const resourceTypes = allTypes.join(", ");
-
-  const [activeTypes, setActiveTypes] = useState([allTypes[0]]);
+  useEffect(() => {
+    fetch(`${API_BASE}/admin/resources/${courseId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setResourceData(data);
+        if (data.types && data.types.length > 0) {
+          setActiveTypes([data.types[0]]);
+        }
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [courseId]);
 
   const toggleType = (type) => {
     setActiveTypes((prev) =>
@@ -26,16 +33,32 @@ const ReviewResources = () => {
     );
   };
 
+  const handleAccept = () => {
+    fetch(`${API_BASE}/admin/resources/${courseId}/approve`, { method: "POST" }).catch(() => {});
+    incrementResources();
+    navigate("/camp-rep-dashboard");
+  };
+
+  const handleReject = () => {
+    fetch(`${API_BASE}/admin/resources/${courseId}/reject`, { method: "POST" }).catch(() => {});
+    navigate("/camp-rep-dashboard");
+  };
+
+  if (loading) return <div className="reviewResPage" />;
+
+  if (!resourceData || resourceData.error) {
+    return (
+      <div className="reviewResPage">
+        <p style={{ color: "#f5f5f5", padding: 24 }}>Resource not found.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="reviewResPage">
       <header className="reviewResHeader">
         <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
-        <Link to="/profile" className="profileStub" aria-label="profile">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">
-            <circle cx="12" cy="8" r="4" />
-            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-          </svg>
-        </Link>
+        <Link to="/profile" className="profileStub" aria-label="profile" />
       </header>
 
       <div className="reviewResBackBtn">
@@ -47,8 +70,8 @@ const ReviewResources = () => {
           <div className="reviewResThumbnail" />
           <div className="reviewResCardFooter">
             <div>
-              <p className="reviewResTitle">{course.name}</p>
-              <p className="reviewResTypes">{resourceTypes}</p>
+              <p className="reviewResTitle">{resourceData.courseName}</p>
+              <p className="reviewResTypes">{resourceData.resourceTypes}</p>
             </div>
             <span className="reviewResBadge">Pending</span>
           </div>
@@ -59,7 +82,7 @@ const ReviewResources = () => {
         <div className="reviewResFilterRow">
           <span className="reviewResFilterLabel">Resource type</span>
           <div className="reviewResChips">
-            {allTypes.map((type) => (
+            {resourceData.types.map((type) => (
               <button
                 key={type}
                 className={`reviewResChip${activeTypes.includes(type) ? " reviewResChip--active" : ""}`}
@@ -71,8 +94,9 @@ const ReviewResources = () => {
             <button className="reviewResChipAdd" aria-label="Add resource type">+</button>
           </div>
         </div>
+
         <div className="reviewResActions">
-          <button className="reviewResBtn reviewResBtn--reject">Reject</button>
+          <button className="reviewResBtn reviewResBtn--reject" onClick={handleReject}>Reject</button>
           <button className="reviewResBtn reviewResBtn--accept" onClick={handleAccept}>Accept</button>
         </div>
       </main>
