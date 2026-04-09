@@ -1,6 +1,7 @@
 export const courses = [
   {
     id: 1,
+    verified: true,
     name: "CS 101: Intro to Computer Science",
     description:
       "Learn the basics of programming, algorithms, and data structures.",
@@ -53,6 +54,7 @@ export const courses = [
   },
   {
     id: 2,
+    verified: true,
     name: "MATH 201: Calculus II",
     description: "Advanced integration, series, and applications of calculus.",
     category: "Mathematics",
@@ -104,6 +106,8 @@ export const courses = [
   },
   {
     id: 3,
+    verified: false,
+    topic: "World History",
     name: "HIST 301: Modern History",
     description: "Study major global events in the 20th century.",
     category: "History",
@@ -155,6 +159,7 @@ export const courses = [
   },
   {
     id: 4,
+    verified: true,
     name: "ENG 102: English Literature",
     description: "Explore classic and modern English literature texts.",
     category: "Literature",
@@ -206,6 +211,7 @@ export const courses = [
   },
   {
     id: 5,
+    verified: true,
     name: "BIO 150: Introduction to Biology",
     description: "Learn about cells, genetics, evolution, and ecology.",
     category: "Biology",
@@ -257,6 +263,8 @@ export const courses = [
   },
   {
     id: 6,
+    verified: false,
+    topic: "Electromagnetism",
     name: "PHYS 210: Physics II",
     description: "Electricity, magnetism, and modern physics concepts.",
     category: "Physics",
@@ -311,6 +319,7 @@ export const courses = [
 export const userResources = [
   {
     id: "note-1",
+    verified: true,
     courseId: 1,
     title: "Midterm review outline (loops/arrays)",
     course: "CS 101",
@@ -318,6 +327,8 @@ export const userResources = [
   },
   {
     id: "note-2",
+    verified: false,
+    topic: "Cold War",
     courseId: 3,
     title: "Cold War timeline cheat sheet",
     course: "HIST 301",
@@ -325,6 +336,7 @@ export const userResources = [
   },
   {
     id: "flash-1",
+    verified: true,
     courseId: 1,
     title: "Big-O flash deck (20 cards)",
     course: "CS 101",
@@ -332,6 +344,7 @@ export const userResources = [
   },
   {
     id: "vid-1",
+    verified: true,
     courseId: 2,
     title: "Integration by parts walk-through",
     course: "MATH 201",
@@ -339,6 +352,7 @@ export const userResources = [
   },
   {
     id: "prac-1",
+    verified: true,
     courseId: 6,
     title: "Gauss/Ampere practice set (10 Qs)",
     course: "PHYS 210",
