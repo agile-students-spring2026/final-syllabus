@@ -29,6 +29,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/resources", resourceRoutes);
 app.use("/home", homeRoutes);
+app.use("/courses", courseRoutes);
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
