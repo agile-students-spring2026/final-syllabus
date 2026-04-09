@@ -1,3 +1,9 @@
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+
+const authRoutes = require("./routes/auth.js");
+const homeRoutes = require("./routes/homeRoutes");
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -16,9 +22,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/home", homeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+module.exports = app;
 export default app;
