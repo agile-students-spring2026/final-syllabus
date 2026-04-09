@@ -4,15 +4,19 @@ import { useVerification } from "../context/VerificationContext";
 import "./CampRepDashboard.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
-const FILTERS = ["Recent", "Pending+", "Category+"];
 
 const CampRepDashboard = () => {
-  const [activeFilter, setActiveFilter] = useState(null);
+  const [kind, setKind] = useState("");
+  const [category, setCategory] = useState("");
   const [pendingItems, setPendingItems] = useState([]);
   const { verifiedCourses, verifiedResources } = useVerification();
 
   useEffect(() => {
-    fetch(`${API_BASE}/admin/pending`)
+    const params = new URLSearchParams();
+    if (kind) params.append("kind", kind);
+    if (category) params.append("category", category);
+
+    fetch(`${API_BASE}/admin/pending?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         const items = data.map((item) => ({
@@ -24,10 +28,8 @@ const CampRepDashboard = () => {
         }));
         setPendingItems(items);
       })
-      .catch(() => {
-        // Fallback: leave list empty on error
-      });
-  }, []);
+      .catch(() => {});
+  }, [kind, category]);
 
   return (
     <div className="campRepDash">
@@ -46,15 +48,22 @@ const CampRepDashboard = () => {
         <h1 className="campRepDashTitle">Dash board</h1>
 
         <div className="campRepFilters">
-          {FILTERS.map((f) => (
-            <button
-              key={f}
-              className={`campRepFilterBtn${activeFilter === f ? " campRepFilterBtn--active" : ""}`}
-              onClick={() => setActiveFilter(activeFilter === f ? null : f)}
-            >
-              {f}
-            </button>
-          ))}
+          <select className="campRepFilterBtn" value={kind} onChange={(e) => setKind(e.target.value)}>
+            <option value="">Type</option>
+            <option value="Course">Course</option>
+            <option value="Resource">Resource</option>
+          </select>
+          <select className="campRepFilterBtn" value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="">Category</option>
+            <option value="Notes">Notes</option>
+            <option value="Practice Questions">Practice Questions</option>
+            <option value="Flashcards">Flashcards</option>
+            <option value="Videos">Videos</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="History">History</option>
+            <option value="Physics">Physics</option>
+          </select>
         </div>
 
         <div className="campRepStatsCard">

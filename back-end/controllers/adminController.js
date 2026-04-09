@@ -6,7 +6,11 @@ const getDashboard = (req, res) => {
 };
 
 const getPending = (req, res) => {
-  res.json([...pendingCourses, ...pendingResources]);
+  const { kind, category } = req.query;
+  let items = [...pendingCourses, ...pendingResources];
+  if (kind) items = items.filter((i) => i.kind.toLowerCase() === kind.toLowerCase());
+  if (category) items = items.filter((i) => i.category.toLowerCase() === category.toLowerCase());
+  res.json(items);
 };
 
 const getCourseById = (req, res) => {
