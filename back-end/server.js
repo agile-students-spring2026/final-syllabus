@@ -4,12 +4,14 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth.js");
 const homeRoutes = require("./routes/homeRoutes");
-const courseRoutes = require("./routes/course");
-
+const courseRoutes = require("./routes/courses.js");
+const resourceRoutes = require("./routes/resources.js");
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.js";
+import courseRoutes from "./routes/courses.js";
+import resourceRoutes from "./routes/resources.js";
 
 dotenv.config();
 
@@ -24,6 +26,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/courses", courseRoutes);
+app.use("/api/resources", resourceRoutes);
 app.use("/home", homeRoutes);
 app.use("/courses", courseRoutes);
 
