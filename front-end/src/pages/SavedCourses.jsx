@@ -1,9 +1,48 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import CourseCard from '../components/CourseCard';
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+
 const SavedCourses = () => {
-    const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
+    const [savedCourses, setSavedCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    const [search, setSearch] = useState("");
+    const [recent, setRecent] = useState("");
+    const [category, setCategory] = useState("");
+
+    // For now userId defaults to "guest"; swap for real auth token/userId when auth is wired up
+    const userId = "guest";
+
+    useEffect(() => {
+        setLoading(true);
+        fetch(`${API_BASE}/saved-courses?userId=${encodeURIComponent(userId)}`)
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to fetch saved courses");
+                return res.json();
+            })
+            .then((data) => {
+                setSavedCourses(data);
+                setLoading(false);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, [userId]);
+
+    const filtered = savedCourses.filter((c) => {
+        const matchesSearch =
+            !search ||
+            c.name.toLowerCase().includes(search.toLowerCase()) ||
+            c.description.toLowerCase().includes(search.toLowerCase());
+        const matchesRecent = !recent || c.recent === recent;
+        const matchesCategory = !category || c.category === category;
+        return matchesSearch && matchesRecent && matchesCategory;
+    });
 
     return (
         <div className='homePage'>
@@ -23,16 +62,18 @@ const SavedCourses = () => {
                 <input
                     type="text"
                     placeholder='Search Courses'
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
                 <HiMagnifyingGlassCircle className='searchLogo' />
             </div>
 
             <div className='filterCourses'>
-                <select className='recentFilter'>
+                <select className='recentFilter' value={recent} onChange={(e) => setRecent(e.target.value)}>
                     <option value="">Recent</option>
-                    <option value="today">Today</option>
-                    <option value="this-week">This Week</option>
-                    <option value="this-month">This Month</option>
+                    <option value="Today">Today</option>
+                    <option value="This Week">This Week</option>
+                    <option value="This Month">This Month</option>
                 </select>
                 <select className='courseFilter'>
                     <option value="">Course</option>
@@ -40,19 +81,30 @@ const SavedCourses = () => {
                     <option value="math201">Math 201</option>
                     <option value="history301">History 301</option>
                 </select>
-                <select className='categoryFilter'>
+                <select className='categoryFilter' value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value="">Material Type</option>
-                    <option value="lecture-notes">Lecture Notes</option>
-                    <option value="assignments">Assignments</option>
-                    <option value="exams">Exams</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="History">History</option>
+                    <option value="Literature">Literature</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Physics">Physics</option>
                 </select>
             </div>
 
-            <div className="courses-grid">
-                {saved.map((save) =>
-                    <CourseCard key={save.id} course={save} />
-                )}
-            </div>
+            {loading && <p className="status-message">Loading saved courses...</p>}
+            {error && <p className="status-message error">Error: {error}</p>}
+
+            {!loading && !error && (
+                <div className="courses-grid">
+                    {filtered.length === 0
+                        ? <p className="status-message">No saved courses found.</p>
+                        : filtered.map((course) => (
+                            <CourseCard key={course.id} course={course} />
+                        ))
+                    }
+                </div>
+            )}
         </div>
     );
 }
