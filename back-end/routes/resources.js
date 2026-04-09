@@ -1,7 +1,5 @@
 const express = require("express");
-import express from "express";
 const { courses, resources } = require("../data/store.js");
-import { courses, resources } from "../data/store.js";
 
 const router = express.Router();
 
@@ -78,4 +76,3 @@ router.get("/verification", (req, res) => {
 });
 
 module.exports = router;
-export default router;

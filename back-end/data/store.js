@@ -12,4 +12,3 @@ const resources = [
 ];
 
 module.exports = { courses, resources };
-export { courses, resources };
