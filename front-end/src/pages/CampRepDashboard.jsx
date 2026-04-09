@@ -1,29 +1,39 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { courses, userResources } from "../data/sampleDatabase";
+import { useVerification } from "../context/VerificationContext";
+import "./CampRepDashboard.css";
 
-const FILTERS = ["Recent", "Pending", "Category"];
+const FILTERS = ["Recent", "Pending+", "Category+"];
 
-const pendingCourses = courses
-  .filter((c) => !c.verified)
-  .map((c) => ({ id: `course-${c.id}`, topic: c.topic, name: c.name, category: c.category, kind: "Course" }));
-
-const pendingResources = userResources
-  .filter((r) => !r.verified)
-  .map((r) => ({ id: r.id, topic: r.topic, name: r.title, category: r.category, kind: "Resource" }));
-
-const pendingItems = [...pendingCourses, ...pendingResources];
+const pendingItems = [
+  ...courses.slice(0, 2).map((c) => ({
+    id: `course-${c.id}`,
+    courseId: c.id,
+    kind: "Course",
+    name: c.name,
+    category: c.category,
+    to: `/review-course/${c.id}`,
+  })),
+  ...userResources.slice(0, 2).map((r) => ({
+    id: r.id,
+    courseId: r.courseId,
+    kind: "Resource",
+    name: r.title,
+    category: r.category,
+    to: `/review-resources/${r.courseId}`,
+  })),
+];
 
 const CampRepDashboard = () => {
   const [activeFilter, setActiveFilter] = useState(null);
-
-  const verifiedCourses = courses.filter((c) => c.verified).length;
-  const verifiedResources = userResources.filter((r) => r.verified).length;
+  const { verifiedCourses, verifiedResources } = useVerification();
 
   return (
     <div className="campRepDash">
       <header className="campRepDashHeader">
-        <div className="logoStub">LOGO</div>
-        <div className="profileStub" aria-label="profile" />
+        <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
+        <Link to="/profile" className="profileStub" aria-label="profile" />
       </header>
 
       <main className="campRepDashMain">
@@ -58,14 +68,18 @@ const CampRepDashboard = () => {
           <h2 className="campRepReviewTitle">Pending Review</h2>
           <div className="campRepReviewList">
             {pendingItems.map((item) => (
-              <div key={item.id} className="campRepReviewCard">
+              <Link
+                key={item.id}
+                to={item.to}
+                className="campRepReviewCard"
+              >
                 <div className="campRepReviewCardTop">
-                  <span className="campRepReviewTopic">{item.topic}</span>
+                  <span className="campRepReviewKind">{item.kind}</span>
                   <span className="campRepPendingBadge">Pending</span>
                 </div>
                 <p className="campRepReviewName">{item.name}</p>
                 <span className="campRepReviewCategory">{item.category}</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

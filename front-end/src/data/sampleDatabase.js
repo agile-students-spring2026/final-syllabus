@@ -8,6 +8,23 @@ export const courses = [
     category: "Computer Science",
     school: "NYU",
     recent: "Today",
+    instructor: "Dr. Alan Grant",
+    duration: "12 weeks",
+    level: "Beginner",
+    whatYoullLearn: [
+      "Understand core programming concepts and control flow",
+      "Write and debug algorithms in Python",
+      "Work with arrays, lists, and basic data structures",
+      "Analyse time and space complexity using Big-O notation",
+    ],
+    modules: [
+      "Module 1 — Intro to Programming & Python",
+      "Module 2 — Control Flow & Functions",
+      "Module 3 — Arrays, Loops & Recursion",
+      "Module 4 — Data Structures Overview",
+      "Module 5 — Algorithms & Big-O",
+      "Module 6 — Final Project",
+    ],
     resources: [
       {
         id: "cs101-notes",
@@ -43,6 +60,23 @@ export const courses = [
     category: "Mathematics",
     school: "Tulsa University",
     recent: "This Week",
+    instructor: "Prof. Sarah Chen",
+    duration: "14 weeks",
+    level: "Intermediate",
+    whatYoullLearn: [
+      "Apply advanced integration techniques including substitution and parts",
+      "Test series for convergence using standard tests",
+      "Solve problems involving parametric and polar curves",
+      "Model real-world problems with differential equations",
+    ],
+    modules: [
+      "Module 1 — Review of Calculus I",
+      "Module 2 — Integration Techniques",
+      "Module 3 — Applications of Integration",
+      "Module 4 — Infinite Sequences & Series",
+      "Module 5 — Parametric & Polar Curves",
+      "Module 6 — Intro to Differential Equations",
+    ],
     resources: [
       {
         id: "calc2-series",
@@ -79,6 +113,23 @@ export const courses = [
     category: "History",
     school: "NYU",
     recent: "This Month",
+    instructor: "Dr. Miriam Osei",
+    duration: "10 weeks",
+    level: "Intermediate",
+    whatYoullLearn: [
+      "Analyse causes and consequences of World Wars I & II",
+      "Trace the origins and impact of the Cold War",
+      "Examine decolonisation movements across Africa and Asia",
+      "Apply primary-source analysis to historical arguments",
+    ],
+    modules: [
+      "Module 1 — The World Before 1914",
+      "Module 2 — World War I & Its Aftermath",
+      "Module 3 — Rise of Totalitarianism",
+      "Module 4 — World War II",
+      "Module 5 — The Cold War Era",
+      "Module 6 — Decolonisation & Independence",
+    ],
     resources: [
       {
         id: "hist301-outline",
@@ -114,6 +165,23 @@ export const courses = [
     category: "Literature",
     school: "NYU",
     recent: "Today",
+    instructor: "Prof. James Okafor",
+    duration: "10 weeks",
+    level: "Beginner",
+    whatYoullLearn: [
+      "Perform close readings of poetry, prose, and drama",
+      "Identify and analyse literary devices and narrative structure",
+      "Write well-argued literary essays with textual evidence",
+      "Engage critically with works from Shakespeare to the 20th century",
+    ],
+    modules: [
+      "Module 1 — Introduction to Literary Analysis",
+      "Module 2 — Poetry & the Canon",
+      "Module 3 — Shakespeare",
+      "Module 4 — Victorian Novel",
+      "Module 5 — Modernism & Woolf",
+      "Module 6 — Essay Writing Workshop",
+    ],
     resources: [
       {
         id: "eng102-poems",
@@ -149,6 +217,23 @@ export const courses = [
     category: "Biology",
     school: "Tulsa University",
     recent: "This Week",
+    instructor: "Dr. Priya Nair",
+    duration: "13 weeks",
+    level: "Beginner",
+    whatYoullLearn: [
+      "Describe cell structure, function, and the cell cycle",
+      "Explain Mendelian and molecular genetics",
+      "Understand mechanisms of evolution and natural selection",
+      "Analyse ecosystem dynamics and ecological relationships",
+    ],
+    modules: [
+      "Module 1 — Chemistry of Life",
+      "Module 2 — Cell Structure & Function",
+      "Module 3 — Cell Division & Reproduction",
+      "Module 4 — Genetics & Heredity",
+      "Module 5 — Evolution",
+      "Module 6 — Ecology & Ecosystems",
+    ],
     resources: [
       {
         id: "bio150-cells",
@@ -185,6 +270,23 @@ export const courses = [
     category: "Physics",
     school: "NYU",
     recent: "This Month",
+    instructor: "Prof. David Kim",
+    duration: "14 weeks",
+    level: "Intermediate",
+    whatYoullLearn: [
+      "Apply Gauss's and Ampere's laws to solve field problems",
+      "Analyse AC and DC circuits including capacitors and inductors",
+      "Understand Maxwell's equations in integral form",
+      "Introduce concepts of special relativity and quantum mechanics",
+    ],
+    modules: [
+      "Module 1 — Electric Fields & Gauss's Law",
+      "Module 2 — Electric Potential & Capacitance",
+      "Module 3 — Current, Resistance & DC Circuits",
+      "Module 4 — Magnetic Fields & Ampere's Law",
+      "Module 5 — Electromagnetic Induction",
+      "Module 6 — Maxwell's Equations & Modern Physics",
+    ],
     resources: [
       {
         id: "phys210-em",
@@ -218,6 +320,7 @@ export const userResources = [
   {
     id: "note-1",
     verified: true,
+    courseId: 1,
     title: "Midterm review outline (loops/arrays)",
     course: "CS 101",
     category: "Notes",
@@ -226,6 +329,7 @@ export const userResources = [
     id: "note-2",
     verified: false,
     topic: "Cold War",
+    courseId: 3,
     title: "Cold War timeline cheat sheet",
     course: "HIST 301",
     category: "Notes",
@@ -233,6 +337,7 @@ export const userResources = [
   {
     id: "flash-1",
     verified: true,
+    courseId: 1,
     title: "Big-O flash deck (20 cards)",
     course: "CS 101",
     category: "Flashcards",
@@ -240,6 +345,7 @@ export const userResources = [
   {
     id: "vid-1",
     verified: true,
+    courseId: 2,
     title: "Integration by parts walk-through",
     course: "MATH 201",
     category: "Videos",
@@ -247,6 +353,7 @@ export const userResources = [
   {
     id: "prac-1",
     verified: true,
+    courseId: 6,
     title: "Gauss/Ampere practice set (10 Qs)",
     course: "PHYS 210",
     category: "Practice Questions",

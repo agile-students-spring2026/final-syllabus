@@ -1,55 +1,41 @@
 import React from 'react'
-import Navbar from '../components/Navbar';
 import placeHolderImage from '../assets/placeHolderImage.png'
 import { Link, useParams } from 'react-router-dom';
 import { courses } from '../data/sampleDatabase';
 import { GoArrowLeft } from "react-icons/go";
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import './CourseDetails.css';
+import './CourseDetails.css';
 
-//What is Course Overview Button, does it link anywhere
-//What is notes, flashcards Hardcode
-//Is there 2 course titles? One at top and one in the inner div?
-//What Info do we want to replace "What you'll learn" section with
-//What's the difference between 2 resources
-
-//Back button to link to home page
 const CourseDetails = () => {
     const { courseId } = useParams();
     const course = courses.find((c) => String(c.id) === courseId);
     if (!course) {
         return <h2>Course not found</h2>;
     }
-    const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
 
     const handleSave = () => {
         const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
-
         const exists = saved.find((c) => c.id === course.id);
         if (!exists) {
             saved.push(course);
             localStorage.setItem("savedCourses", JSON.stringify(saved));
             toast.success("Course Saved!");
         }
-        console.log(saved)
     };
 
     const handleDelete = () => {
         const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
-
-        const updated = saved.filter((courseItem) => {
-            return courseItem.id !== course.id; //Only keep items that pass this rule, course.id is the current courseId
-        });
-
+        const updated = saved.filter((courseItem) => courseItem.id !== course.id);
         localStorage.setItem("savedCourses", JSON.stringify(updated));
         toast.error("Course Removed!");
     };
 
     return (
-
         <div className='courseDetails'>
             <div className='backBtn'>
                 <Link to="/home">
-                    <GoArrowLeft />  Back
+                    <GoArrowLeft /> Back
                 </Link>
             </div>
 
@@ -72,7 +58,6 @@ const CourseDetails = () => {
             </div>
             <div className="actionRow">
                 <button className="actionButton" onClick={handleSave}>Save</button>
-                <button className="actionButton" onClick={handleDelete}>Delete</button>
 
                 <Link
                     to={`/courses/${course.id}/resources`}
@@ -81,9 +66,8 @@ const CourseDetails = () => {
                     Resources
                 </Link>
             </div>
-        </div >
-    )
-
+        </div>
+    );
 }
 
 export default CourseDetails;

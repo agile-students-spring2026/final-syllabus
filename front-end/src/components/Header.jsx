@@ -1,13 +1,11 @@
-import React from 'react'
-
 const Header = () => {
     return (
         <div className='header'>
             <div className='logo'>
-                Logo
+                Syllabus+
             </div>
             <button className='profile-btn'>
-                Profile Button
+                P
             </button>
         </div>
     )
