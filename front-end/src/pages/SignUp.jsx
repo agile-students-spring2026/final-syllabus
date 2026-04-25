@@ -45,7 +45,7 @@ function Signup() {
         return;
       }
 
-      login(data.user);
+      login(data.user, data.token);
       navigate("/role-selection");
     } catch {
       setError("Could not connect to server");
