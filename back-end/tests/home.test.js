@@ -1,6 +1,7 @@
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");
+const { seedMainFixtures, clearTestData, INVALID_OBJECTID } = require("./seedTestDb");
 
 describe("GET /api/", () => {
   it("should return a welcome message", async () => {
@@ -10,7 +11,17 @@ describe("GET /api/", () => {
   });
 });
 
-describe("GET /api/courses", () => {
+describe("GET /api/courses (MongoDB)", () => {
+  let fixtures;
+
+  before(async () => {
+    fixtures = await seedMainFixtures();
+  });
+
+  after(async () => {
+    await clearTestData();
+  });
+
   it("should return an array of courses", async () => {
     const res = await request(app).get("/api/courses");
     expect(res.status).to.equal(200);
@@ -45,7 +56,7 @@ describe("GET /api/courses", () => {
   });
 
   it("should filter by recent", async () => {
-    const res = await request(app).get("/api/courses?recent=Today");
+    const res = await request(app).get(`/api/courses?recent=Today`);
     expect(res.status).to.equal(200);
     res.body.forEach((c) => {
       expect(c.recent).to.equal("Today");
@@ -60,23 +71,39 @@ describe("GET /api/courses", () => {
   });
 });
 
-describe("GET /api/courses/:id", () => {
+describe("GET /api/courses/:id (MongoDB)", () => {
+  let fixtures;
+
+  before(async () => {
+    fixtures = await seedMainFixtures();
+  });
+
+  after(async () => {
+    await clearTestData();
+  });
+
   it("should return a single course by id", async () => {
-    const res = await request(app).get("/api/courses/1");
+    const res = await request(app).get(`/api/courses/${fixtures.cs101Id}`);
     expect(res.status).to.equal(200);
-    expect(res.body).to.have.property("id", 1);
+    expect(res.body).to.have.property("id", fixtures.cs101Id);
     expect(res.body).to.have.property("name");
   });
 
+  it("should return 400 for an invalid id", async () => {
+    const res = await request(app).get("/api/courses/notanid");
+    expect(res.status).to.equal(400);
+  });
+
   it("should return 404 for a non-existent course id", async () => {
-    const res = await request(app).get("/api/courses/9999");
+    const res = await request(app).get(`/api/courses/${INVALID_OBJECTID}`);
     expect(res.status).to.equal(404);
     expect(res.body).to.have.property("error");
   });
 
   it("course should include modules and resources arrays", async () => {
-    const res = await request(app).get("/api/courses/1");
+    const res = await request(app).get(`/api/courses/${fixtures.cs101Id}`);
     expect(res.body).to.have.property("modules").that.is.an("array");
     expect(res.body).to.have.property("resources").that.is.an("array");
+    expect(res.body.resources.length).to.be.greaterThan(0);
   });
 });

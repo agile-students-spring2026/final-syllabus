@@ -1,71 +1,109 @@
 const express = require("express");
-const { courses, resources } = require("../data/store.js");
+const { body, validationResult } = require("express-validator");
+const Course = require("../models/Course");
+const Resource = require("../models/Resource");
 
 const router = express.Router();
 
-// POST /api/resources/upload - upload a new resource to a course
-router.post("/upload", (req, res) => {
-  const { title, courseId, category, fileName, uploadedBy } = req.body;
-
-  if (!title || !courseId || !category || !fileName) {
-    return res.status(400).json({ error: "title, courseId, category, and fileName are all required" });
+const assertValid = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
   }
+  return next();
+};
 
-  const validCategories = ["notes", "flashcards", "videos", "practice"];
-  if (!validCategories.includes(category)) {
-    return res.status(400).json({ error: "category has to be notes, flashcards, videos, or practice" });
-  }
+function courseIdString(r) {
+  const ref = r.course;
+  if (!ref) return "";
+  const id = ref._id != null ? ref._id : ref;
+  return id.toString();
+}
 
-  // make sure course exists before uploading
-  const courseExists = courses.find((c) => c.id === courseId);
-  if (!courseExists) {
-    return res.status(404).json({ error: "Course not found, cant upload to a course that doesnt exist" });
-  }
-
-  const resObj = {
-    id: `res-${Date.now()}`,
-    title,
-    courseId,
-    category,
-    fileName,
-    uploadedBy: uploadedBy || "anonymous",
-    uploadedAt: new Date().toISOString(),
-    verified: false,
-  };
-  resources.push(resObj);
-
-  return res.status(201).json({
-    message: "Resource uploaded",
-    resource: resObj,
-  });
+const resourceToJson = (r) => ({
+  id: r._id.toString(),
+  title: r.title,
+  courseId: courseIdString(r),
+  category: r.category,
+  fileName: r.fileName,
+  uploadedBy: r.uploadedBy,
+  uploadedAt: r.uploadedAt.toISOString(),
+  verified: r.verified,
 });
 
-// GET /api/resources/history - get all uploads sorted by recent
-router.get("/history", (req, res) => {
-  // sort by newest first
-  const sorted = [...resources].sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+// POST /api/resources/upload - upload a new resource to a course
+router.post(
+  "/upload",
+  [
+    body("title").trim().notEmpty().withMessage("title is required"),
+    body("courseId").isMongoId().withMessage("courseId must be a valid id"),
+    body("category")
+      .isIn(["notes", "flashcards", "videos", "practice"])
+      .withMessage("category has to be notes, flashcards, videos, or practice"),
+    body("fileName").trim().notEmpty().withMessage("fileName is required"),
+    body("uploadedBy").optional().trim(),
+  ],
+  assertValid,
+  async (req, res) => {
+    const { title, courseId, category, fileName, uploadedBy } = req.body;
 
+    const courseExists = await Course.findById(courseId);
+    if (!courseExists) {
+      return res.status(404).json({ error: "Course not found, cant upload to a course that doesnt exist" });
+    }
+
+    const created = await Resource.create({
+      title,
+      course: courseId,
+      category,
+      fileName,
+      uploadedBy: uploadedBy || "anonymous",
+    });
+
+    return res.status(201).json({
+      message: "Resource uploaded",
+      resource: resourceToJson(created),
+    });
+  }
+);
+
+// GET /api/resources/history - get all uploads sorted by recent
+router.get("/history", async (req, res) => {
+  const sorted = await Resource.find()
+    .sort({ uploadedAt: -1 })
+    .populate("course", "name code");
   return res.status(200).json({
     message: "Upload history",
     total: sorted.length,
-    resources: sorted,
+    resources: sorted.map((r) => {
+      const base = resourceToJson(r);
+      const c = r.course;
+      return {
+        ...base,
+        courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—",
+      };
+    }),
   });
 });
 
 // GET /api/resources/verification - check whats verified and whats not
-router.get("/verification", (req, res) => {
-  const verifyList = resources.map((r) => ({
-    id: r.id,
-    title: r.title,
-    courseId: r.courseId,
-    category: r.category,
-    verified: r.verified,
-    uploadedBy: r.uploadedBy,
-    uploadedAt: r.uploadedAt,
-  }));
+router.get("/verification", async (req, res) => {
+  const all = await Resource.find();
+  const verifyList = all.map((r) => {
+    const j = resourceToJson(r);
+    return {
+      id: j.id,
+      title: j.title,
+      courseId: j.courseId,
+      category: j.category,
+      verified: j.verified,
+      uploadedBy: j.uploadedBy,
+      uploadedAt: j.uploadedAt,
+    };
+  });
 
-  const verifiedCount = resources.filter((r) => r.verified).length;
-  const unverifiedCount = resources.filter((r) => !r.verified).length;
+  const verifiedCount = all.filter((r) => r.verified).length;
+  const unverifiedCount = all.length - verifiedCount;
 
   return res.status(200).json({
     message: "Resource verification status",

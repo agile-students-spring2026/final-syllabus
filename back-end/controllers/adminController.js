@@ -1,26 +1,94 @@
-const { courses } = require("../data/courses");
-const { dashboard, pendingCourses, pendingResources, campusRepUsers } = require("../data/adminData");
+const mongoose = require("mongoose");
+const Course = require("../models/Course");
+const Resource = require("../models/Resource");
+const { campusRepUsers } = require("../data/adminData");
+const {
+  typeLabelFromCategory,
+  recentLabelFromDate,
+  pendingResourceCategoryLabel,
+} = require("../lib/courseMappers");
 
-const getDashboard = (req, res) => {
-  res.json(dashboard);
+const getDashboard = async (req, res) => {
+  try {
+    const [verifiedCourses, verifiedResources] = await Promise.all([
+      Course.countDocuments({ status: "approved" }),
+      Resource.countDocuments({ verified: true }),
+    ]);
+    return res.json({
+      campusCode: "CMP1001",
+      verifiedCourses,
+      verifiedResources,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Could not load dashboard" });
+  }
 };
 
-const getPending = (req, res) => {
-  const { kind, category } = req.query;
-  let items = [...pendingCourses, ...pendingResources];
-  if (kind) items = items.filter((i) => i.kind.toLowerCase() === kind.toLowerCase());
-  if (category) items = items.filter((i) => i.category.toLowerCase() === category.toLowerCase());
-  res.json(items);
+const getPending = async (req, res) => {
+  try {
+    const { kind, category } = req.query;
+    const wantCourse = !kind || kind.toLowerCase() === "course";
+    const wantResource = !kind || kind.toLowerCase() === "resource";
+    const catQ = (category && category.trim()) || "";
+    const catMatch = (val) =>
+      !catQ || String(val).toLowerCase() === catQ.toLowerCase();
+
+    const out = [];
+    if (wantCourse) {
+      const courses = await Course.find({ status: "pending" }).lean();
+      for (const c of courses) {
+        if (!catMatch(c.category)) continue;
+        out.push({
+          id: `course-${c._id}`,
+          courseId: c._id.toString(),
+          kind: "Course",
+          name: c.name,
+          category: c.category,
+          status: "pending",
+        });
+      }
+    }
+    if (wantResource) {
+      const resources = await Resource.find({ verified: false })
+        .populate("course")
+        .sort({ uploadedAt: -1 })
+        .lean();
+      for (const r of resources) {
+        if (!r.course) continue;
+        const resCat = pendingResourceCategoryLabel(r.category);
+        if (!catMatch(resCat)) continue;
+        const cRef = r.course;
+        const cid =
+          typeof cRef === "object" && cRef._id
+            ? cRef._id.toString()
+            : cRef.toString();
+        out.push({
+          id: `resource-${r._id}`,
+          courseId: cid,
+          kind: "Resource",
+          name: r.title,
+          category: resCat,
+          status: "pending",
+        });
+      }
+    }
+    return res.json(out);
+  } catch (err) {
+    return res.status(500).json({ error: "Could not load pending list" });
+  }
 };
 
-const getCourseById = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === id);
+const getCourseById = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid course id" });
+  }
+  const course = await Course.findById(id);
   if (!course) {
     return res.status(404).json({ error: "Course not found" });
   }
-  res.json({
-    id: course.id,
+  return res.json({
+    id: course._id.toString(),
     name: course.name,
     description: course.description,
     category: course.category,
@@ -29,58 +97,94 @@ const getCourseById = (req, res) => {
     level: course.level,
     whatYoullLearn: course.whatYoullLearn,
     modules: course.modules,
-    status: "pending",
+    status: course.status,
   });
 };
 
-const approveCourse = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === id);
+const approveCourse = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid course id" });
+  }
+  const course = await Course.findByIdAndUpdate(
+    id,
+    { status: "approved" },
+    { returnDocument: "after" }
+  );
   if (!course) {
     return res.status(404).json({ error: "Course not found" });
   }
   res.json({ success: true, message: `Course ${id} approved` });
 };
 
-const rejectCourse = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === id);
+const rejectCourse = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: "Invalid course id" });
+  }
+  const course = await Course.findByIdAndUpdate(
+    id,
+    { status: "rejected" },
+    { returnDocument: "after" }
+  );
   if (!course) {
     return res.status(404).json({ error: "Course not found" });
   }
   res.json({ success: true, message: `Course ${id} rejected` });
 };
 
-const getResourceById = (req, res) => {
-  const courseId = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === courseId);
+const toAdminResource = (r) => ({
+  id: r._id.toString(),
+  title: r.title,
+  type: typeLabelFromCategory(r.category),
+  format: "File",
+  added: recentLabelFromDate(r.uploadedAt),
+  link: r.fileName,
+});
+
+const getResourceById = async (req, res) => {
+  const { id: courseId } = req.params;
+  if (!mongoose.isValidObjectId(courseId)) {
+    return res.status(400).json({ error: "Invalid course id" });
+  }
+  const course = await Course.findById(courseId);
   if (!course) {
     return res.status(404).json({ error: "Resource not found" });
   }
-  const types = [...new Set(course.resources.map((r) => r.type))];
-  res.json({
-    courseId: course.id,
+  const resDocs = await Resource.find({ course: courseId });
+  const types = [...new Set(resDocs.map((r) => typeLabelFromCategory(r.category)))];
+  return res.json({
+    courseId: course._id.toString(),
     courseName: course.name,
     types,
     resourceTypes: types.join(", "),
-    resources: course.resources,
+    resources: resDocs.map(toAdminResource),
     status: "pending",
   });
 };
 
-const approveResource = (req, res) => {
-  const courseId = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === courseId);
-  if (!course) {
+const approveResource = async (req, res) => {
+  const { id: courseId } = req.params;
+  if (!mongoose.isValidObjectId(courseId)) {
+    return res.status(400).json({ error: "Invalid course id" });
+  }
+  const n = await Resource.updateMany(
+    { course: courseId },
+    { $set: { verified: true } }
+  );
+  if (n.matchedCount === 0) {
     return res.status(404).json({ error: "Resource not found" });
   }
   res.json({ success: true, message: `Resources for course ${courseId} approved` });
 };
 
-const rejectResource = (req, res) => {
-  const courseId = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === courseId);
-  if (!course) {
+const rejectResource = async (req, res) => {
+  const { id: courseId } = req.params;
+  if (!mongoose.isValidObjectId(courseId)) {
+    return res.status(400).json({ error: "Invalid course id" });
+  }
+  const n = await Resource.deleteMany({ course: courseId });
+  if (n.deletedCount === 0) {
     return res.status(404).json({ error: "Resource not found" });
   }
   res.json({ success: true, message: `Resources for course ${courseId} rejected` });
