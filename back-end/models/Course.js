@@ -1,24 +1,28 @@
 const mongoose = require("mongoose");
 
+const resourceSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  type: String,
+  format: String,
+  added: String,
+  link: String,
+});
+
 const courseSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
-    code: { type: String, required: true, unique: true, uppercase: true, trim: true },
-    instructor: { type: String, default: "TBD", trim: true },
-    description: { type: String, default: "" },
-    category: { type: String, default: "General", trim: true },
-    school: { type: String, default: "—", trim: true },
-    duration: { type: String, default: "", trim: true },
-    level: { type: String, default: "", trim: true },
-    whatYoullLearn: { type: [String], default: [] },
-    modules: { type: [String], default: [] },
-    status: {
-      type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "approved",
-    },
+    description: { type: String, required: true },
+    category: { type: String, required: true },
+    school: { type: String, required: true },
+    instructor: { type: String, required: true },
+    duration: String,
+    level: { type: String, enum: ["Beginner", "Intermediate", "Advanced"] },
+    recent: { type: String, default: "Today" },
+    whatYoullLearn: [String],
+    modules: [String],
+    resources: [resourceSchema],
   },
-  { timestamps: true, toJSON: { virtuals: true } }
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Course", courseSchema);

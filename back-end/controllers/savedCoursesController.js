@@ -1,60 +1,48 @@
-const mongoose = require("mongoose");
-const Course = require("../models/Course");
-const { savedCoursesStore } = require("../data/savedCoursesStore");
-const { toListItem } = require("../lib/courseMappers");
+const { validationResult } = require("express-validator");
+const SavedCourse = require("../models/SavedCourse");
 
 const getSavedCourses = async (req, res) => {
-  const userId = req.query.userId || "guest";
-  const savedIds = savedCoursesStore[userId] || [];
-  const validIds = savedIds.filter((x) => mongoose.isValidObjectId(x));
-  const courses = await Course.find({ _id: { $in: validIds } });
-  res.json(courses.map(toListItem));
+  try {
+    const saved = await SavedCourse.find({ userId: req.user.id }).populate("courseId");
+    const courses = saved.map((s) => s.courseId);
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch saved courses", detail: err.message });
+  }
 };
 
 const saveCourse = async (req, res) => {
-  const { courseId, userId = "guest" } = req.body;
-
-  if (!courseId) {
-    return res.status(400).json({ error: "courseId is required" });
-  }
-  if (!mongoose.isValidObjectId(String(courseId))) {
-    return res.status(400).json({ error: "Invalid course id" });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
   }
 
-  const course = await Course.findById(courseId);
-  if (!course) {
-    return res.status(404).json({ error: "Course not found" });
+  try {
+    const { courseId } = req.body;
+    await SavedCourse.create({ userId: req.user.id, courseId });
+    res.status(201).json({ message: "Course saved successfully", courseId });
+  } catch (err) {
+    // duplicate key error means the course is already saved
+    if (err.code === 11000) {
+      return res.status(409).json({ error: "Course already saved" });
+    }
+    res.status(500).json({ error: "Failed to save course", detail: err.message });
   }
-
-  const idStr = String(courseId);
-  if (!savedCoursesStore[userId]) {
-    savedCoursesStore[userId] = [];
-  }
-  if (!savedCoursesStore[userId].includes(idStr)) {
-    savedCoursesStore[userId].push(idStr);
-  }
-
-  res.status(201).json({ message: "Course saved successfully", courseId: idStr });
 };
 
-const unsaveCourse = (req, res) => {
-  const id = String(req.params.id);
-  const userId = req.query.userId || "guest";
-
-  if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({ error: "Invalid course id" });
+const unsaveCourse = async (req, res) => {
+  try {
+    const result = await SavedCourse.deleteOne({
+      userId: req.user.id,
+      courseId: req.params.id,
+    });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Saved course not found" });
+    }
+    res.json({ message: "Course removed from saved", courseId: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to remove saved course", detail: err.message });
   }
-
-  if (!savedCoursesStore[userId]) {
-    return res.status(404).json({ error: "No saved courses for this user" });
-  }
-
-  const before = savedCoursesStore[userId].length;
-  savedCoursesStore[userId] = savedCoursesStore[userId].filter((cid) => String(cid) !== id);
-  if (savedCoursesStore[userId].length === before) {
-    return res.status(404).json({ error: "No saved courses for this user" });
-  }
-  res.json({ message: "Course removed from saved", courseId: id });
 };
 
 module.exports = { getSavedCourses, saveCourse, unsaveCourse };

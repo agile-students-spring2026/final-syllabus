@@ -3,7 +3,7 @@ const Course = require("../models/Course");
 const Resource = require("../models/Resource");
 const { recentLabelFromDate, toListItem, typeLabelFromCategory } = require("../lib/courseMappers");
 
-const getHomepage = (req, res) => {
+const getHomepage = (_req, res) => {
   res.json({ message: "Welcome to the Course Sharing Platform API!" });
 };
 
