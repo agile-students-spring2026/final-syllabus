@@ -1,54 +1,42 @@
-const { courses } = require("../data/courses");
+const Course = require("../models/Course");
 
-const getHomepage = (req, res) => {
+const getHomepage = (_req, res) => {
   res.json({ message: "Welcome to the Course Sharing Platform API!" });
 };
 
-const getAllCourses = (req, res) => {
-  const { search, category, recent, school } = req.query;
+const getAllCourses = async (req, res) => {
+  try {
+    const { search, category, recent, school } = req.query;
+    const filter = {};
 
-  let results = [...courses];
+    if (category) filter.category = new RegExp(category, "i");
+    if (recent) filter.recent = recent;
+    if (school) filter.school = new RegExp(school, "i");
+    if (search) {
+      filter.$or = [
+        { name: new RegExp(search, "i") },
+        { description: new RegExp(search, "i") },
+        { instructor: new RegExp(search, "i") },
+      ];
+    }
 
-  if (search) {
-    const q = search.toLowerCase();
-    results = results.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.description.toLowerCase().includes(q) ||
-        c.instructor.toLowerCase().includes(q)
-    );
+    const courses = await Course.find(filter);
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch courses", detail: err.message });
   }
-
-  if (category && category !== "") {
-    results = results.filter(
-      (c) => c.category.toLowerCase() === category.toLowerCase()
-    );
-  }
-
-  if (recent && recent !== "") {
-    results = results.filter(
-      (c) => c.recent.toLowerCase() === recent.toLowerCase()
-    );
-  }
-
-  if (school && school !== "") {
-    results = results.filter(
-      (c) => c.school.toLowerCase() === school.toLowerCase()
-    );
-  }
-
-  res.json(results);
 };
 
-const getCourseById = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const course = courses.find((c) => c.id === id);
-
-  if (!course) {
-    return res.status(404).json({ error: "Course not found" });
+const getCourseById = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.id);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    res.json(course);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch course", detail: err.message });
   }
-
-  res.json(course);
 };
 
 module.exports = { getHomepage, getAllCourses, getCourseById };

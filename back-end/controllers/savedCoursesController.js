@@ -1,45 +1,48 @@
-const { courses, savedCoursesStore } = require("../data/courses");
+const { validationResult } = require("express-validator");
+const SavedCourse = require("../models/SavedCourse");
 
-const getSavedCourses = (req, res) => {
-  const userId = req.query.userId || "guest";
-  const savedIds = savedCoursesStore[userId] || [];
-  const saved = courses.filter((c) => savedIds.includes(c.id));
-  res.json(saved);
+const getSavedCourses = async (req, res) => {
+  try {
+    const saved = await SavedCourse.find({ userId: req.user.id }).populate("courseId");
+    const courses = saved.map((s) => s.courseId);
+    res.json(courses);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch saved courses", detail: err.message });
+  }
 };
 
-const saveCourse = (req, res) => {
-  const { courseId, userId = "guest" } = req.body;
-
-  if (!courseId) {
-    return res.status(400).json({ error: "courseId is required" });
+const saveCourse = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ error: errors.array()[0].msg });
   }
 
-  const course = courses.find((c) => c.id === parseInt(courseId, 10));
-  if (!course) {
-    return res.status(404).json({ error: "Course not found" });
+  try {
+    const { courseId } = req.body;
+    await SavedCourse.create({ userId: req.user.id, courseId });
+    res.status(201).json({ message: "Course saved successfully", courseId });
+  } catch (err) {
+    // duplicate key error means the course is already saved
+    if (err.code === 11000) {
+      return res.status(409).json({ error: "Course already saved" });
+    }
+    res.status(500).json({ error: "Failed to save course", detail: err.message });
   }
-
-  if (!savedCoursesStore[userId]) {
-    savedCoursesStore[userId] = [];
-  }
-
-  if (!savedCoursesStore[userId].includes(parseInt(courseId, 10))) {
-    savedCoursesStore[userId].push(parseInt(courseId, 10));
-  }
-
-  res.status(201).json({ message: "Course saved successfully", courseId });
 };
 
-const unsaveCourse = (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const userId = req.query.userId || "guest";
-
-  if (!savedCoursesStore[userId]) {
-    return res.status(404).json({ error: "No saved courses for this user" });
+const unsaveCourse = async (req, res) => {
+  try {
+    const result = await SavedCourse.deleteOne({
+      userId: req.user.id,
+      courseId: req.params.id,
+    });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Saved course not found" });
+    }
+    res.json({ message: "Course removed from saved", courseId: req.params.id });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to remove saved course", detail: err.message });
   }
-
-  savedCoursesStore[userId] = savedCoursesStore[userId].filter((cid) => cid !== id);
-  res.json({ message: "Course removed from saved", courseId: id });
 };
 
 module.exports = { getSavedCourses, saveCourse, unsaveCourse };
