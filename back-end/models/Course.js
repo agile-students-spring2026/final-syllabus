@@ -11,6 +11,7 @@ const resourceSchema = new mongoose.Schema({
 const courseSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
+    code: { type: String, trim: true, unique: true, sparse: true },
     description: { type: String, required: true },
     category: { type: String, required: true },
     school: { type: String, required: true },
@@ -20,7 +21,8 @@ const courseSchema = new mongoose.Schema(
     recent: { type: String, default: "Today" },
     whatYoullLearn: [String],
     modules: [String],
-    resources: [resourceSchema],
+    status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
+
   },
   { timestamps: true }
 );
