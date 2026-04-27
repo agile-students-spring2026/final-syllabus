@@ -1,6 +1,7 @@
 const request = require("supertest");
 const { expect } = require("chai");
 const app = require("../server");
+const { seedMainFixtures, clearTestData, INVALID_OBJECTID } = require("./seedTestDb");
 
 // ── GET /api/admin/dashboard ────────────────────────────────────────────────
 
@@ -21,18 +22,41 @@ describe("GET /api/admin/dashboard", () => {
     const res = await request(app).get("/api/admin/dashboard");
     expect(res.body.campusCode).to.equal("CMP1001");
   });
+
+  it("verified counts should match database totals", async () => {
+    const Course = require("../models/Course");
+    const Resource = require("../models/Resource");
+    const [vc, vr, res] = await Promise.all([
+      Course.countDocuments({ status: "approved" }),
+      Resource.countDocuments({ verified: true }),
+      request(app).get("/api/admin/dashboard"),
+    ]);
+    expect(res.status).to.equal(200);
+    expect(res.body.verifiedCourses).to.equal(vc);
+    expect(res.body.verifiedResources).to.equal(vr);
+  });
 });
 
 // ── GET /api/admin/pending ──────────────────────────────────────────────────
 
 describe("GET /api/admin/pending", () => {
+  beforeEach(async () => {
+    const { clearTestData, seedMainFixtures } = require("./seedTestDb");
+    await clearTestData();
+    await seedMainFixtures();
+  });
+  afterEach(async () => {
+    const { clearTestData } = require("./seedTestDb");
+    await clearTestData();
+  });
+
   it("should return 200 with an array", async () => {
     const res = await request(app).get("/api/admin/pending");
     expect(res.status).to.equal(200);
     expect(res.body).to.be.an("array");
   });
 
-  it("should have at least one pending item", async () => {
+  it("should have at least one pending item when data exists", async () => {
     const res = await request(app).get("/api/admin/pending");
     expect(res.body.length).to.be.greaterThan(0);
   });
@@ -58,14 +82,23 @@ describe("GET /api/admin/pending", () => {
 // ── GET /api/admin/courses/:id ──────────────────────────────────────────────
 
 describe("GET /api/admin/courses/:id", () => {
+  let fixtures;
+  before(async () => {
+    await clearTestData();
+    fixtures = await seedMainFixtures();
+  });
+  after(async () => {
+    await clearTestData();
+  });
+
   it("should return 200 for a valid course id", async () => {
-    const res = await request(app).get("/api/admin/courses/1");
+    const res = await request(app).get(`/api/admin/courses/${fixtures.cs101Id}`);
     expect(res.status).to.equal(200);
   });
 
   it("should return full course details", async () => {
-    const res = await request(app).get("/api/admin/courses/1");
-    expect(res.body).to.have.property("id", 1);
+    const res = await request(app).get(`/api/admin/courses/${fixtures.cs101Id}`);
+    expect(res.body).to.have.property("id", fixtures.cs101Id);
     expect(res.body).to.have.property("name");
     expect(res.body).to.have.property("description");
     expect(res.body).to.have.property("instructor");
@@ -74,18 +107,18 @@ describe("GET /api/admin/courses/:id", () => {
   });
 
   it("should include whatYoullLearn and modules arrays", async () => {
-    const res = await request(app).get("/api/admin/courses/1");
+    const res = await request(app).get(`/api/admin/courses/${fixtures.cs101Id}`);
     expect(res.body).to.have.property("whatYoullLearn").that.is.an("array");
     expect(res.body).to.have.property("modules").that.is.an("array");
   });
 
-  it("should include a status field", async () => {
-    const res = await request(app).get("/api/admin/courses/3");
+  it("should include a status field for pending", async () => {
+    const res = await request(app).get(`/api/admin/courses/${fixtures.pendingId}`);
     expect(res.body).to.have.property("status", "pending");
   });
 
   it("should return 404 for a non-existent course", async () => {
-    const res = await request(app).get("/api/admin/courses/9999");
+    const res = await request(app).get(`/api/admin/courses/${INVALID_OBJECTID}`);
     expect(res.status).to.equal(404);
     expect(res.body).to.have.property("error");
   });
@@ -94,19 +127,28 @@ describe("GET /api/admin/courses/:id", () => {
 // ── POST /api/admin/courses/:id/approve ────────────────────────────────────
 
 describe("POST /api/admin/courses/:id/approve", () => {
+  let fixtures;
+  beforeEach(async () => {
+    await clearTestData();
+    fixtures = await seedMainFixtures();
+  });
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it("should return 200 with success true", async () => {
-    const res = await request(app).post("/api/admin/courses/3/approve");
+    const res = await request(app).post(`/api/admin/courses/${fixtures.pendingId}/approve`);
     expect(res.status).to.equal(200);
     expect(res.body).to.have.property("success", true);
   });
 
   it("should return a message string", async () => {
-    const res = await request(app).post("/api/admin/courses/3/approve");
+    const res = await request(app).post(`/api/admin/courses/${fixtures.pendingId}/approve`);
     expect(res.body).to.have.property("message").that.is.a("string");
   });
 
   it("should return 404 for a non-existent course", async () => {
-    const res = await request(app).post("/api/admin/courses/9999/approve");
+    const res = await request(app).post(`/api/admin/courses/${INVALID_OBJECTID}/approve`);
     expect(res.status).to.equal(404);
   });
 });
@@ -114,19 +156,28 @@ describe("POST /api/admin/courses/:id/approve", () => {
 // ── POST /api/admin/courses/:id/reject ─────────────────────────────────────
 
 describe("POST /api/admin/courses/:id/reject", () => {
+  let fixtures;
+  beforeEach(async () => {
+    await clearTestData();
+    fixtures = await seedMainFixtures();
+  });
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it("should return 200 with success true", async () => {
-    const res = await request(app).post("/api/admin/courses/6/reject");
+    const res = await request(app).post(`/api/admin/courses/${fixtures.rejectId}/reject`);
     expect(res.status).to.equal(200);
     expect(res.body).to.have.property("success", true);
   });
 
   it("should return a message string", async () => {
-    const res = await request(app).post("/api/admin/courses/6/reject");
+    const res = await request(app).post(`/api/admin/courses/${fixtures.rejectId}/reject`);
     expect(res.body).to.have.property("message").that.is.a("string");
   });
 
   it("should return 404 for a non-existent course", async () => {
-    const res = await request(app).post("/api/admin/courses/9999/reject");
+    const res = await request(app).post(`/api/admin/courses/${INVALID_OBJECTID}/reject`);
     expect(res.status).to.equal(404);
   });
 });
@@ -134,31 +185,40 @@ describe("POST /api/admin/courses/:id/reject", () => {
 // ── GET /api/admin/resources/:id ───────────────────────────────────────────
 
 describe("GET /api/admin/resources/:id", () => {
+  let fixtures;
+  before(async () => {
+    await clearTestData();
+    fixtures = await seedMainFixtures();
+  });
+  after(async () => {
+    await clearTestData();
+  });
+
   it("should return 200 for a valid course id", async () => {
-    const res = await request(app).get("/api/admin/resources/1");
+    const res = await request(app).get(`/api/admin/resources/${fixtures.cs101Id}`);
     expect(res.status).to.equal(200);
   });
 
   it("should include courseId, courseName, types, resourceTypes", async () => {
-    const res = await request(app).get("/api/admin/resources/1");
-    expect(res.body).to.have.property("courseId", 1);
+    const res = await request(app).get(`/api/admin/resources/${fixtures.cs101Id}`);
+    expect(res.body).to.have.property("courseId", fixtures.cs101Id);
     expect(res.body).to.have.property("courseName");
     expect(res.body).to.have.property("types").that.is.an("array");
     expect(res.body).to.have.property("resourceTypes").that.is.a("string");
   });
 
   it("types array should be non-empty", async () => {
-    const res = await request(app).get("/api/admin/resources/1");
+    const res = await request(app).get(`/api/admin/resources/${fixtures.cs101Id}`);
     expect(res.body.types.length).to.be.greaterThan(0);
   });
 
   it("should include a resources array", async () => {
-    const res = await request(app).get("/api/admin/resources/3");
+    const res = await request(app).get(`/api/admin/resources/${fixtures.calcId}`);
     expect(res.body).to.have.property("resources").that.is.an("array");
   });
 
   it("should return 404 for non-existent course", async () => {
-    const res = await request(app).get("/api/admin/resources/9999");
+    const res = await request(app).get(`/api/admin/resources/${INVALID_OBJECTID}`);
     expect(res.status).to.equal(404);
     expect(res.body).to.have.property("error");
   });
@@ -167,19 +227,28 @@ describe("GET /api/admin/resources/:id", () => {
 // ── POST /api/admin/resources/:id/approve ──────────────────────────────────
 
 describe("POST /api/admin/resources/:id/approve", () => {
+  let fixtures;
+  beforeEach(async () => {
+    await clearTestData();
+    fixtures = await seedMainFixtures();
+  });
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it("should return 200 with success true", async () => {
-    const res = await request(app).post("/api/admin/resources/1/approve");
+    const res = await request(app).post(`/api/admin/resources/${fixtures.cs101Id}/approve`);
     expect(res.status).to.equal(200);
     expect(res.body).to.have.property("success", true);
   });
 
   it("should return a message string", async () => {
-    const res = await request(app).post("/api/admin/resources/1/approve");
+    const res = await request(app).post(`/api/admin/resources/${fixtures.cs101Id}/approve`);
     expect(res.body).to.have.property("message").that.is.a("string");
   });
 
   it("should return 404 for a non-existent course", async () => {
-    const res = await request(app).post("/api/admin/resources/9999/approve");
+    const res = await request(app).post(`/api/admin/resources/${INVALID_OBJECTID}/approve`);
     expect(res.status).to.equal(404);
   });
 });
@@ -187,19 +256,28 @@ describe("POST /api/admin/resources/:id/approve", () => {
 // ── POST /api/admin/resources/:id/reject ───────────────────────────────────
 
 describe("POST /api/admin/resources/:id/reject", () => {
+  let fixtures;
+  beforeEach(async () => {
+    await clearTestData();
+    fixtures = await seedMainFixtures();
+  });
+  afterEach(async () => {
+    await clearTestData();
+  });
+
   it("should return 200 with success true", async () => {
-    const res = await request(app).post("/api/admin/resources/3/reject");
+    const res = await request(app).post(`/api/admin/resources/${fixtures.cs101Id}/reject`);
     expect(res.status).to.equal(200);
     expect(res.body).to.have.property("success", true);
   });
 
   it("should return a message string", async () => {
-    const res = await request(app).post("/api/admin/resources/3/reject");
+    const res = await request(app).post(`/api/admin/resources/${fixtures.cs101Id}/reject`);
     expect(res.body).to.have.property("message").that.is.a("string");
   });
 
   it("should return 404 for a non-existent course", async () => {
-    const res = await request(app).post("/api/admin/resources/9999/reject");
+    const res = await request(app).post(`/api/admin/resources/${INVALID_OBJECTID}/reject`);
     expect(res.status).to.equal(404);
   });
 });

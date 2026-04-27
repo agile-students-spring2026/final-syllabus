@@ -42,7 +42,7 @@ function Login() {
         return;
       }
 
-      login(data.user);
+      login(data.user, data.token);
       navigate("/home");
     } catch {
       setError("Could not connect to server");
