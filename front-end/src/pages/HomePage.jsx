@@ -66,6 +66,7 @@ const HomePage = () => {
           <option value="Today">Today</option>
           <option value="This Week">This Week</option>
           <option value="This Month">This Month</option>
+          <option value="Earlier">Earlier</option>
         </select>
         <select className='courseFilter'>
           <option value="">Course</option>

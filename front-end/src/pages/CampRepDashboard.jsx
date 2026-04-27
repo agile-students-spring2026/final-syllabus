@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useVerification } from "../context/VerificationContext";
+import { Link, useLocation } from "react-router-dom";
 import "./CampRepDashboard.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -9,7 +8,19 @@ const CampRepDashboard = () => {
   const [kind, setKind] = useState("");
   const [category, setCategory] = useState("");
   const [pendingItems, setPendingItems] = useState([]);
-  const { verifiedCourses, verifiedResources } = useVerification();
+  const [verifiedCourses, setVerifiedCourses] = useState(0);
+  const [verifiedResources, setVerifiedResources] = useState(0);
+  const location = useLocation();
+
+  useEffect(() => {
+    fetch(`${API_BASE}/admin/dashboard`)
+      .then((res) => res.json())
+      .then((d) => {
+        setVerifiedCourses(d.verifiedCourses ?? 0);
+        setVerifiedResources(d.verifiedResources ?? 0);
+      })
+      .catch(() => {});
+  }, [location.pathname]);
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -28,8 +39,8 @@ const CampRepDashboard = () => {
         }));
         setPendingItems(items);
       })
-      .catch(() => {});
-  }, [kind, category]);
+      .catch(() => setPendingItems([]));
+  }, [kind, category, location.pathname]);
 
   return (
     <div className="campRepDash">

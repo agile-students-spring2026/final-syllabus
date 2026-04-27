@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { useVerification } from "../context/VerificationContext";
 import "./ReviewResources.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -8,7 +7,6 @@ const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 const ReviewResources = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
-  const { incrementResources } = useVerification();
 
   const [resourceData, setResourceData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,7 +33,6 @@ const ReviewResources = () => {
 
   const handleAccept = () => {
     fetch(`${API_BASE}/admin/resources/${courseId}/approve`, { method: "POST" }).catch(() => {});
-    incrementResources();
     navigate("/camp-rep-dashboard");
   };
 
