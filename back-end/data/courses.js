@@ -10,7 +10,7 @@ const courses = [
     level: "Beginner",
     whatYoullLearn: ["Basic programming", "Data structures", "Algorithms"],
     modules: ["Week 1: Intro", "Week 2: Variables", "Week 3: Loops"],
-    status: "approved",
+    status: "pending",
   },
   {
     name: "Calculus I",
@@ -23,7 +23,7 @@ const courses = [
     level: "Intermediate",
     whatYoullLearn: ["Limits", "Derivatives", "Integrals"],
     modules: ["Week 1: Limits", "Week 2: Derivatives", "Week 3: Chain Rule"],
-    status: "approved",
+    status: "pending",
   },
 ];
 
