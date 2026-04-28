@@ -2,6 +2,8 @@ const express = require("express");
 const { body, param, validationResult } = require("express-validator");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const SavedCourse = require("../models/SavedCourse");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -77,6 +79,42 @@ router.post(
         return res.status(409).json({ error: "A course with this code already exists" });
       }
       return res.status(500).json({ error: "Could not create course" });
+    }
+  }
+);
+
+// POST /api/courses/:id/save - save a course for the logged-in user
+router.post(
+  "/:id/save",
+  protect,
+  [param("id").isMongoId().withMessage("Invalid course id")],
+  assertValid,
+  async (req, res) => {
+    try {
+      const course = await Course.findById(req.params.id);
+
+      if (!course) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+
+      const savedCourse = await SavedCourse.create({
+        userId: req.user.id,
+        courseId: req.params.id,
+      });
+
+      return res.status(201).json({
+        message: "Course saved successfully",
+        savedCourse,
+      });
+    } catch (err) {
+      if (err.code === 11000) {
+        return res.status(409).json({ error: "Course already saved" });
+      }
+
+      return res.status(500).json({
+        error: "Could not save course",
+        detail: err.message,
+      });
     }
   }
 );
