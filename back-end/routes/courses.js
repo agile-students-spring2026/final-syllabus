@@ -57,18 +57,24 @@ router.post(
   async (req, res) => {
     const { name, code, instructor, description, category, school, duration, level } = req.body;
 
+    const VALID_LEVELS = ["Beginner", "Intermediate", "Advanced"];
+    const levelTrimmed = typeof level === "string" ? level.trim() : "";
+    const doc = {
+      name,
+      code,
+      instructor: instructor || "TBD",
+      description: description || "",
+      category: category || "General",
+      school: school || "—",
+      duration: duration || "",
+      status: "pending",
+    };
+    if (levelTrimmed && VALID_LEVELS.includes(levelTrimmed)) {
+      doc.level = levelTrimmed;
+    }
+
     try {
-      const course = await Course.create({
-        name,
-        code,
-        instructor: instructor || "TBD",
-        description: description || "",
-        category: category || "General",
-        school: school || "—",
-        duration: duration || "",
-        level: level || "",
-        status: "pending",
-      });
+      const course = await Course.create(doc);
 
       return res.status(201).json({
         message: "Course created successfully",
