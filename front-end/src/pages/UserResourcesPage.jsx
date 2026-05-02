@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
+import { useAuth } from "../context/AuthContext";
 import "./UserResourcesPage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -19,15 +20,23 @@ const apiToUi = {
 };
 
 const UserResourcesPage = () => {
+  const { token } = useAuth();
   const [showFabMenu, setShowFabMenu] = useState(false);
   const [userResources, setUserResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!token) {
+      setError("Please log in to view your resources");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
-    fetch(`${API_BASE}/resources/history`)
+    fetch(`${API_BASE}/resources/history`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load resources");
         return res.json();

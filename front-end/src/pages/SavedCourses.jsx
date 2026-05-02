@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import CourseCard from '../components/CourseCard';
+import { useAuth } from '../context/AuthContext';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const SavedCourses = () => {
+    const { token } = useAuth();
     const [savedCourses, setSavedCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,12 +16,16 @@ const SavedCourses = () => {
     const [recent, setRecent] = useState("");
     const [category, setCategory] = useState("");
 
-    // For now userId defaults to "guest"; swap for real auth token/userId when auth is wired up
-    const userId = "guest";
-
     useEffect(() => {
+        if (!token) {
+            setError("Please log in to view saved courses");
+            setLoading(false);
+            return;
+        }
         setLoading(true);
-        fetch(`${API_BASE}/saved-courses?userId=${encodeURIComponent(userId)}`)
+        fetch(`${API_BASE}/saved-courses`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch saved courses");
                 return res.json();
@@ -32,7 +38,7 @@ const SavedCourses = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [userId]);
+    }, [token]);
 
     const filtered = savedCourses.filter((c) => {
         const matchesSearch =
