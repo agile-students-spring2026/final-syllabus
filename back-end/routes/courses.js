@@ -138,7 +138,7 @@ router.get(
       return res.status(404).json({ error: "Course not found" });
     }
 
-    const courseRes = await Resource.find({ course: courseId });
+    const courseRes = await Resource.find({ course: courseId, verified: true });
     const grouped = {};
     courseRes.forEach((item) => {
       const r = resourceToJson(item);

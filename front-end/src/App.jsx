@@ -19,6 +19,9 @@ import CreateResourcePage from "./pages/CreateResourcePage";
 import VerificationPage from "./pages/VerificationPage";
 import SubmissionConfirmPage from "./pages/SubmissionConfirmPage";
 import ProfilePage from "./pages/ProfilePage";
+import ProfileSettings from "./pages/ProfileSettings";
+import SecurityPrivacy from "./pages/SecurityPrivacy";
+import TermsConditions from "./pages/TermsConditions";
 import CampRepDashboard from "./pages/CampRepDashboard";
 import ReviewCourse from "./pages/ReviewCourse";
 import ReviewResources from "./pages/ReviewResources";
@@ -59,6 +62,9 @@ function App() {
           <Route path="/verification" element={<VerificationPage />} />
           <Route path="/submission-confirm" element={<SubmissionConfirmPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/settings" element={<ProfileSettings />} />
+          <Route path="/profile/security" element={<SecurityPrivacy />} />
+          <Route path="/profile/terms" element={<TermsConditions />} />
           <Route path="/camp-rep-dashboard" element={<CampRepDashboard />} />
           <Route path="/review-course/:courseId" element={<ReviewCourse />} />
           <Route path="/review-resources/:courseId" element={<ReviewResources />} />

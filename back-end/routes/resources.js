@@ -2,6 +2,7 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -34,6 +35,7 @@ const resourceToJson = (r) => ({
 // POST /api/resources/upload - upload a new resource to a course
 router.post(
   "/upload",
+  protect,
   [
     body("title").trim().notEmpty().withMessage("title is required"),
     body("courseId").isMongoId().withMessage("courseId must be a valid id"),
@@ -41,11 +43,10 @@ router.post(
       .isIn(["notes", "flashcards", "videos", "practice"])
       .withMessage("category has to be notes, flashcards, videos, or practice"),
     body("fileName").trim().notEmpty().withMessage("fileName is required"),
-    body("uploadedBy").optional().trim(),
   ],
   assertValid,
   async (req, res) => {
-    const { title, courseId, category, fileName, uploadedBy } = req.body;
+    const { title, courseId, category, fileName } = req.body;
 
     const courseExists = await Course.findById(courseId);
     if (!courseExists) {
@@ -57,7 +58,7 @@ router.post(
       course: courseId,
       category,
       fileName,
-      uploadedBy: uploadedBy || "anonymous",
+      uploadedBy: req.user.id,
     });
 
     return res.status(201).json({
@@ -67,9 +68,9 @@ router.post(
   }
 );
 
-// GET /api/resources/history - get all uploads sorted by recent
-router.get("/history", async (req, res) => {
-  const sorted = await Resource.find()
+// GET /api/resources/history - get uploads by the logged-in user
+router.get("/history", protect, async (req, res) => {
+  const sorted = await Resource.find({ uploadedBy: req.user.id })
     .sort({ uploadedAt: -1 })
     .populate("course", "name code");
   return res.status(200).json({
@@ -78,10 +79,23 @@ router.get("/history", async (req, res) => {
     resources: sorted.map((r) => {
       const base = resourceToJson(r);
       const c = r.course;
-      return {
-        ...base,
-        courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—",
-      };
+      return { ...base, courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—" };
+    }),
+  });
+});
+
+// GET /api/resources/all - all resources in the system with verification status (for verification page)
+router.get("/all", protect, async (req, res) => {
+  const sorted = await Resource.find()
+    .sort({ uploadedAt: -1 })
+    .populate("course", "name code");
+  return res.status(200).json({
+    message: "All resources",
+    total: sorted.length,
+    resources: sorted.map((r) => {
+      const base = resourceToJson(r);
+      const c = r.course;
+      return { ...base, courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—" };
     }),
   });
 });
