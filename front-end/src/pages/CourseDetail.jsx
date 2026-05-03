@@ -68,8 +68,10 @@ const CourseDetails = () => {
         <h2>Course Details</h2>
       </div>
       <div className="coursePhoto">
-        <img src={placeHolderImage} alt="Course placeholder" />
-      </div>
+        <img
+          src={course.imageFileName ? `http://localhost:5001/uploads/course-images/${course.imageFileName}` : placeHolderImage}
+          alt="Course"
+        />      </div>
       <div className="courseTitle">
         <h2>{course.name}</h2>
       </div>
