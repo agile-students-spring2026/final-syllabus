@@ -17,6 +17,8 @@ const userSchema = new mongoose.Schema(
       enum: ["student", "campus-rep", "admin"],
       default: "student",
     },
+    school: { type: String, trim: true },
+    major: { type: String, trim: true },
   },
   { timestamps: true }
 );

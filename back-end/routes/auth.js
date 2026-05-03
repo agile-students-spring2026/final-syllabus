@@ -46,7 +46,7 @@ router.post(
       return res.status(201).json({
         message: "Account created successfully",
         token,
-        user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
+        user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, school: user.school, major: user.major },
       });
     } catch (err) {
       console.error("Signup error:", err.message);
@@ -81,7 +81,7 @@ router.post(
       return res.status(200).json({
         message: "Login successful",
         token,
-        user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
+        user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, school: user.school, major: user.major },
       });
     } catch (err) {
       return res.status(500).json({ error: "Server error" });
@@ -115,7 +115,7 @@ router.post(
       return res.status(200).json({
         message: "Campus rep login successful",
         token,
-        user: { id: user._id, name: user.fullName, email: user.email, role: "campus-rep" },
+        user: { id: user._id, name: user.fullName, email: user.email, role: "campus-rep", school: user.school, major: user.major },
       });
     } catch (err) {
       return res.status(500).json({ error: "Server error" });
@@ -136,7 +136,7 @@ router.patch("/role", protect, async (req, res) => {
     return res.status(200).json({
       message: "Role updated",
       token,
-      user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
+      user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, school: user.school, major: user.major },
     });
   } catch {
     return res.status(500).json({ error: "Server error" });

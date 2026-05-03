@@ -68,14 +68,13 @@ const HomePage = () => {
           <option value="This Month">This Month</option>
           <option value="Earlier">Earlier</option>
         </select>
-        <select className='courseFilter'>
-          <option value="">Course</option>
-          <option value="cs101">CS 101</option>
-          <option value="math201">Math 201</option>
-          <option value="history301">History 301</option>
-        </select>
-        <select className='categoryFilter' value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">Material Type</option>
+        <select
+          className="courseFilter"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          aria-label="Filter by subject"
+        >
+          <option value="">Subject</option>
           <option value="Computer Science">Computer Science</option>
           <option value="Mathematics">Mathematics</option>
           <option value="History">History</option>
