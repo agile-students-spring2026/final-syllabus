@@ -143,4 +143,38 @@ router.patch("/role", protect, async (req, res) => {
   }
 });
 
+// PATCH /api/auth/profile - Update user profile (school, major)
+router.patch(
+  "/profile",
+  protect,
+  [
+    body("school").optional().trim(),
+    body("major").optional().trim(),
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: errors.array()[0].msg });
+    }
+
+    const { school, major } = req.body;
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { ...(school && { school }), ...(major && { major }) },
+        { new: true }
+      );
+      if (!user) return res.status(404).json({ error: "User not found" });
+      const token = signToken(user);
+      return res.status(200).json({
+        message: "Profile updated",
+        token,
+        user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, school: user.school, major: user.major },
+      });
+    } catch {
+      return res.status(500).json({ error: "Server error" });
+    }
+  }
+);
+
 module.exports = router;

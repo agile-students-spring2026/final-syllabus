@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
+import { useAuth } from '../context/AuthContext';
 import CourseCard from '../components/CourseCard';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const HomePage = () => {
+  const { user } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -19,6 +21,8 @@ const HomePage = () => {
     if (search) params.append("search", search);
     if (recent) params.append("recent", recent);
     if (category) params.append("category", category);
+    // Filter by user's school if they have one selected
+    if (user?.school) params.append("school", user.school);
 
     setLoading(true);
     fetch(`${API_BASE}/courses?${params.toString()}`)
@@ -34,7 +38,7 @@ const HomePage = () => {
         setError(err.message);
         setLoading(false);
       });
-  }, [search, recent, category]);
+  }, [search, recent, category, user?.school]);
 
   return (
     <div className='homePage'>
@@ -83,6 +87,12 @@ const HomePage = () => {
           <option value="Physics">Physics</option>
         </select>
       </div>
+
+      {user?.school && (
+        <div style={{ padding: '12px 16px', backgroundColor: '#f0f2f5', borderRadius: '8px', margin: '12px 16px', fontSize: '14px', color: '#333' }}>
+          Showing courses from <strong>{user.school}</strong>
+        </div>
+      )}
 
       {loading && <p className="status-message">Loading courses...</p>}
       {error && <p className="status-message error">Error: {error}</p>}
