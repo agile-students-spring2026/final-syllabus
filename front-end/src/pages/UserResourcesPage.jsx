@@ -30,6 +30,11 @@ const UserResourcesPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!token) {
+      setError("Please log in to view your resources");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     fetch(`${API_BASE}/resources/history`, { headers: bearerHeaders(token) })

@@ -140,10 +140,23 @@ router.get("/history", attachOptionalViewer, async (req, res) => {
     resources: rows.map((r) => {
       const base = resourceToJson(r);
       const c = r.course;
-      return {
-        ...base,
-        courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—",
-      };
+      return { ...base, courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—" };
+    }),
+  });
+});
+
+// GET /api/resources/all - all resources in the system with verification status (for verification page)
+router.get("/all", protect, async (req, res) => {
+  const sorted = await Resource.find()
+    .sort({ uploadedAt: -1 })
+    .populate("course", "name code");
+  return res.status(200).json({
+    message: "All resources",
+    total: sorted.length,
+    resources: sorted.map((r) => {
+      const base = resourceToJson(r);
+      const c = r.course;
+      return { ...base, courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—" };
     }),
   });
 });

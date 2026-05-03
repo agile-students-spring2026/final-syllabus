@@ -119,6 +119,8 @@ back-end/uploads/
 
 # dotenv environment variables file
 .env
+back-end/.env
+front-end/.env
 
 # next.js build output
 .next

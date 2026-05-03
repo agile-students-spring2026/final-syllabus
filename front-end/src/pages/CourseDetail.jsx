@@ -4,8 +4,9 @@ import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { bearerHeaders } from '../utils/apiAuth';
 import { GoArrowLeft } from "react-icons/go";
-import toast from 'react-hot-toast';
-import './CourseDetails.css';
+import toast from "react-hot-toast";
+import { useAuth } from "../context/AuthContext";
+import "./CourseDetails.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
@@ -13,6 +14,9 @@ const CourseDetails = () => {
   const { user, token } = useAuth();
   const homePath = user?.role === 'campus-rep' || user?.role === 'campus_rep' ? '/camp-rep-dashboard' : '/home';
   const { courseId } = useParams();
+  const navigate = useNavigate();
+  const { token } = useAuth();
+
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -42,6 +46,40 @@ const CourseDetails = () => {
       });
   }, [courseId, token]);
 
+  const handleSave = async () => {
+    if (!token) {
+      toast.error("Please log in before saving a course.");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/courses/${courseId}/save`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 409) {
+          toast("Course already saved.");
+          return;
+        }
+
+        toast.error(data.error || "Could not save course.");
+        return;
+      }
+
+      toast.success(data.message || "Course saved!");
+    } catch {
+      toast.error("Could not connect to the server.");
+    }
+  };
+
   if (loading) {
     return (
       <div className="courseDetails">
@@ -49,22 +87,13 @@ const CourseDetails = () => {
       </div>
     );
   }
+
   if (error || !course) {
     return <h2>Course not found</h2>;
   }
 
-  const handleSave = () => {
-    const saved = JSON.parse(localStorage.getItem("savedCourses")) || [];
-    const exists = saved.find((c) => c.id === course.id);
-    if (!exists) {
-      saved.push(course);
-      localStorage.setItem("savedCourses", JSON.stringify(saved));
-      toast.success("Course Saved!");
-    }
-  };
-
   return (
-    <div className='courseDetails'>
+    <div className="courseDetails">
       <div className="backBtn">
         <Link to={homePath}>
           <GoArrowLeft /> Back
@@ -74,23 +103,28 @@ const CourseDetails = () => {
       <div className="title">
         <h2>Course Details</h2>
       </div>
+
       <div className="coursePhoto">
         <img
           src={course.coverImageUrl || placeHolderImage}
           alt={course.name}
         />
       </div>
+
       <div className="courseTitle">
         <h2>{course.name}</h2>
       </div>
+
       <div className="infoArea">
         <div className="innerCourseTitle">
           <p>Course Name: {course.name}</p>
         </div>
+
         <div className="description">
           <p>Description: {course.description}</p>
         </div>
       </div>
+
       <div className="actionRow">
         {user?.role !== 'campus-rep' && user?.role !== 'campus_rep' && (
           <button className="actionButton" onClick={handleSave}>Save</button>
@@ -105,6 +139,6 @@ const CourseDetails = () => {
       </div>
     </div>
   );
-}
+};
 
 export default CourseDetails;

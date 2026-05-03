@@ -82,7 +82,8 @@ router.post(
         user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role, school: user.school, major: user.major },
       });
     } catch (err) {
-      return res.status(500).json({ error: "Server error" });
+      console.error("Login error:", err.message);
+      return res.status(500).json({ error: "Server error", detail: err.message });
     }
   }
 );

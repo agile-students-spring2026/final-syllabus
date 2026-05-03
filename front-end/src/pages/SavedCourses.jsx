@@ -28,8 +28,15 @@ const SavedCourses = () => {
     const userId = "guest";
 
     useEffect(() => {
+        if (!token) {
+            setError("Please log in to view saved courses");
+            setLoading(false);
+            return;
+        }
         setLoading(true);
-        fetch(`${API_BASE}/saved-courses?userId=${encodeURIComponent(userId)}`)
+        fetch(`${API_BASE}/saved-courses`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch saved courses");
                 return res.json();
@@ -42,7 +49,7 @@ const SavedCourses = () => {
                 setError(err.message);
                 setLoading(false);
             });
-    }, [userId]);
+    }, [token]);
 
     const savedCourseId = (c) => {
         const raw = c?._id ?? c?.id;
