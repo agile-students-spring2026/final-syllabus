@@ -5,7 +5,6 @@ import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 import { COURSE_SUBJECTS } from "../utils/courseSubjects";
 import { bearerHeaders } from "../utils/apiAuth";
-import "./CampRepDashboard.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 

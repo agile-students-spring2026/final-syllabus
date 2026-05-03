@@ -1,6 +1,4 @@
 import { Link } from "react-router-dom";
-import "./SubmissionConfirmPage.css";
-
 const SubmissionConfirmPage = () => {
   return (
     <div className="confirmPage">
