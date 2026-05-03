@@ -4,6 +4,7 @@ import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import CourseCard from '../components/CourseCard';
 import { COURSE_SUBJECTS } from '../utils/courseSubjects';
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
@@ -35,7 +36,7 @@ const SavedCourses = () => {
         }
         setLoading(true);
         fetch(`${API_BASE}/saved-courses`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: bearerHeaders(token),
         })
             .then((res) => {
                 if (!res.ok) throw new Error("Failed to fetch saved courses");

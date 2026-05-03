@@ -4,7 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
-function Login() {
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+
+const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,7 +37,7 @@ function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/auth/login", {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -108,6 +110,6 @@ function Login() {
       </form>
     </AuthCard>
   );
-}
+};
 
 export default Login;

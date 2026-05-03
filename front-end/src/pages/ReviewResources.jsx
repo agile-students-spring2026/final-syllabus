@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./ReviewResources.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -15,8 +16,7 @@ const ReviewResources = () => {
   const [activeTypes, setActiveTypes] = useState([]);
 
   useEffect(() => {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    fetch(`${API_BASE}/admin/resources/${courseId}`, { headers })
+    fetch(`${API_BASE}/admin/resources/${courseId}`, { headers: bearerHeaders(token) })
       .then((res) => res.json())
       .then((data) => {
         setResourceData(data);
@@ -35,14 +35,18 @@ const ReviewResources = () => {
   };
 
   const handleAccept = () => {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    fetch(`${API_BASE}/admin/resources/${courseId}/approve`, { method: "POST", headers }).catch(() => {});
+    fetch(`${API_BASE}/admin/resources/${courseId}/approve`, {
+      method: "POST",
+      headers: bearerHeaders(token),
+    }).catch(() => {});
     navigate("/camp-rep-dashboard");
   };
 
   const handleReject = () => {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    fetch(`${API_BASE}/admin/resources/${courseId}/reject`, { method: "POST", headers }).catch(() => {});
+    fetch(`${API_BASE}/admin/resources/${courseId}/reject`, {
+      method: "POST",
+      headers: bearerHeaders(token),
+    }).catch(() => {});
     navigate("/camp-rep-dashboard");
   };
 

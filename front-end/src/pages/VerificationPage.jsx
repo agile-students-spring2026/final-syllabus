@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./VerificationPage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -27,7 +28,7 @@ const VerificationPage = () => {
       return;
     }
     fetch(`${API_BASE}/resources/all`, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: bearerHeaders(token),
     })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load submissions");

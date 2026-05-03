@@ -43,8 +43,8 @@ function RootRedirect() {
 
 function App() {
   const location = useLocation();
-  const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying'];
-  const campRepPages = ['/review-course', '/review-resources', '/profile'];
+  const authPages = ["/login", "/signup", "/role-selection", "/student-details", "/campus-rep-details", "/success", "/verifying"];
+  const campRepPages = ["/review-course", "/review-resources", "/profile"];
   const isAuthPage = authPages.includes(location.pathname);
   const isCampRepPage = campRepPages.some((p) => location.pathname.startsWith(p));
 

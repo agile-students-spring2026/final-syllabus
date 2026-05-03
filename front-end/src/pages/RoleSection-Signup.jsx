@@ -1,19 +1,21 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const RoleSelectionScreen = () => {
   const navigate = useNavigate();
   const { token, login } = useAuth();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleRoleSelect = async (role, path) => {
-    setError('');
+    setError("");
     try {
-      const res = await fetch('http://localhost:5001/api/auth/role', {
-        method: 'PATCH',
+      const res = await fetch(`${API_BASE}/auth/role`, {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ role }),
@@ -22,14 +24,14 @@ const RoleSelectionScreen = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || 'Could not update role');
+        setError(data.error || "Could not update role");
         return;
       }
 
       login(data.user, data.token);
       navigate(path);
     } catch {
-      setError('Could not connect to server');
+      setError("Could not connect to server");
     }
   };
 
@@ -42,17 +44,17 @@ const RoleSelectionScreen = () => {
         </div>
 
         <div className="role-selection-options">
-          <button className="role-card" onClick={() => handleRoleSelect('student', '/student-details')}>
+          <button className="role-card" onClick={() => handleRoleSelect("student", "/student-details")}>
             STUDENT
           </button>
-          <button className="role-card" onClick={() => handleRoleSelect('campus-rep', '/campus-rep-details')}>
+          <button className="role-card" onClick={() => handleRoleSelect("campus-rep", "/campus-rep-details")}>
             CAMPUS REP
           </button>
         </div>
 
         {error && <p className="auth-error">{error}</p>}
 
-        <button className="back-link" onClick={() => navigate('/signup')}>Back</button>
+        <button className="back-link" onClick={() => navigate("/signup")}>Back</button>
       </div>
     </div>
   );

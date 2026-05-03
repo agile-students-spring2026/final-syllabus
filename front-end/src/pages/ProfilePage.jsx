@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./ProfilePage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -13,7 +14,7 @@ const ProfilePage = () => {
     try {
       const res = await fetch(`${API_BASE}/auth/account`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: bearerHeaders(token),
       });
       if (!res.ok) throw new Error("Failed to delete account");
       logout();

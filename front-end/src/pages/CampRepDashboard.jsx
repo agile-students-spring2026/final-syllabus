@@ -52,8 +52,7 @@ const CampRepDashboard = () => {
   }, [search, recent, courseCategory, user?.school, token]);
 
   useEffect(() => {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    fetch(`${API_BASE}/admin/dashboard`, { headers })
+    fetch(`${API_BASE}/admin/dashboard`, { headers: bearerHeaders(token) })
       .then((res) => res.json())
       .then((d) => {
         setVerifiedCourses(d.verifiedCourses ?? 0);
@@ -65,12 +64,13 @@ const CampRepDashboard = () => {
   }, [location.pathname, token]);
 
   useEffect(() => {
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
     const params = new URLSearchParams();
     if (pendingKind) params.append("kind", pendingKind);
     if (pendingCategory) params.append("category", pendingCategory);
 
-    fetch(`${API_BASE}/admin/pending?${params.toString()}`, { headers })
+    fetch(`${API_BASE}/admin/pending?${params.toString()}`, {
+      headers: bearerHeaders(token),
+    })
       .then((res) => res.json())
       .then((data) => {
         const items = Array.isArray(data)
@@ -137,16 +137,7 @@ const CampRepDashboard = () => {
       </div>
 
       {user?.school && (
-        <div
-          style={{
-            padding: "12px 16px",
-            backgroundColor: "#f0f2f5",
-            borderRadius: "8px",
-            margin: "12px 0",
-            fontSize: "14px",
-            color: "#333",
-          }}
-        >
+        <div className="campRepSchoolBanner">
           Showing courses from <strong>{user.school}</strong>
         </div>
       )}
