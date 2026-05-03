@@ -7,20 +7,19 @@ const {
   recentLabelFromDate,
   pendingResourceCategoryLabel,
 } = require("../lib/courseMappers");
-const { schoolRegexpExact } = require("../lib/schoolScope");
+const { schoolMongoScope, courseSchoolMatchesViewer } = require("../lib/schoolScope");
 
 async function schoolAllowsCourse(courseId, campusRepSchool) {
-  const filter = schoolRegexpExact(campusRepSchool);
-  if (!filter) return { ok: false, status: 403 };
+  if (!schoolMongoScope(campusRepSchool)) return { ok: false, status: 403 };
   const course = await Course.findById(courseId).select("school").lean();
   if (!course) return { ok: false, status: 404 };
-  if (!filter.test(course.school || "")) return { ok: false, status: 403 };
+  if (!courseSchoolMatchesViewer(course.school, campusRepSchool)) return { ok: false, status: 403 };
   return { ok: true };
 }
 
 const getDashboard = async (req, res) => {
   try {
-    const filter = schoolRegexpExact(req.campusRepSchool);
+    const filter = schoolMongoScope(req.campusRepSchool);
     const [verifiedCourses, courseIdsAtSchool] = await Promise.all([
       Course.countDocuments({ status: "approved", school: filter }),
       Course.find({ school: filter }).distinct("_id"),
@@ -42,7 +41,7 @@ const getDashboard = async (req, res) => {
 
 const getPending = async (req, res) => {
   try {
-    const filter = schoolRegexpExact(req.campusRepSchool);
+    const filter = schoolMongoScope(req.campusRepSchool);
     const { kind, category } = req.query;
     const wantCourse = !kind || kind.toLowerCase() === "course";
     const wantResource = !kind || kind.toLowerCase() === "resource";
@@ -73,7 +72,7 @@ const getPending = async (req, res) => {
       for (const r of resources) {
         if (!r.course) continue;
         const sch = typeof r.course === "object" && r.course.school ? r.course.school : "";
-        if (!filter.test(String(sch))) continue;
+        if (!courseSchoolMatchesViewer(String(sch), req.campusRepSchool)) continue;
         const resCat = pendingResourceCategoryLabel(r.category);
         if (!catMatch(resCat)) continue;
         const cRef = r.course;

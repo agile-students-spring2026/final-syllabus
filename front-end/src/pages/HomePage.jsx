@@ -4,11 +4,12 @@ import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import { useAuth } from '../context/AuthContext';
 import CourseCard from '../components/CourseCard';
 import { COURSE_SUBJECTS } from '../utils/courseSubjects';
+import { bearerHeaders } from '../utils/apiAuth';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const HomePage = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -25,7 +26,7 @@ const HomePage = () => {
     if (user?.school) params.append("school", user.school);
 
     setLoading(true);
-    fetch(`${API_BASE}/courses?${params.toString()}`)
+    fetch(`${API_BASE}/courses?${params.toString()}`, { headers: bearerHeaders(token) })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch courses");
         return res.json();
@@ -38,7 +39,7 @@ const HomePage = () => {
         setError(err.message);
         setLoading(false);
       });
-  }, [search, recent, category, user?.school]);
+  }, [search, recent, category, user?.school, token]);
 
   return (
     <div className='homePage'>

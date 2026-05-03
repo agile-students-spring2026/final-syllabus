@@ -1,10 +1,6 @@
 const User = require("../models/User");
 const { protect } = require("./authMiddleware");
 
-/**
- * After JWT `protect`, loads DB user and requires campus-rep role + non-empty school.
- * Sets `req.campusRepSchool` (trimmed string) for school-scoped admin routes.
- */
 const loadCampusRepForAdmin = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id).select("role school").lean();
@@ -27,7 +23,6 @@ const loadCampusRepForAdmin = async (req, res, next) => {
   }
 };
 
-/** Use on all `/api/admin/*` routes that must be scoped to the rep's college. */
 const campusRepAdminChain = [protect, loadCampusRepForAdmin];
 
 module.exports = { loadCampusRepForAdmin, campusRepAdminChain };

@@ -1,4 +1,3 @@
-// just using arrays to store stuff, no db yet
 const courses = [
   { id: "course-1", name: "Intro to Computer Science", code: "CS101", instructor: "Dr. Smith", createdAt: "2025-09-01T10:00:00.000Z" },
   { id: "course-2", name: "Calculus I", code: "MATH201", instructor: "Prof. Johnson", createdAt: "2025-09-01T10:00:00.000Z" },

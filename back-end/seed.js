@@ -11,7 +11,6 @@ const seed = async () => {
   await Course.deleteMany({});
   console.log("Cleared existing courses");
 
-  // strip the legacy integer `id` field — MongoDB will generate _id
   const courses = rawCourses.map(({ id, ...rest }) => rest);
 
   await Course.insertMany(courses);

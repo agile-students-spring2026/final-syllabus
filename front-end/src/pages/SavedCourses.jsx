@@ -12,7 +12,7 @@ const SavedCourses = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (user?.role === "campus-rep") {
+        if (user?.role === "campus-rep" || user?.role === "campus_rep") {
             navigate("/camp-rep-dashboard", { replace: true });
         }
     }, [user, navigate]);
@@ -25,7 +25,6 @@ const SavedCourses = () => {
     const [recent, setRecent] = useState("");
     const [category, setCategory] = useState("");
 
-    // For now userId defaults to "guest"; swap for real auth token/userId when auth is wired up
     const userId = "guest";
 
     useEffect(() => {

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 const Navbar = () => {
     const location = useLocation();
     const { user } = useAuth();
-    const isCampusRep = user?.role === 'campus-rep';
+    const isCampusRep = user?.role === 'campus-rep' || user?.role === 'campus_rep';
     const homePath = isCampusRep ? '/camp-rep-dashboard' : '/home';
     const homeActive = location.pathname === homePath;
 

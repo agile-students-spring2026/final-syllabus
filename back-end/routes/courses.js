@@ -2,6 +2,8 @@ const express = require("express");
 const { body, param, validationResult } = require("express-validator");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const { attachOptionalViewer } = require("../middleware/optionalViewer");
+const { courseSchoolMatchesViewer } = require("../lib/schoolScope");
 
 const router = express.Router();
 
@@ -39,7 +41,6 @@ const resourceToJson = (r) => ({
   verified: r.verified,
 });
 
-// make a new course
 router.post(
   "/create",
   [
@@ -113,9 +114,9 @@ router.post(
   }
 );
 
-// all resources grouped by category
 router.get(
   "/:id/resources",
+  attachOptionalViewer,
   [param("id").isMongoId().withMessage("Invalid course id")],
   assertValid,
   async (req, res) => {
@@ -124,6 +125,15 @@ router.get(
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
+    }
+
+    if (req.authUserId) {
+      if (!req.viewerSchool) {
+        return res.status(403).json({ error: "Add your school in your profile to view resources." });
+      }
+      if (!courseSchoolMatchesViewer(course.school, req.viewerSchool)) {
+        return res.status(404).json({ error: "Course not found" });
+      }
     }
 
     const courseRes = await Resource.find({ course: courseId });
@@ -145,9 +155,9 @@ router.get(
   }
 );
 
-// filter by specific type
 router.get(
   "/:id/resources/:type",
+  attachOptionalViewer,
   [
     param("id").isMongoId().withMessage("Invalid course id"),
     param("type")
@@ -161,6 +171,15 @@ router.get(
     const course = await Course.findById(courseId);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
+    }
+
+    if (req.authUserId) {
+      if (!req.viewerSchool) {
+        return res.status(403).json({ error: "Add your school in your profile to view resources." });
+      }
+      if (!courseSchoolMatchesViewer(course.school, req.viewerSchool)) {
+        return res.status(404).json({ error: "Course not found" });
+      }
     }
 
     const list = await Resource.find({ course: courseId, category: resType });

@@ -6,7 +6,6 @@ const { savedCoursesStore } = require("../data/savedCoursesStore");
 
 const INVALID_OBJECTID = "507f1f77bcf86cd7994390aa";
 
-/** Clears test collections and the in-memory saved-course store. */
 async function clearTestData() {
   await Promise.all([Course.deleteMany({}), Resource.deleteMany({})]);
   Object.keys(savedCoursesStore).forEach((k) => {
@@ -14,10 +13,6 @@ async function clearTestData() {
   });
 }
 
-/**
- * Inserts a minimal set of documents used across route tests. Returns
- * id strings and documents where useful.
- */
 async function seedMainFixtures() {
   await clearTestData();
   const now = new Date();
@@ -39,6 +34,7 @@ async function seedMainFixtures() {
       description: "Study major global events in the 20th century.",
       category: "History",
       school: "NYU",
+      instructor: "TBD",
       status: "pending",
       whatYoullLearn: ["A"],
       modules: ["M1"],
@@ -49,6 +45,7 @@ async function seedMainFixtures() {
       description: "Created in the last 24h for filter tests.",
       category: "Other",
       school: "NYU",
+      instructor: "TBD",
       createdAt: new Date(now.getTime() - 2 * 60 * 60 * 1000),
     }),
     Course.create({
@@ -57,6 +54,7 @@ async function seedMainFixtures() {
       description: "For earlier bucket.",
       category: "Other",
       school: "NYU",
+      instructor: "TBD",
       createdAt: new Date(now.getTime() - 40 * dayMs),
     }),
   ]);
@@ -66,6 +64,10 @@ async function seedMainFixtures() {
     description: "Learn the basics of programming, algorithms, and data structures.",
     category: "Computer Science",
     school: "NYU",
+    instructor: "TBD",
+    duration: "",
+    level: "Beginner",
+    status: "approved",
     whatYoullLearn: ["A", "B"],
     modules: ["M1", "M2"],
   });
@@ -88,6 +90,7 @@ async function seedMainFixtures() {
     description: "Pending",
     category: "Physics",
     school: "NYU",
+    instructor: "TBD",
     status: "pending",
   });
   const rejectTarget = await Course.create({
@@ -96,6 +99,7 @@ async function seedMainFixtures() {
     description: "X",
     category: "X",
     school: "NYU",
+    instructor: "TBD",
   });
 
   return {
@@ -110,7 +114,6 @@ async function seedMainFixtures() {
   };
 }
 
-/** JWT for a campus-rep with the given school (for admin route tests). */
 async function campusRepBearerToken(school, email) {
   await User.deleteMany({ email });
   const u = await User.create({
@@ -127,9 +130,26 @@ async function campusRepBearerToken(school, email) {
   );
 }
 
+async function studentBearerToken(school, email) {
+  await User.deleteMany({ email });
+  const u = await User.create({
+    fullName: "Test Student",
+    email,
+    password: "password123",
+    role: "student",
+    school,
+  });
+  return jwt.sign(
+    { id: u._id.toString(), email: u.email, role: u.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+}
+
 module.exports = {
   clearTestData,
   seedMainFixtures,
   INVALID_OBJECTID,
   campusRepBearerToken,
+  studentBearerToken,
 };

@@ -10,7 +10,7 @@ const {
   INVALID_OBJECTID,
   campusRepBearerToken,
 } = require("./seedTestDb");
-const { schoolRegexpExact } = require("../lib/schoolScope");
+const { schoolMongoScope } = require("../lib/schoolScope");
 
 const NYU_REP_EMAIL = "admintest-nyu@test.edu";
 const TULSA_REP_EMAIL = "admintest-tulsa@test.edu";
@@ -28,8 +28,6 @@ after(async () => {
 });
 
 const auth = (token) => ({ Authorization: `Bearer ${token}` });
-
-// ── GET /api/admin/dashboard ────────────────────────────────────────────────
 
 describe("GET /api/admin/dashboard", () => {
   it("should reject without token", async () => {
@@ -56,7 +54,7 @@ describe("GET /api/admin/dashboard", () => {
   });
 
   it("verified counts should match database totals for that campus rep school", async () => {
-    const filter = schoolRegexpExact("NYU");
+    const filter = schoolMongoScope("NYU");
     const [vc, idsAtSchool, res] = await Promise.all([
       Course.countDocuments({ status: "approved", school: filter }),
       Course.find({ school: filter }).distinct("_id"),
@@ -71,8 +69,6 @@ describe("GET /api/admin/dashboard", () => {
     expect(res.body.verifiedResources).to.equal(vr);
   });
 });
-
-// ── GET /api/admin/pending ──────────────────────────────────────────────────
 
 describe("GET /api/admin/pending", () => {
   beforeEach(async () => {
@@ -127,7 +123,6 @@ describe("GET /api/admin/pending", () => {
   });
 });
 
-// ── GET /api/admin/courses/:id ──────────────────────────────────────────────
 
 describe("GET /api/admin/courses/:id", () => {
   let fixtures;
@@ -189,7 +184,6 @@ describe("GET /api/admin/courses/:id", () => {
   });
 });
 
-// ── POST /api/admin/courses/:id/approve ────────────────────────────────────
 
 describe("POST /api/admin/courses/:id/approve", () => {
   let fixtures;
@@ -231,7 +225,6 @@ describe("POST /api/admin/courses/:id/approve", () => {
   });
 });
 
-// ── POST /api/admin/courses/:id/reject ─────────────────────────────────────
 
 describe("POST /api/admin/courses/:id/reject", () => {
   let fixtures;
@@ -266,7 +259,6 @@ describe("POST /api/admin/courses/:id/reject", () => {
   });
 });
 
-// ── GET /api/admin/resources/:id ───────────────────────────────────────────
 
 describe("GET /api/admin/resources/:id", () => {
   let fixtures;
@@ -325,7 +317,6 @@ describe("GET /api/admin/resources/:id", () => {
   });
 });
 
-// ── POST /api/admin/resources/:id/approve ──────────────────────────────────
 
 describe("POST /api/admin/resources/:id/approve", () => {
   let fixtures;
@@ -367,7 +358,6 @@ describe("POST /api/admin/resources/:id/approve", () => {
   });
 });
 
-// ── POST /api/admin/resources/:id/reject ───────────────────────────────────
 
 describe("POST /api/admin/resources/:id/reject", () => {
   let fixtures;
@@ -402,7 +392,6 @@ describe("POST /api/admin/resources/:id/reject", () => {
   });
 });
 
-// ── GET /api/admin/users ───────────────────────────────────────────────────
 
 describe("GET /api/admin/users", () => {
   it("should reject without token", async () => {

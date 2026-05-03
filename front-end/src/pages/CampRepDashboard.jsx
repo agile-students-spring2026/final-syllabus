@@ -4,6 +4,7 @@ import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import { useAuth } from "../context/AuthContext";
 import CourseCard from "../components/CourseCard";
 import { COURSE_SUBJECTS } from "../utils/courseSubjects";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./CampRepDashboard.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -34,7 +35,7 @@ const CampRepDashboard = () => {
     if (user?.school) params.append("school", user.school);
 
     setCoursesLoading(true);
-    fetch(`${API_BASE}/courses?${params.toString()}`)
+    fetch(`${API_BASE}/courses?${params.toString()}`, { headers: bearerHeaders(token) })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch courses");
         return res.json();
@@ -48,7 +49,7 @@ const CampRepDashboard = () => {
         setCoursesError(err.message);
         setCoursesLoading(false);
       });
-  }, [search, recent, courseCategory, user?.school]);
+  }, [search, recent, courseCategory, user?.school, token]);
 
   useEffect(() => {
     const headers = token ? { Authorization: `Bearer ${token}` } : {};

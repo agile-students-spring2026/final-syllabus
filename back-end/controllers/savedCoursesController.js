@@ -22,7 +22,6 @@ const saveCourse = async (req, res) => {
     await SavedCourse.create({ userId: req.user.id, courseId });
     res.status(201).json({ message: "Course saved successfully", courseId });
   } catch (err) {
-    // duplicate key error means the course is already saved
     if (err.code === 11000) {
       return res.status(409).json({ error: "Course already saved" });
     }

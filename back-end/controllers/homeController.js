@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
 const { recentLabelFromDate, toListItem, typeLabelFromCategory } = require("../lib/courseMappers");
+const { schoolMongoScope, courseSchoolMatchesViewer } = require("../lib/schoolScope");
 
 const getHomepage = (_req, res) => {
   res.json({ message: "Welcome to the Course Sharing Platform API!" });
@@ -13,7 +14,16 @@ const getAllCourses = async (req, res) => {
   try {
     const { search, category, recent, school, materialType } = req.query;
 
-    const q = { status: { $ne: "rejected" } };
+    if (req.authUserId && !req.viewerSchool) {
+      return res.json([]);
+    }
+
+    const q = {};
+    if (req.authUserId && req.viewerSchool) {
+      q.status = "approved";
+    } else {
+      q.status = { $ne: "rejected" };
+    }
     if (search) {
       const s = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const re = new RegExp(s, "i");
@@ -22,8 +32,13 @@ const getAllCourses = async (req, res) => {
     if (category && category !== "") {
       q.category = new RegExp(`^${category.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
     }
-    if (school && school !== "") {
-      q.school = new RegExp(`^${school.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+
+    const schoolFromViewer = req.viewerSchool ? schoolMongoScope(req.viewerSchool) : null;
+    const schoolFromQuery =
+      !schoolFromViewer && school && school !== "" ? schoolMongoScope(school) : null;
+    const schoolFilter = schoolFromViewer || schoolFromQuery;
+    if (schoolFilter) {
+      q.school = schoolFilter;
     }
     if (materialType && RESOURCE_CATEGORIES.includes(materialType)) {
       const withThisMaterial = await Resource.distinct("course", { category: materialType });
@@ -60,6 +75,15 @@ const getCourseById = async (req, res) => {
     const course = await Course.findById(id);
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
+    }
+
+    if (req.authUserId) {
+      if (!req.viewerSchool) {
+        return res.status(403).json({ error: "Add your school in your profile to view courses." });
+      }
+      if (!courseSchoolMatchesViewer(course.school, req.viewerSchool)) {
+        return res.status(404).json({ error: "Course not found" });
+      }
     }
 
     const resDocs = await Resource.find({ course: course._id }).sort({ uploadedAt: -1 });

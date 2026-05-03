@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./UserResourcesPage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -20,9 +21,9 @@ const apiToUi = {
 };
 
 const UserResourcesPage = () => {
-  const { user } = useAuth();
-  const homePath = user?.role === "campus-rep" ? "/camp-rep-dashboard" : "/home";
-  const isCampusRep = user?.role === "campus-rep";
+  const { user, token } = useAuth();
+  const homePath = user?.role === "campus-rep" || user?.role === "campus_rep" ? "/camp-rep-dashboard" : "/home";
+  const isCampusRep = user?.role === "campus-rep" || user?.role === "campus_rep";
   const [showFabMenu, setShowFabMenu] = useState(false);
   const [userResources, setUserResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +32,7 @@ const UserResourcesPage = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`${API_BASE}/resources/history`)
+    fetch(`${API_BASE}/resources/history`, { headers: bearerHeaders(token) })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load resources");
         return res.json();
@@ -51,7 +52,7 @@ const UserResourcesPage = () => {
         setUserResources([]);
         setLoading(false);
       });
-  }, []);
+  }, [token]);
 
   const grouped = useMemo(
     () =>

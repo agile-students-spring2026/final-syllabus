@@ -2,6 +2,8 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const { attachOptionalViewer } = require("../middleware/optionalViewer");
+const { courseSchoolMatchesViewer } = require("../lib/schoolScope");
 
 const router = express.Router();
 
@@ -31,7 +33,6 @@ const resourceToJson = (r) => ({
   verified: r.verified,
 });
 
-// POST /api/resources/upload - upload a new resource to a course
 router.post(
   "/upload",
   [
@@ -67,15 +68,29 @@ router.post(
   }
 );
 
-// GET /api/resources/history - get all uploads sorted by recent
-router.get("/history", async (req, res) => {
+router.get("/history", attachOptionalViewer, async (req, res) => {
   const sorted = await Resource.find()
     .sort({ uploadedAt: -1 })
-    .populate("course", "name code");
+    .populate("course", "name code school");
+
+  let rows = sorted;
+  if (req.authUserId) {
+    if (!req.viewerSchool) {
+      return res.status(200).json({
+        message: "Upload history",
+        total: 0,
+        resources: [],
+      });
+    }
+    rows = sorted.filter((r) =>
+      r.course && courseSchoolMatchesViewer(r.course.school || "", req.viewerSchool)
+    );
+  }
+
   return res.status(200).json({
     message: "Upload history",
-    total: sorted.length,
-    resources: sorted.map((r) => {
+    total: rows.length,
+    resources: rows.map((r) => {
       const base = resourceToJson(r);
       const c = r.course;
       return {
@@ -86,7 +101,6 @@ router.get("/history", async (req, res) => {
   });
 });
 
-// GET /api/resources/verification - check whats verified and whats not
 router.get("/verification", async (req, res) => {
   const all = await Resource.find();
   const verifyList = all.map((r) => {

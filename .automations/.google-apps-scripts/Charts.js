@@ -24,14 +24,11 @@ function emailChartsToMe(sheetName) {
     replyTo: replyTo
   }
 
-  // prepare inline image object
   const inlineImages = {}
   charts.forEach( (chart, i) => {
     inlineImages[`chart_${i}`] = chart
   })
 
-  // GmailApp.sendEmail(to, subject, message, options);
- // Send message with inlineImages object, matching embedded tags.
   MailApp.sendEmail(to, subject, "", { 
     htmlBody: message,
     inlineImages: inlineImages
@@ -52,7 +49,6 @@ function generateEmail(charts) {
 }
 
 function generateHtml(sheetName, charts) {
-  // data:image/gif;base64,  
   let imageTags = []
   charts.forEach( (chart, i) => {
     const chartData = Utilities.base64Encode(chart.getBytes()) // get base64 encoded data for this chart
@@ -65,21 +61,17 @@ function generateHtml(sheetName, charts) {
 }
 
 function getCharts(sheetName) {
-  // get all charts
-  // const sheet = SpreadsheetApp.getActiveSheet();
   const ss = SpreadsheetApp.getActiveSpreadsheet() // container spreadsheet
   let sheet = ss.getSheetByName(sheetName) // specific worksheet
   const range = sheet.getRange("A:Z")
   const charts = sheet.getCharts()
 
-  // loop through charts
   const images = []
   charts.forEach( (chart, i) => {
     Logger.log(`chart id: ${chart.getChartId()}`)
-    // Logger.log(JSON.stringify(chart.getOptions(), null, 2))
     const image = chart.getAs('image/png')
     image.setName(`chart_${i}`)
-    images.push(image) // add to array
+    images.push(image)
   })
   return images
 }

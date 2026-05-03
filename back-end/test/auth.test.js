@@ -2,12 +2,10 @@ import { expect } from "chai";
 import express from "express";
 import authRoutes from "../routes/auth.js";
 
-// Minimal test app
 const app = express();
 app.use(express.json());
 app.use("/api/auth", authRoutes);
 
-// Helper to make requests without a running server
 async function request(method, path, body) {
   const { default: http } = await import("http");
   return new Promise((resolve, reject) => {
@@ -49,7 +47,6 @@ after((done) => {
   server.close(done);
 });
 
-// ── Signup tests ──────────────────────────────────────────────
 describe("POST /api/auth/signup", () => {
   it("creates a new account with valid data", async () => {
     const res = await request("POST", "/api/auth/signup", {
@@ -98,7 +95,6 @@ describe("POST /api/auth/signup", () => {
   });
 });
 
-// ── Login tests ───────────────────────────────────────────────
 describe("POST /api/auth/login", () => {
   before(async () => {
     await request("POST", "/api/auth/signup", {
@@ -132,7 +128,6 @@ describe("POST /api/auth/login", () => {
   });
 });
 
-// ── Campus rep login tests ────────────────────────────────────
 describe("POST /api/auth/campus-rep/login", () => {
   it("logs in campus rep with correct credentials", async () => {
     const res = await request("POST", "/api/auth/campus-rep/login", {

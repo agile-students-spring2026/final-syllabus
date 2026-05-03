@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import placeHolderImage from '../assets/placeHolderImage.png'
 import { Link, useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { bearerHeaders } from '../utils/apiAuth';
 import { GoArrowLeft } from "react-icons/go";
 import toast from 'react-hot-toast';
 import './CourseDetails.css';
@@ -9,8 +10,8 @@ import './CourseDetails.css';
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const CourseDetails = () => {
-  const { user } = useAuth();
-  const homePath = user?.role === 'campus-rep' ? '/camp-rep-dashboard' : '/home';
+  const { user, token } = useAuth();
+  const homePath = user?.role === 'campus-rep' || user?.role === 'campus_rep' ? '/camp-rep-dashboard' : '/home';
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
@@ -19,11 +20,14 @@ const CourseDetails = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`${API_BASE}/courses/${courseId}`)
+    fetch(`${API_BASE}/courses/${courseId}`, { headers: bearerHeaders(token) })
       .then((res) => {
         if (res.status === 404) {
           setCourse(null);
           return null;
+        }
+        if (res.status === 403) {
+          throw new Error("Add your school in your profile to view courses.");
         }
         if (!res.ok) throw new Error("Failed to load course");
         return res.json();
@@ -36,7 +40,7 @@ const CourseDetails = () => {
         setError(err.message);
         setLoading(false);
       });
-  }, [courseId]);
+  }, [courseId, token]);
 
   if (loading) {
     return (
@@ -88,7 +92,7 @@ const CourseDetails = () => {
         </div>
       </div>
       <div className="actionRow">
-        {user?.role !== 'campus-rep' && (
+        {user?.role !== 'campus-rep' && user?.role !== 'campus_rep' && (
           <button className="actionButton" onClick={handleSave}>Save</button>
         )}
 

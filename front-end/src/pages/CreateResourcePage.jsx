@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./CreateResourcePage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -9,7 +10,7 @@ const CreateResourcePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const fromDirect = searchParams.get("from") === "direct";
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const [courses, setCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(false);
@@ -32,7 +33,7 @@ const CreateResourcePage = () => {
     setCoursesLoading(true);
     setCoursesError(null);
 
-    fetch(`${API_BASE}/courses?${params.toString()}`)
+    fetch(`${API_BASE}/courses?${params.toString()}`, { headers: bearerHeaders(token) })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load courses");
         return res.json();
@@ -50,7 +51,7 @@ const CreateResourcePage = () => {
         setCourses([]);
         setCoursesLoading(false);
       });
-  }, [user?.school]);
+  }, [user?.school, token]);
 
   return (
     <div className="createFormPage">

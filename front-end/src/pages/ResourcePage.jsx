@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { bearerHeaders } from "../utils/apiAuth";
 import "./ResourcePage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const ResourcePage = () => {
-  const { user } = useAuth();
-  const homePath = user?.role === 'campus-rep' ? '/camp-rep-dashboard' : '/home';
+  const { user, token } = useAuth();
+  const homePath = user?.role === 'campus-rep' || user?.role === 'campus_rep' ? '/camp-rep-dashboard' : '/home';
   const { courseId } = useParams();
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
@@ -17,11 +18,14 @@ const ResourcePage = () => {
     setLoading(true);
     setErr(null);
     setData(null);
-    fetch(`${API_BASE}/courses/${courseId}/resources`)
+    fetch(`${API_BASE}/courses/${courseId}/resources`, { headers: bearerHeaders(token) })
       .then((res) => {
         if (res.status === 404) {
           setData(null);
           return null;
+        }
+        if (res.status === 403) {
+          throw new Error("Add your school in your profile to view resources.");
         }
         if (!res.ok) throw new Error("Failed to load");
         return res.json();
@@ -34,7 +38,7 @@ const ResourcePage = () => {
         setErr("Could not load resources");
         setLoading(false);
       });
-  }, [courseId]);
+  }, [courseId, token]);
 
   if (loading) {
     return (

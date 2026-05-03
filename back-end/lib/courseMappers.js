@@ -1,4 +1,3 @@
-/** Maps createdAt to the same "Recent" UI labels as the home filters. */
 function recentLabelFromDate(createdAt) {
   const d = new Date(createdAt);
   const now = new Date();
@@ -33,7 +32,6 @@ function typeLabelFromCategory(category) {
   return map[category] || category;
 }
 
-/** Admin / campus-rep filters use "Practice Questions" for practice-type resources. */
 function pendingResourceCategoryLabel(dbCategory) {
   const map = {
     notes: "Notes",

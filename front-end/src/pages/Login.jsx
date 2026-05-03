@@ -43,7 +43,7 @@ function Login() {
       }
 
       login(data.user, data.token);
-      if (data.user?.role === "campus-rep") {
+      if (data.user?.role === "campus-rep" || data.user?.role === "campus_rep") {
         navigate("/camp-rep-dashboard");
       } else {
         navigate("/home");

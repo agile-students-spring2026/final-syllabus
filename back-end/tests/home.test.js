@@ -1,7 +1,14 @@
 const request = require("supertest");
 const { expect } = require("chai");
+const jwt = require("jsonwebtoken");
 const app = require("../server");
-const { seedMainFixtures, clearTestData, INVALID_OBJECTID } = require("./seedTestDb");
+const User = require("../models/User");
+const {
+  seedMainFixtures,
+  clearTestData,
+  INVALID_OBJECTID,
+  studentBearerToken,
+} = require("./seedTestDb");
 
 describe("GET /api/", () => {
   it("should return a welcome message", async () => {
@@ -119,5 +126,96 @@ describe("GET /api/courses/:id (MongoDB)", () => {
     expect(res.body).to.have.property("modules").that.is.an("array");
     expect(res.body).to.have.property("resources").that.is.an("array");
     expect(res.body.resources.length).to.be.greaterThan(0);
+  });
+});
+
+describe("School scope with Bearer token", () => {
+  let fixtures;
+  let nyuToken;
+
+  before(async () => {
+    fixtures = await seedMainFixtures();
+    nyuToken = await studentBearerToken("NYU", "school-scope-student@test.edu");
+  });
+
+  after(async () => {
+    await User.deleteMany({
+      email: {
+        $in: ["school-scope-student@test.edu", "school-scope-synonym@test.edu"],
+      },
+    });
+    await clearTestData();
+  });
+
+  it("lists only courses matching the viewer school", async () => {
+    const res = await request(app).get("/api/courses").set("Authorization", `Bearer ${nyuToken}`);
+    expect(res.status).to.equal(200);
+    expect(res.body.every((c) => (c.school || "").toLowerCase() === "nyu")).to.be.true;
+    const ids = res.body.map((c) => c.id);
+    expect(ids).to.include(fixtures.cs101Id);
+    expect(ids).to.not.include(fixtures.calcId);
+  });
+
+  it("returns 404 for course detail outside viewer school", async () => {
+    const res = await request(app)
+      .get(`/api/courses/${fixtures.calcId}`)
+      .set("Authorization", `Bearer ${nyuToken}`);
+    expect(res.status).to.equal(404);
+  });
+
+  it("returns course detail when school matches", async () => {
+    const res = await request(app)
+      .get(`/api/courses/${fixtures.cs101Id}`)
+      .set("Authorization", `Bearer ${nyuToken}`);
+    expect(res.status).to.equal(200);
+    expect(res.body).to.have.property("school", "NYU");
+  });
+
+  it("scopes nested resources route by viewer school", async () => {
+    const ok = await request(app)
+      .get(`/api/courses/${fixtures.cs101Id}/resources`)
+      .set("Authorization", `Bearer ${nyuToken}`);
+    expect(ok.status).to.equal(200);
+
+    const denied = await request(app)
+      .get(`/api/courses/${fixtures.calcId}/resources`)
+      .set("Authorization", `Bearer ${nyuToken}`);
+    expect(denied.status).to.equal(404);
+  });
+
+  it("scopes resources history by viewer school", async () => {
+    const res = await request(app).get("/api/resources/history").set("Authorization", `Bearer ${nyuToken}`);
+    expect(res.status).to.equal(200);
+    expect(res.body.resources.some((r) => r.title === "Week 1 notes")).to.be.true;
+    expect(res.body.resources.some((r) => r.title === "Midterm")).to.be.false;
+  });
+
+  it("treats NYU and full NYU label as the same campus", async () => {
+    const synonymToken = await studentBearerToken(
+      "New York University (NYU)",
+      "school-scope-synonym@test.edu"
+    );
+    const res = await request(app).get("/api/courses").set("Authorization", `Bearer ${synonymToken}`);
+    expect(res.status).to.equal(200);
+    expect(res.body.map((c) => c.id)).to.include(fixtures.cs101Id);
+  });
+
+  it("returns empty course list when logged in without a school", async () => {
+    await User.deleteMany({ email: "noschool@test.edu" });
+    const u = await User.create({
+      fullName: "No School",
+      email: "noschool@test.edu",
+      password: "password123",
+      role: "student",
+    });
+    const token = jwt.sign(
+      { id: u._id.toString(), email: u.email, role: u.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+    const res = await request(app).get("/api/courses").set("Authorization", `Bearer ${token}`);
+    expect(res.status).to.equal(200);
+    expect(res.body).to.deep.equal([]);
+    await User.deleteMany({ email: "noschool@test.edu" });
   });
 });

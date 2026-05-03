@@ -8,7 +8,6 @@ const savedCourseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// prevent a user from saving the same course twice
 savedCourseSchema.index({ userId: 1, courseId: 1 }, { unique: true });
 
 module.exports = mongoose.model("SavedCourse", savedCourseSchema);

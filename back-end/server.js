@@ -19,7 +19,6 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use(cors());
-// Base64 course images expand ~4/3 vs raw bytes; allow headroom beyond the 450KB client cap.
 app.use(express.json({ limit: "2mb" }));
 
 app.get("/", (_req, res) => {
