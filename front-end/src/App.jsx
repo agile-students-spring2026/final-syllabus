@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { VerificationProvider } from "./context/VerificationContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import HomePage from "./pages/HomePage";
 import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
@@ -25,6 +25,19 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
 
+function postAuthHomePath(user) {
+  const isCampusRep = user?.role === "campus-rep" || user?.role === "campus_rep";
+  return isCampusRep ? "/camp-rep-dashboard" : "/home";
+}
+
+function RootRedirect() {
+  const { user, token } = useAuth();
+  if (user && token) {
+    return <Navigate to={postAuthHomePath(user)} replace />;
+  }
+  return <Navigate to="/login" replace />;
+}
+
 function App() {
   const location = useLocation();
   const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying'];
@@ -39,7 +52,7 @@ function App() {
       <Toaster />
       <main className="app-content">
         <Routes>
-          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<RootRedirect />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/saved" element={<SavedCourses />} />
           <Route path="/login" element={<Login />} />

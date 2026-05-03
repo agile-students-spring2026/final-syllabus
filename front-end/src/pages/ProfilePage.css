@@ -122,7 +122,8 @@
   padding: 10px 32px;
   font-size: 0.95rem;
   font-weight: 600;
-  text-decoration: none;
+  font-family: inherit;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 

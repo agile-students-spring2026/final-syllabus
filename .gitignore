@@ -114,6 +114,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# User-uploaded resource binaries (local dev)
+back-end/uploads/
+
 # dotenv environment variables file
 .env
 

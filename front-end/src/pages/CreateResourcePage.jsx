@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { bearerHeaders } from "../utils/apiAuth";
@@ -6,16 +6,63 @@ import "./CreateResourcePage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
+/** Matches back-end Resource.category enum */
+const RESOURCE_TYPE_OPTIONS = [
+  { value: "notes", label: "Notes" },
+  { value: "flashcards", label: "Flashcards" },
+  { value: "videos", label: "Videos" },
+  { value: "practice", label: "Practice" },
+];
+
+const ACCEPT_BY_TYPE = {
+  notes: ".pdf,.doc,.docx,.txt,.md,.ppt,.pptx",
+  videos: "video/*,.mp4,.webm,.mov,.m4v,.mkv",
+  flashcards: ".json,.csv,.txt",
+  practice: ".pdf,.doc,.docx,.txt,.md",
+};
+
+const HINT_BY_TYPE = {
+  notes: "PDF, Word, PowerPoint, or text",
+  videos: "MP4, WebM, MOV, or similar",
+  flashcards: "JSON, CSV, or text",
+  practice: "PDF, Word, or text",
+};
+
+function fileExtension(name) {
+  const n = name || "";
+  const i = n.lastIndexOf(".");
+  if (i < 0) return "";
+  return n.slice(i).toLowerCase();
+}
+
+function extensionOkForType(ext, resourceType) {
+  if (!resourceType || !ext) return false;
+  const allow = {
+    notes: new Set([".pdf", ".doc", ".docx", ".txt", ".md", ".ppt", ".pptx"]),
+    videos: new Set([".mp4", ".webm", ".mov", ".m4v", ".mkv"]),
+    flashcards: new Set([".json", ".csv", ".txt"]),
+    practice: new Set([".pdf", ".doc", ".docx", ".txt", ".md"]),
+  }[resourceType];
+  return allow ? allow.has(ext) : false;
+}
+
 const CreateResourcePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const fromDirect = searchParams.get("from") === "direct";
   const { user, token } = useAuth();
+  const fileInputRef = useRef(null);
 
   const [courses, setCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(false);
   const [coursesError, setCoursesError] = useState(null);
   const [selectedCourseId, setSelectedCourseId] = useState("");
+  const [resourceType, setResourceType] = useState("");
+  const [title, setTitle] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   useEffect(() => {
     const school = user?.school?.trim();
@@ -52,6 +99,103 @@ const CreateResourcePage = () => {
         setCoursesLoading(false);
       });
   }, [user?.school, token]);
+
+  const pickFile = useCallback(() => {
+    if (!resourceType) return;
+    fileInputRef.current?.click();
+  }, [resourceType]);
+
+  const applyFile = useCallback(
+    (file) => {
+      if (!resourceType || !file) return;
+      const ext = fileExtension(file.name);
+      if (!extensionOkForType(ext, resourceType)) {
+        setSubmitError(
+          `That file type doesn't match "${RESOURCE_TYPE_OPTIONS.find((o) => o.value === resourceType)?.label ?? resourceType}". ${HINT_BY_TYPE[resourceType]}.`
+        );
+        setSelectedFile(null);
+        return;
+      }
+      setSubmitError(null);
+      setSelectedFile(file);
+    },
+    [resourceType]
+  );
+
+  const onDrop = useCallback(
+    (e) => {
+      e.preventDefault();
+      setDragOver(false);
+      const file = e.dataTransfer?.files?.[0];
+      applyFile(file);
+    },
+    [applyFile]
+  );
+
+  const onResourceTypeChange = (nextType) => {
+    setResourceType(nextType);
+    setSubmitError(null);
+    setSelectedFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  async function handleSubmit() {
+    setSubmitError(null);
+    if (!title.trim()) {
+      setSubmitError("Please enter a title.");
+      return;
+    }
+    if (!selectedCourseId) {
+      setSubmitError("Please select a course.");
+      return;
+    }
+    if (!resourceType) {
+      setSubmitError("Please select a resource type.");
+      return;
+    }
+    if (!selectedFile) {
+      setSubmitError("Please choose a file to upload.");
+      return;
+    }
+
+    const ext = fileExtension(selectedFile.name);
+    if (!extensionOkForType(ext, resourceType)) {
+      setSubmitError("File type doesn't match the selected resource type.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("title", title.trim());
+    formData.append("courseId", selectedCourseId);
+    formData.append("category", resourceType);
+    formData.append("file", selectedFile);
+    if (user?.id) formData.append("uploadedBy", String(user.id));
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_BASE}/resources/upload`, {
+        method: "POST",
+        headers: bearerHeaders(token),
+        body: formData,
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(json.error || `Upload failed (${res.status})`);
+      }
+      if (fromDirect) {
+        navigate("/submission-confirm");
+      } else {
+        navigate(-1);
+      }
+    } catch (err) {
+      setSubmitError(err.message || "Upload failed.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const uploadDisabled = !resourceType;
+  const typeHint = resourceType ? HINT_BY_TYPE[resourceType] : null;
 
   return (
     <div className="createFormPage">
@@ -94,36 +238,97 @@ const CreateResourcePage = () => {
           </label>
 
           <label className="fieldLabel">
-            Select / Add Category
-            <input className="textInput" placeholder="Courses" />
-          </label>
-
-          <label className="fieldLabel">
-            Topic
-            <input className="textInput" placeholder="Topic" />
-          </label>
-
-          <label className="fieldLabel">
             Title
-            <input className="textInput" placeholder="Title" />
+            <input
+              className="textInput"
+              placeholder="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
           </label>
 
           <label className="fieldLabel">
-            Resource type selection
-            <div className="selectMock">
-              <span>Resource</span>
-              <span className="caret">▾</span>
+            Resource type
+            <select
+              className="textInput courseSelect"
+              value={resourceType}
+              onChange={(e) => onResourceTypeChange(e.target.value)}
+              aria-label="Resource type"
+            >
+              <option value="">Select a type</option>
+              {RESOURCE_TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <div className="fieldLabel">
+            <span>Upload</span>
+            {typeHint ? (
+              <p className="fieldHint">{typeHint}</p>
+            ) : (
+              <p className="fieldHint">Choose a resource type first, then add your file.</p>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="uploadInputHidden"
+              accept={resourceType ? ACCEPT_BY_TYPE[resourceType] : undefined}
+              aria-hidden
+              tabIndex={-1}
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                applyFile(file);
+                e.target.value = "";
+              }}
+            />
+            <div
+              className={`textInput filePick ${dragOver ? "filePick--drag" : ""} ${uploadDisabled ? "filePick--disabled" : ""}`}
+              onClick={() => pickFile()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  pickFile();
+                }
+              }}
+              role="button"
+              tabIndex={uploadDisabled ? -1 : 0}
+              aria-label="Choose file to upload"
+              onDragEnter={(e) => {
+                e.preventDefault();
+                if (!uploadDisabled) setDragOver(true);
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                if (!uploadDisabled) setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={uploadDisabled ? undefined : onDrop}
+            >
+              <span
+                className={`filePick__text ${!selectedFile ? "filePick__text--placeholder" : ""}`}
+              >
+                {uploadDisabled
+                  ? "Select a resource type first"
+                  : selectedFile
+                    ? selectedFile.name
+                    : "Choose file..."}
+              </span>
             </div>
-          </label>
+          </div>
 
-          <label className="fieldLabel">
-            Upload
-            <div className="uploadBox">Content Upload Area</div>
-          </label>
+          {submitError ? <p className="fieldHint fieldHint--error">{submitError}</p> : null}
 
           <div className="formActions">
-            <button className="submitBtn" type="button" onClick={() => fromDirect ? navigate('/submission-confirm') : navigate(-1)}>
-              Add
+            <button
+              className="submitBtn"
+              type="button"
+              disabled={submitting}
+              onClick={handleSubmit}
+            >
+              {submitting ? "Uploading…" : "Add"}
             </button>
           </div>
         </form>

@@ -39,7 +39,16 @@ const ProfilePage = () => {
       </nav>
 
       <div className="profileLogoutWrap">
-        <Link to="/login" className="profileLogout" onClick={logout}>Log out</Link>
+        <button
+          type="button"
+          className="profileLogout"
+          onClick={() => {
+            logout();
+            navigate("/login", { replace: true });
+          }}
+        >
+          Log out
+        </button>
       </div>
     </div>
   );

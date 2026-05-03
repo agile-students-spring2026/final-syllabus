@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
@@ -11,8 +11,14 @@ function Login() {
   });
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user, token } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (!user || !token) return;
+    const isCampusRep = user?.role === "campus-rep" || user?.role === "campus_rep";
+    navigate(isCampusRep ? "/camp-rep-dashboard" : "/home", { replace: true });
+  }, [user, token, navigate]);
 
   function handleChange(event) {
     const { name, value } = event.target;
