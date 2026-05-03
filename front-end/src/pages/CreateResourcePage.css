@@ -53,6 +53,17 @@
   color: #ffffff;
 }
 
+.fieldHint {
+  margin: 0;
+  font-weight: 400;
+  font-size: 0.85rem;
+  color: #b8bcc8;
+}
+
+.fieldHint--error {
+  color: #ff8a8a;
+}
+
 .textInput {
   width: 100%;
   border: 1px solid #0a0d18;
@@ -62,6 +73,16 @@
   color: #0a0d18;
   font-family: inherit;
   box-sizing: border-box;
+}
+
+.courseSelect {
+  cursor: pointer;
+  appearance: auto;
+}
+
+.courseSelect:disabled {
+  cursor: not-allowed;
+  opacity: 0.85;
 }
 
 .selectMock {

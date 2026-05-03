@@ -43,7 +43,11 @@ function Login() {
       }
 
       login(data.user, data.token);
-      navigate("/home");
+      if (data.user?.role === "campus-rep") {
+        navigate("/camp-rep-dashboard");
+      } else {
+        navigate("/home");
+      }
     } catch {
       setError("Could not connect to server");
     }
@@ -95,22 +99,6 @@ function Login() {
           Log in
         </button>
 
-        {/* <div className="divider">Or continue with</div>
-
-        <div className="social-buttons">
-          <button type="button" className="social-btn">
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="20" height="20" />
-            Sign in with Google
-          </button>
-          <button type="button" className="social-btn">
-            <img src="https://www.svgrepo.com/show/452229/apple.svg" alt="Apple" width="20" height="20" style={{filter: "invert(1)"}} />
-            Sign in with Apple
-          </button>
-        </div> */}
-
-        <p className="auth-footer-text">
-          Sign in as a <Link to="/admin-login">Campus Rep</Link>
-        </p>
       </form>
     </AuthCard>
   );

@@ -1,5 +1,7 @@
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 const { savedCoursesStore } = require("../data/savedCoursesStore");
 
 const INVALID_OBJECTID = "507f1f77bcf86cd7994390aa";
@@ -108,4 +110,26 @@ async function seedMainFixtures() {
   };
 }
 
-module.exports = { clearTestData, seedMainFixtures, INVALID_OBJECTID };
+/** JWT for a campus-rep with the given school (for admin route tests). */
+async function campusRepBearerToken(school, email) {
+  await User.deleteMany({ email });
+  const u = await User.create({
+    fullName: "Test Campus Rep",
+    email,
+    password: "password123",
+    role: "campus-rep",
+    school,
+  });
+  return jwt.sign(
+    { id: u._id.toString(), email: u.email, role: u.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+}
+
+module.exports = {
+  clearTestData,
+  seedMainFixtures,
+  INVALID_OBJECTID,
+  campusRepBearerToken,
+};

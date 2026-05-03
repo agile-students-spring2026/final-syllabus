@@ -7,7 +7,6 @@ const CampusRepDetailsScreen = () => {
   const navigate = useNavigate();
   const { token, login } = useAuth();
   const [school, setSchool] = useState('');
-  const [major, setMajor] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +26,7 @@ const CampusRepDetailsScreen = () => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ school, major }),
+        body: JSON.stringify({ school }),
       });
 
       const data = await res.json();
@@ -69,16 +68,6 @@ const CampusRepDetailsScreen = () => {
                 </option>
               ))}
             </select>
-          </div>
-
-          <div className="input-group">
-            <label>Department</label>
-            <input 
-              type="text" 
-              placeholder="Computer Science" 
-              value={major}
-              onChange={(e) => setMajor(e.target.value)}
-            />
           </div>
 
           {error && <p className="auth-error">{error}</p>}

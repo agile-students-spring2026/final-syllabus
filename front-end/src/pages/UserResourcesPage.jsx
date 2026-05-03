@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
+import { useAuth } from "../context/AuthContext";
 import "./UserResourcesPage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -19,6 +20,9 @@ const apiToUi = {
 };
 
 const UserResourcesPage = () => {
+  const { user } = useAuth();
+  const homePath = user?.role === "campus-rep" ? "/camp-rep-dashboard" : "/home";
+  const isCampusRep = user?.role === "campus-rep";
   const [showFabMenu, setShowFabMenu] = useState(false);
   const [userResources, setUserResources] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,28 +65,32 @@ const UserResourcesPage = () => {
   return (
     <div className="userResPage">
       <header className="userResHeader">
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to={homePath} className="logoStub">LOGO</Link>
         <div className="headerRight">
-          <Link to="/verification" className="iconBtn" style={{ textDecoration: 'none' }}>AB</Link>
-          <div className="fabWrap">
-            <button
-              className="iconBtn"
-              aria-label="add resource"
-              onClick={() => setShowFabMenu((prev) => !prev)}
-            >
-              +
-            </button>
-            {showFabMenu && (
-              <div className="fabMenu">
-                <Link to="/create-course" className="fabItem">
-                  Create Course
-                </Link>
-                <Link to="/create-resource?from=direct" className="fabItem">
-                  Create Resource
-                </Link>
+          {!isCampusRep && (
+            <>
+              <Link to="/verification" className="iconBtn" style={{ textDecoration: 'none' }}>AB</Link>
+              <div className="fabWrap">
+                <button
+                  className="iconBtn"
+                  aria-label="add resource"
+                  onClick={() => setShowFabMenu((prev) => !prev)}
+                >
+                  +
+                </button>
+                {showFabMenu && (
+                  <div className="fabMenu">
+                    <Link to="/create-course" className="fabItem">
+                      Create Course
+                    </Link>
+                    <Link to="/create-resource?from=direct" className="fabItem">
+                      Create Resource
+                    </Link>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          )}
           <Link to="/profile" className="profileStub" aria-label="profile">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">
               <circle cx="12" cy="8" r="4" />

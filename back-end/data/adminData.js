@@ -1,6 +1,3 @@
-// Campus rep users for GET /api/admin/users only (per-team demo data).
-// Pending review items and dashboard counts come from MongoDB (see adminController).
-
 const campusRepUsers = [
   { id: "u-1", name: "Alice Nguyen", email: "alice@nyu.edu", campus: "New York University (NYU)", role: "campus_rep" },
   { id: "u-2", name: "Ben Okafor", email: "ben@stanford.edu", campus: "Stanford University", role: "campus_rep" },

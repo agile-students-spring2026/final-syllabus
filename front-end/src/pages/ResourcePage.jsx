@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./ResourcePage.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const ResourcePage = () => {
+  const { user } = useAuth();
+  const homePath = user?.role === 'campus-rep' ? '/camp-rep-dashboard' : '/home';
   const { courseId } = useParams();
   const [data, setData] = useState(null);
   const [err, setErr] = useState(null);
@@ -45,7 +48,7 @@ const ResourcePage = () => {
     return (
       <div className="resourcePage">
         <p>{err}</p>
-        <Link to="/home" className="resourceBack">Go home</Link>
+        <Link to={homePath} className="resourceBack">Go home</Link>
       </div>
     );
   }
@@ -55,7 +58,7 @@ const ResourcePage = () => {
       <div className="resourcePage">
         <div className="resourceHeader">
           <h2>Course not found</h2>
-          <Link to="/home" className="resourceBack">
+          <Link to={homePath} className="resourceBack">
             Go home
           </Link>
         </div>
@@ -84,9 +87,7 @@ const ResourcePage = () => {
 
       <div className="resourceList">
         {resources.length === 0 ? (
-          <div className="resourceEmpty">
-            <p>No resources yet. Be the first to share something useful.</p>
-          </div>
+          <p className="resourceSub">no resources</p>
         ) : (
           resources.map((item) => (
             <div

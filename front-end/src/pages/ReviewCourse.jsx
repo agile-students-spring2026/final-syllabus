@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./ReviewCourse.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -7,27 +8,31 @@ const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 const ReviewCourse = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/admin/courses/${courseId}`)
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_BASE}/admin/courses/${courseId}`, { headers })
       .then((res) => res.json())
       .then((data) => {
         setCourse(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [courseId]);
+  }, [courseId, token]);
 
   const handleAccept = () => {
-    fetch(`${API_BASE}/admin/courses/${courseId}/approve`, { method: "POST" }).catch(() => {});
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_BASE}/admin/courses/${courseId}/approve`, { method: "POST", headers }).catch(() => {});
     navigate("/camp-rep-dashboard");
   };
 
   const handleReject = () => {
-    fetch(`${API_BASE}/admin/courses/${courseId}/reject`, { method: "POST" }).catch(() => {});
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_BASE}/admin/courses/${courseId}/reject`, { method: "POST", headers }).catch(() => {});
     navigate("/camp-rep-dashboard");
   };
 
@@ -36,7 +41,7 @@ const ReviewCourse = () => {
   if (!course || course.error) {
     return (
       <div className="reviewCoursePage">
-        <p style={{ color: "#f5f5f5", padding: 24 }}>Course not found.</p>
+        <p style={{ color: "#f5f5f5", padding: 24 }}>{course?.error || "Course not found."}</p>
       </div>
     );
   }
@@ -59,7 +64,18 @@ const ReviewCourse = () => {
 
       <main className="reviewCourseMain">
         <div className="reviewCourseCard">
-          <div className="reviewCourseThumbnail" />
+          <div
+            className="reviewCourseThumbnail"
+            style={
+              course.coverImageUrl
+                ? {
+                    backgroundImage: `url(${course.coverImageUrl})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }
+                : undefined
+            }
+          />
           <div className="reviewCourseCardFooter">
             <div>
               <p className="reviewCourseTitle">{course.name}</p>
@@ -73,23 +89,6 @@ const ReviewCourse = () => {
           <h2 className="reviewOverviewHeading">Course Overview</h2>
 
           <p className="reviewOverviewDescription">{course.description}</p>
-
-          <div className="reviewOverviewMeta">
-            <div className="reviewOverviewMetaItem">
-              <span className="reviewOverviewMetaLabel">Instructor</span>
-              <span className="reviewOverviewMetaValue">{course.instructor}</span>
-            </div>
-            <div className="reviewOverviewMetaDivider" />
-            <div className="reviewOverviewMetaItem">
-              <span className="reviewOverviewMetaLabel">Duration</span>
-              <span className="reviewOverviewMetaValue">{course.duration}</span>
-            </div>
-            <div className="reviewOverviewMetaDivider" />
-            <div className="reviewOverviewMetaItem">
-              <span className="reviewOverviewMetaLabel">Level</span>
-              <span className="reviewOverviewMetaValue">{course.level}</span>
-            </div>
-          </div>
 
           <div className="reviewOverviewBlock">
             <h3 className="reviewOverviewBlockTitle">What You'll Learn</h3>

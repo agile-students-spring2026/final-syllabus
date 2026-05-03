@@ -109,16 +109,6 @@
   line-height: 1.45;
 }
 
-.resourceEmpty {
-  width: 100%;
-  background: rgba(217, 220, 227, 0.18);
-  border: 1px dashed #d9dce3;
-  border-radius: 10px;
-  padding: 18px;
-  color: #d1d4e0;
-  text-align: center;
-}
-
 .resourceActions {
   width: 100%;
   max-width: 640px;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import placeHolderImage from '../assets/placeHolderImage.png'
 import { Link, useParams } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { GoArrowLeft } from "react-icons/go";
 import toast from 'react-hot-toast';
 import './CourseDetails.css';
@@ -8,6 +9,8 @@ import './CourseDetails.css';
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const CourseDetails = () => {
+  const { user } = useAuth();
+  const homePath = user?.role === 'campus-rep' ? '/camp-rep-dashboard' : '/home';
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
@@ -59,7 +62,7 @@ const CourseDetails = () => {
   return (
     <div className='courseDetails'>
       <div className="backBtn">
-        <Link to="/home">
+        <Link to={homePath}>
           <GoArrowLeft /> Back
         </Link>
       </div>
@@ -68,7 +71,10 @@ const CourseDetails = () => {
         <h2>Course Details</h2>
       </div>
       <div className="coursePhoto">
-        <img src={placeHolderImage} alt="Course placeholder" />
+        <img
+          src={course.coverImageUrl || placeHolderImage}
+          alt={course.name}
+        />
       </div>
       <div className="courseTitle">
         <h2>{course.name}</h2>
@@ -82,7 +88,9 @@ const CourseDetails = () => {
         </div>
       </div>
       <div className="actionRow">
-        <button className="actionButton" onClick={handleSave}>Save</button>
+        {user?.role !== 'campus-rep' && (
+          <button className="actionButton" onClick={handleSave}>Save</button>
+        )}
 
         <Link
           to={`/courses/${course.id}/resources`}

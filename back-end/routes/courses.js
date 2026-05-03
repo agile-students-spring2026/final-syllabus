@@ -21,6 +21,7 @@ const courseToJson = (c) => ({
   description: c.description,
   category: c.category,
   school: c.school,
+  coverImageUrl: c.coverImageUrl || "",
   duration: c.duration,
   level: c.level,
   status: c.status,
@@ -38,34 +39,59 @@ const resourceToJson = (r) => ({
   verified: r.verified,
 });
 
-// POST /api/courses/create - make a new course
+// make a new course
 router.post(
   "/create",
   [
     body("name").trim().notEmpty().withMessage("Course name is required"),
     body("code").trim().notEmpty().withMessage("Course code is required"),
     body("instructor").optional().trim(),
-    body("description").optional().trim(),
-    body("category").optional().trim(),
+    body("description").trim().notEmpty().withMessage("Course description is required"),
+    body("category").trim().notEmpty().withMessage("Course category is required"),
     body("school").optional().trim(),
     body("duration").optional().trim(),
     body("level").optional().trim(),
+    body("coverImageUrl")
+      .optional({ checkFalsy: true })
+      .trim()
+      .custom((value) => {
+        if (!value) return true;
+        const dataPrefixes = ["data:image/jpeg", "data:image/png", "data:image/webp", "data:image/gif"];
+        const isData = dataPrefixes.some((p) => value.startsWith(`${p};base64,`));
+        if (isData) {
+          if (value.length > 550_000) {
+            throw new Error("Uploaded image is too large.");
+          }
+          return true;
+        }
+        try {
+          const u = new URL(value);
+          if (u.protocol !== "http:" && u.protocol !== "https:") {
+            throw new Error();
+          }
+          return true;
+        } catch {
+          throw new Error("Cover image must be a valid URL or a small uploaded image");
+        }
+      }),
   ],
   assertValid,
   async (req, res) => {
-    const { name, code, instructor, description, category, school, duration, level } = req.body;
+    const { name, code, instructor, description, category, school, duration, level, coverImageUrl } = req.body;
 
     const VALID_LEVELS = ["Beginner", "Intermediate", "Advanced"];
     const levelTrimmed = typeof level === "string" ? level.trim() : "";
+    const coverTrimmed = typeof coverImageUrl === "string" ? coverImageUrl.trim() : "";
     const doc = {
       name,
       code,
       instructor: instructor || "TBD",
       description: description || "",
-      category: category || "General",
+      category,
       school: school || "—",
       duration: duration || "",
       status: "pending",
+      ...(coverTrimmed ? { coverImageUrl: coverTrimmed } : {}),
     };
     if (levelTrimmed && VALID_LEVELS.includes(levelTrimmed)) {
       doc.level = levelTrimmed;
@@ -87,7 +113,7 @@ router.post(
   }
 );
 
-// GET /api/courses/:id/resources - all resources grouped by category
+// all resources grouped by category
 router.get(
   "/:id/resources",
   [param("id").isMongoId().withMessage("Invalid course id")],
@@ -119,7 +145,7 @@ router.get(
   }
 );
 
-// GET /api/courses/:id/resources/:type - filter by specific type
+// filter by specific type
 router.get(
   "/:id/resources/:type",
   [

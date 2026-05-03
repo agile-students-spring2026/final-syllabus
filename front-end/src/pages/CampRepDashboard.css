@@ -42,6 +42,19 @@
   flex-direction: column;
 }
 
+.campRepModerationBlock {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(143, 233, 230, 0.25);
+}
+
+.campRepModerationHeading {
+  margin: 0 0 16px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
 .campRepDashEyebrow {
   margin: 0 0 4px;
   text-transform: uppercase;

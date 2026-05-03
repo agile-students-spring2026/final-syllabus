@@ -19,6 +19,7 @@ function toListItem(c) {
     category: c.category,
     school: c.school,
     recent: recentLabelFromDate(c.createdAt),
+    coverImageUrl: c.coverImageUrl || "",
   };
 }
 

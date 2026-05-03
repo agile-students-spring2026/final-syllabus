@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "./ReviewResources.css";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
@@ -7,13 +8,15 @@ const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 const ReviewResources = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [resourceData, setResourceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTypes, setActiveTypes] = useState([]);
 
   useEffect(() => {
-    fetch(`${API_BASE}/admin/resources/${courseId}`)
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_BASE}/admin/resources/${courseId}`, { headers })
       .then((res) => res.json())
       .then((data) => {
         setResourceData(data);
@@ -23,7 +26,7 @@ const ReviewResources = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [courseId]);
+  }, [courseId, token]);
 
   const toggleType = (type) => {
     setActiveTypes((prev) =>
@@ -32,12 +35,14 @@ const ReviewResources = () => {
   };
 
   const handleAccept = () => {
-    fetch(`${API_BASE}/admin/resources/${courseId}/approve`, { method: "POST" }).catch(() => {});
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_BASE}/admin/resources/${courseId}/approve`, { method: "POST", headers }).catch(() => {});
     navigate("/camp-rep-dashboard");
   };
 
   const handleReject = () => {
-    fetch(`${API_BASE}/admin/resources/${courseId}/reject`, { method: "POST" }).catch(() => {});
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    fetch(`${API_BASE}/admin/resources/${courseId}/reject`, { method: "POST", headers }).catch(() => {});
     navigate("/camp-rep-dashboard");
   };
 
@@ -46,7 +51,7 @@ const ReviewResources = () => {
   if (!resourceData || resourceData.error) {
     return (
       <div className="reviewResPage">
-        <p style={{ color: "#f5f5f5", padding: 24 }}>Resource not found.</p>
+        <p style={{ color: "#f5f5f5", padding: 24 }}>{resourceData?.error || "Resource not found."}</p>
       </div>
     );
   }

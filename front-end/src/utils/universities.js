@@ -1,4 +1,3 @@
-// List of major US universities for the school selection dropdown
 export const US_UNIVERSITIES = [
   "Alabama State University",
   "Arizona State University",

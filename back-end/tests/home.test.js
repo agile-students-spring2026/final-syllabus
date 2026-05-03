@@ -63,6 +63,20 @@ describe("GET /api/courses (MongoDB)", () => {
     });
   });
 
+  it("should filter by materialType (courses with that resource kind)", async () => {
+    const notesRes = await request(app).get("/api/courses?materialType=notes");
+    expect(notesRes.status).to.equal(200);
+    const noteIds = notesRes.body.map((c) => c.id);
+    expect(noteIds).to.include(fixtures.cs101Id);
+    expect(noteIds).to.not.include(fixtures.calcId);
+
+    const practiceRes = await request(app).get("/api/courses?materialType=practice");
+    expect(practiceRes.status).to.equal(200);
+    const practiceIds = practiceRes.body.map((c) => c.id);
+    expect(practiceIds).to.include(fixtures.calcId);
+    expect(practiceIds).to.not.include(fixtures.cs101Id);
+  });
+
   it("should return empty array for non-matching search", async () => {
     const res = await request(app).get("/api/courses?search=xyznonexistent");
     expect(res.status).to.equal(200);

@@ -7,9 +7,11 @@ const getHomepage = (_req, res) => {
   res.json({ message: "Welcome to the Course Sharing Platform API!" });
 };
 
+const RESOURCE_CATEGORIES = ["notes", "flashcards", "videos", "practice"];
+
 const getAllCourses = async (req, res) => {
   try {
-    const { search, category, recent, school } = req.query;
+    const { search, category, recent, school, materialType } = req.query;
 
     const q = { status: { $ne: "rejected" } };
     if (search) {
@@ -22,6 +24,10 @@ const getAllCourses = async (req, res) => {
     }
     if (school && school !== "") {
       q.school = new RegExp(`^${school.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
+    }
+    if (materialType && RESOURCE_CATEGORIES.includes(materialType)) {
+      const withThisMaterial = await Resource.distinct("course", { category: materialType });
+      q._id = { $in: withThisMaterial };
     }
 
     const courses = await Course.find(q);
@@ -64,6 +70,7 @@ const getCourseById = async (req, res) => {
       description: course.description,
       category: course.category,
       school: course.school,
+      coverImageUrl: course.coverImageUrl || "",
       recent: recentLabelFromDate(course.createdAt),
       instructor: course.instructor,
       duration: course.duration,

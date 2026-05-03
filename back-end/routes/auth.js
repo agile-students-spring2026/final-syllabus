@@ -13,7 +13,6 @@ const signToken = (user) =>
     { expiresIn: "7d" }
   );
 
-// POST /api/auth/signup
 router.post(
   "/signup",
   [
@@ -55,7 +54,6 @@ router.post(
   }
 );
 
-// POST /api/auth/login
 router.post(
   "/login",
   [
@@ -89,7 +87,6 @@ router.post(
   }
 );
 
-// POST /api/auth/campus-rep/login
 router.post(
   "/campus-rep/login",
   [
@@ -123,7 +120,6 @@ router.post(
   }
 );
 
-// PATCH /api/auth/role
 router.patch("/role", protect, async (req, res) => {
   const { role } = req.body;
   if (!["student", "campus-rep"].includes(role)) {
@@ -143,7 +139,6 @@ router.patch("/role", protect, async (req, res) => {
   }
 });
 
-// PATCH /api/auth/profile - Update user profile (school, major)
 router.patch(
   "/profile",
   protect,

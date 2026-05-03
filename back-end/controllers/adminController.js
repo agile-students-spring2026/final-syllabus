@@ -7,15 +7,31 @@ const {
   recentLabelFromDate,
   pendingResourceCategoryLabel,
 } = require("../lib/courseMappers");
+const { schoolRegexpExact } = require("../lib/schoolScope");
+
+async function schoolAllowsCourse(courseId, campusRepSchool) {
+  const filter = schoolRegexpExact(campusRepSchool);
+  if (!filter) return { ok: false, status: 403 };
+  const course = await Course.findById(courseId).select("school").lean();
+  if (!course) return { ok: false, status: 404 };
+  if (!filter.test(course.school || "")) return { ok: false, status: 403 };
+  return { ok: true };
+}
 
 const getDashboard = async (req, res) => {
   try {
-    const [verifiedCourses, verifiedResources] = await Promise.all([
-      Course.countDocuments({ status: "approved" }),
-      Resource.countDocuments({ verified: true }),
+    const filter = schoolRegexpExact(req.campusRepSchool);
+    const [verifiedCourses, courseIdsAtSchool] = await Promise.all([
+      Course.countDocuments({ status: "approved", school: filter }),
+      Course.find({ school: filter }).distinct("_id"),
     ]);
+    const verifiedResources = await Resource.countDocuments({
+      verified: true,
+      course: { $in: courseIdsAtSchool },
+    });
     return res.json({
       campusCode: "CMP1001",
+      school: req.campusRepSchool,
       verifiedCourses,
       verifiedResources,
     });
@@ -26,6 +42,7 @@ const getDashboard = async (req, res) => {
 
 const getPending = async (req, res) => {
   try {
+    const filter = schoolRegexpExact(req.campusRepSchool);
     const { kind, category } = req.query;
     const wantCourse = !kind || kind.toLowerCase() === "course";
     const wantResource = !kind || kind.toLowerCase() === "resource";
@@ -35,7 +52,7 @@ const getPending = async (req, res) => {
 
     const out = [];
     if (wantCourse) {
-      const courses = await Course.find({ status: "pending" }).lean();
+      const courses = await Course.find({ status: "pending", school: filter }).lean();
       for (const c of courses) {
         if (!catMatch(c.category)) continue;
         out.push({
@@ -55,6 +72,8 @@ const getPending = async (req, res) => {
         .lean();
       for (const r of resources) {
         if (!r.course) continue;
+        const sch = typeof r.course === "object" && r.course.school ? r.course.school : "";
+        if (!filter.test(String(sch))) continue;
         const resCat = pendingResourceCategoryLabel(r.category);
         if (!catMatch(resCat)) continue;
         const cRef = r.course;
@@ -83,6 +102,12 @@ const getCourseById = async (req, res) => {
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ error: "Invalid course id" });
   }
+  const gate = await schoolAllowsCourse(id, req.campusRepSchool);
+  if (!gate.ok) {
+    const msg =
+      gate.status === 403 ? "Not authorized to review this course" : "Course not found";
+    return res.status(gate.status).json({ error: msg });
+  }
   const course = await Course.findById(id);
   if (!course) {
     return res.status(404).json({ error: "Course not found" });
@@ -92,6 +117,7 @@ const getCourseById = async (req, res) => {
     name: course.name,
     description: course.description,
     category: course.category,
+    coverImageUrl: course.coverImageUrl || "",
     instructor: course.instructor,
     duration: course.duration,
     level: course.level,
@@ -105,6 +131,12 @@ const approveCourse = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ error: "Invalid course id" });
+  }
+  const gate = await schoolAllowsCourse(id, req.campusRepSchool);
+  if (!gate.ok) {
+    const msg =
+      gate.status === 403 ? "Not authorized to review this course" : "Course not found";
+    return res.status(gate.status).json({ error: msg });
   }
   const course = await Course.findByIdAndUpdate(
     id,
@@ -121,6 +153,12 @@ const rejectCourse = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.isValidObjectId(id)) {
     return res.status(400).json({ error: "Invalid course id" });
+  }
+  const gate = await schoolAllowsCourse(id, req.campusRepSchool);
+  if (!gate.ok) {
+    const msg =
+      gate.status === 403 ? "Not authorized to review this course" : "Course not found";
+    return res.status(gate.status).json({ error: msg });
   }
   const course = await Course.findByIdAndUpdate(
     id,
@@ -147,6 +185,12 @@ const getResourceById = async (req, res) => {
   if (!mongoose.isValidObjectId(courseId)) {
     return res.status(400).json({ error: "Invalid course id" });
   }
+  const gate = await schoolAllowsCourse(courseId, req.campusRepSchool);
+  if (!gate.ok) {
+    const msg =
+      gate.status === 403 ? "Not authorized to review resources for this course" : "Resource not found";
+    return res.status(gate.status).json({ error: msg });
+  }
   const course = await Course.findById(courseId);
   if (!course) {
     return res.status(404).json({ error: "Resource not found" });
@@ -168,6 +212,12 @@ const approveResource = async (req, res) => {
   if (!mongoose.isValidObjectId(courseId)) {
     return res.status(400).json({ error: "Invalid course id" });
   }
+  const gate = await schoolAllowsCourse(courseId, req.campusRepSchool);
+  if (!gate.ok) {
+    const msg =
+      gate.status === 403 ? "Not authorized to review resources for this course" : "Resource not found";
+    return res.status(gate.status).json({ error: msg });
+  }
   const n = await Resource.updateMany(
     { course: courseId },
     { $set: { verified: true } }
@@ -182,6 +232,12 @@ const rejectResource = async (req, res) => {
   const { id: courseId } = req.params;
   if (!mongoose.isValidObjectId(courseId)) {
     return res.status(400).json({ error: "Invalid course id" });
+  }
+  const gate = await schoolAllowsCourse(courseId, req.campusRepSchool);
+  if (!gate.ok) {
+    const msg =
+      gate.status === 403 ? "Not authorized to review resources for this course" : "Resource not found";
+    return res.status(gate.status).json({ error: msg });
   }
   const n = await Resource.deleteMany({ course: courseId });
   if (n.deletedCount === 0) {

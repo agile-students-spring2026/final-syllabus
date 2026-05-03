@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import { useAuth } from '../context/AuthContext';
 import CourseCard from '../components/CourseCard';
+import { COURSE_SUBJECTS } from '../utils/courseSubjects';
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
@@ -21,7 +22,6 @@ const HomePage = () => {
     if (search) params.append("search", search);
     if (recent) params.append("recent", recent);
     if (category) params.append("category", category);
-    // Filter by user's school if they have one selected
     if (user?.school) params.append("school", user.school);
 
     setLoading(true);
@@ -79,12 +79,11 @@ const HomePage = () => {
           aria-label="Filter by subject"
         >
           <option value="">Subject</option>
-          <option value="Computer Science">Computer Science</option>
-          <option value="Mathematics">Mathematics</option>
-          <option value="History">History</option>
-          <option value="Literature">Literature</option>
-          <option value="Biology">Biology</option>
-          <option value="Physics">Physics</option>
+          {COURSE_SUBJECTS.map((subject) => (
+            <option key={subject} value={subject}>
+              {subject}
+            </option>
+          ))}
         </select>
       </div>
 

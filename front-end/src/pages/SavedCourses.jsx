@@ -1,11 +1,22 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
 import CourseCard from '../components/CourseCard';
+import { COURSE_SUBJECTS } from '../utils/courseSubjects';
+import { useAuth } from "../context/AuthContext";
 
 const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
 const SavedCourses = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (user?.role === "campus-rep") {
+            navigate("/camp-rep-dashboard", { replace: true });
+        }
+    }, [user, navigate]);
+
     const [savedCourses, setSavedCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -33,6 +44,14 @@ const SavedCourses = () => {
                 setLoading(false);
             });
     }, [userId]);
+
+    const savedCourseId = (c) => {
+        const raw = c?._id ?? c?.id;
+        if (raw == null) return "";
+        return typeof raw === "object" && typeof raw.toString === "function"
+            ? raw.toString()
+            : String(raw);
+    };
 
     const filtered = savedCourses.filter((c) => {
         const matchesSearch =
@@ -82,12 +101,11 @@ const SavedCourses = () => {
                     aria-label="Filter by subject"
                 >
                     <option value="">Subject</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="History">History</option>
-                    <option value="Literature">Literature</option>
-                    <option value="Biology">Biology</option>
-                    <option value="Physics">Physics</option>
+                    {COURSE_SUBJECTS.map((subject) => (
+                        <option key={subject} value={subject}>
+                            {subject}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -99,7 +117,7 @@ const SavedCourses = () => {
                     {filtered.length === 0
                         ? <p className="status-message">No saved courses found.</p>
                         : filtered.map((course) => (
-                            <CourseCard key={course.id} course={course} />
+                            <CourseCard key={savedCourseId(course) || course.id} course={course} />
                         ))
                     }
                 </div>

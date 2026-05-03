@@ -55,8 +55,21 @@
   color: #ffffff;
 }
 
+.fieldLabelTitle {
+  display: block;
+  text-align: center;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.requiredMark {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
 .textInput,
-.textArea {
+.textArea,
+.selectInput {
   width: 100%;
   border: 1px solid #0a0d18;
   border-radius: 6px;
@@ -67,8 +80,84 @@
   box-sizing: border-box;
 }
 
+.selectInput {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%230a0d18' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
 .textArea {
   resize: none;
+}
+
+.coverImageBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.courseImagePickArea {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #0a0d18;
+  border-radius: 6px;
+  background: #f3f4f7;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.courseImageOverlayInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.courseImageHint {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: #8a9ab5;
+  pointer-events: none;
+  user-select: none;
+}
+
+.courseImageThumb {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+.courseImageRemoveLink {
+  align-self: center;
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: #8fe9e6;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.courseImageRemoveLink:hover {
+  color: #ffffff;
 }
 
 .pillButton {

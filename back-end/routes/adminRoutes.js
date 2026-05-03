@@ -10,8 +10,12 @@ const {
   rejectResource,
   getUsers,
 } = require("../controllers/adminController");
+const { protect } = require("../middleware/authMiddleware");
+const { loadCampusRepForAdmin } = require("../middleware/campusRepMiddleware");
 
 const router = express.Router();
+
+router.use(protect, loadCampusRepForAdmin);
 
 // Dashboard stats
 router.get("/dashboard", getDashboard);

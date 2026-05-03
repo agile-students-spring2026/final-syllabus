@@ -19,6 +19,7 @@ const courseSchema = new mongoose.Schema(
     duration: String,
     level: { type: String, enum: ["Beginner", "Intermediate", "Advanced"] },
     recent: { type: String, default: "Today" },
+    coverImageUrl: { type: String, trim: true, default: "" },
     whatYoullLearn: [String],
     modules: [String],
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },

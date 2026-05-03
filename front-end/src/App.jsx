@@ -5,7 +5,6 @@ import HomePage from "./pages/HomePage";
 import SavedCourses from "./pages/SavedCourses";
 import Login from "./pages/Login";
 import Signup from "./pages/SignUp";
-import AdminLogin from "./pages/AdminLogin";
 import RoleSelectionScreen from "./pages/RoleSection-Signup";
 import StudentDetailsScreen from "./pages/StudentDetails-signup";
 import CampusRepDetailsScreen from "./pages/CampusRepDetails";
@@ -28,8 +27,8 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   const location = useLocation();
-  const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying', '/admin-login'];
-  const campRepPages = ['/camp-rep-dashboard', '/review-course', '/review-resources', '/profile'];
+  const authPages = ['/login', '/signup', '/role-selection', '/student-details', '/campus-rep-details', '/success', '/verifying'];
+  const campRepPages = ['/review-course', '/review-resources', '/profile'];
   const isAuthPage = authPages.includes(location.pathname);
   const isCampRepPage = campRepPages.some((p) => location.pathname.startsWith(p));
 
@@ -45,7 +44,7 @@ function App() {
           <Route path="/saved" element={<SavedCourses />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/admin-login" element={<AdminLogin />} />
+          <Route path="/admin-login" element={<Navigate to="/login" replace />} />
           <Route path="/role-selection" element={<RoleSelectionScreen />} />
           <Route path="/student-details" element={<StudentDetailsScreen />} />
           <Route path="/campus-rep-details" element={<CampusRepDetailsScreen />} />
