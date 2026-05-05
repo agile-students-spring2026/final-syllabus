@@ -8,6 +8,10 @@ const {
   pendingResourceCategoryLabel,
 } = require("../lib/courseMappers");
 
+const PUBLIC_BASE_URL = (
+  process.env.PUBLIC_BASE_URL || "http://localhost:5001"
+).replace(/\/$/, "");
+
 const getDashboard = async (req, res) => {
   try {
     const [verifiedCourses, verifiedResources] = await Promise.all([
@@ -140,7 +144,9 @@ const toAdminResource = (r) => ({
   format: "File",
   added: recentLabelFromDate(r.uploadedAt),
   fileName: r.fileName,
-  fileUrl: r.fileName ? `http://localhost:5001/uploads/resources/${r.fileName}` : null,
+  fileUrl: r.fileName
+    ? `${PUBLIC_BASE_URL}/uploads/resources/${r.fileName}`
+    : null,
 });
 
 const getResourceById = async (req, res) => {
