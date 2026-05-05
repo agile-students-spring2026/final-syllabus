@@ -13,16 +13,14 @@ const courseSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     code: { type: String, trim: true, unique: true, sparse: true },
     description: { type: String, required: true },
-    category: { type: String, required: true },
     school: { type: String, required: true },
-    instructor: { type: String, required: true },
+    imageFileName: String,
     duration: String,
-    level: { type: String, enum: ["Beginner", "Intermediate", "Advanced"] },
+    level: String,
     recent: { type: String, default: "Today" },
     whatYoullLearn: [String],
     modules: [String],
     status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
-
   },
   { timestamps: true }
 );

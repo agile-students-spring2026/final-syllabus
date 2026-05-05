@@ -20,6 +20,7 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (_req, res) => {
   res.json({ message: "Syllabus+ API is running" });

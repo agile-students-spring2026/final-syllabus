@@ -10,32 +10,47 @@ const CreateCoursePage = () => {
   const { token } = useAuth();
   const [name, setName] = useState("");
   const [code, setCode] = useState("");
-  const [category, setCategory] = useState("");
-  const [topic, setTopic] = useState("");
   const [description, setDescription] = useState("");
   const [school, setSchool] = useState("");
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     setSubmitting(true);
-    const desc = [topic && `Topic: ${topic}`, description].filter(Boolean).join("\n\n");
-    const headers = { "Content-Type": "application/json" };
+
+    const formData = new FormData();
+    formData.append("name", name.trim());
+    formData.append("code", code.trim());
+    formData.append("description", description.trim());
+    formData.append("school", school.trim() || "");
+    if (image) {
+      formData.append("image", image);
+    }
+
+    const headers = {};
     if (token) headers.Authorization = `Bearer ${token}`;
 
     try {
       const res = await fetch(`${API_BASE}/courses/create`, {
         method: "POST",
         headers,
-        body: JSON.stringify({
-          name: name.trim(),
-          code: code.trim(),
-          description: desc,
-          category: category.trim() || undefined,
-          school: school.trim() || undefined,
-        }),
+        body: formData,
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -56,7 +71,7 @@ const CreateCoursePage = () => {
       <header className="createHeader">
         <Link to="/home" className="logoStub">LOGO</Link>
         <Link to="/resources" className="backLink">
-            Back
+          Back
         </Link>
       </header>
 
@@ -89,26 +104,6 @@ const CreateCoursePage = () => {
           </label>
 
           <label className="fieldLabel">
-            Course / category
-            <input
-              className="textInput"
-              placeholder="e.g. Computer Science"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-          </label>
-
-          <label className="fieldLabel">
-            Topic
-            <input
-              className="textInput"
-              placeholder="Topic"
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-            />
-          </label>
-
-          <label className="fieldLabel">
             School
             <input
               className="textInput"
@@ -126,13 +121,29 @@ const CreateCoursePage = () => {
               placeholder="Describe the course"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              required
             />
           </label>
 
           <label className="fieldLabel">
             Upload course image
-            <input className="textInput" placeholder="Not wired yet" disabled />
+            <input 
+              className="textInput" 
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
           </label>
+
+          {imagePreview && (
+            <div style={{ marginBottom: "1rem" }}>
+              <img 
+                src={imagePreview} 
+                alt="Preview" 
+                style={{ maxWidth: "200px", maxHeight: "200px", borderRadius: "8px" }}
+              />
+            </div>
+          )}
 
           <Link to="/create-resource" className="pillButton">
             Add resources
