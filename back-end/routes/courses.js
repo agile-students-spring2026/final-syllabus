@@ -60,11 +60,11 @@ router.post(
         name,
         code,
         instructor: instructor || "TBD",
-        description: description || "",
+        description: description || undefined,
         category: category || "General",
         school: school || "—",
         duration: duration || "",
-        level: level || "",
+        level: level || undefined,
         status: "pending",
       });
 

@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./ProfilePage.css";
@@ -10,7 +11,7 @@ const ProfilePage = () => {
     <div className="profilePage">
       <header className="profilePageHeader">
         <button className="profileBackBtn" onClick={() => navigate(-1)}>←</button>
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
       </header>
 
       <div className="profileIdentity">

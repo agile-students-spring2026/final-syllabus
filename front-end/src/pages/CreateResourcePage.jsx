@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import "./CreateResourcePage.css";
 
@@ -9,7 +10,7 @@ const CreateResourcePage = () => {
   return (
     <div className="createFormPage">
       <header className="createHeader">
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
         <Link to="/resources" className="backLink">
           Back
         </Link>

@@ -12,10 +12,10 @@ const courseSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     code: { type: String, trim: true, unique: true, sparse: true },
-    description: { type: String, required: true },
+    description: { type: String },
     category: { type: String, required: true },
-    school: { type: String, required: true },
-    instructor: { type: String, required: true },
+    school: { type: String },
+    instructor: { type: String },
     duration: String,
     level: { type: String, enum: ["Beginner", "Intermediate", "Advanced"] },
     recent: { type: String, default: "Today" },
