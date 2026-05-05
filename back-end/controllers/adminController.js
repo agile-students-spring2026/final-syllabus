@@ -8,6 +8,10 @@ const {
   pendingResourceCategoryLabel,
 } = require("../lib/courseMappers");
 
+const PUBLIC_BASE_URL = (
+  process.env.PUBLIC_BASE_URL || "http://localhost:5001"
+).replace(/\/$/, "");
+
 const getDashboard = async (req, res) => {
   try {
     const [verifiedCourses, verifiedResources] = await Promise.all([
@@ -91,8 +95,8 @@ const getCourseById = async (req, res) => {
     id: course._id.toString(),
     name: course.name,
     description: course.description,
-    category: course.category,
-    instructor: course.instructor,
+    school: course.school,
+    imageFileName: course.imageFileName,
     duration: course.duration,
     level: course.level,
     whatYoullLearn: course.whatYoullLearn,
@@ -139,7 +143,10 @@ const toAdminResource = (r) => ({
   type: typeLabelFromCategory(r.category),
   format: "File",
   added: recentLabelFromDate(r.uploadedAt),
-  link: r.fileName,
+  fileName: r.fileName,
+  fileUrl: r.fileName
+    ? `${PUBLIC_BASE_URL}/uploads/resources/${r.fileName}`
+    : null,
 });
 
 const getResourceById = async (req, res) => {

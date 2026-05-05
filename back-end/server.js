@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth.js");
@@ -13,6 +15,13 @@ const adminRoutes = require("./routes/adminRoutes");
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+[
+  path.join(__dirname, "uploads", "resources"),
+  path.join(__dirname, "uploads", "course-images"),
+].forEach((dir) => {
+  fs.mkdirSync(dir, { recursive: true });
+});
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
@@ -20,6 +29,7 @@ mongoose
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (_req, res) => {
   res.json({ message: "Syllabus+ API is running" });

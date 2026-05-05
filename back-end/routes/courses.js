@@ -1,9 +1,45 @@
 const express = require("express");
 const { body, param, validationResult } = require("express-validator");
+const multer = require("multer");
+const path = require("path");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const SavedCourse = require("../models/SavedCourse");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
+
+const PUBLIC_BASE_URL = (
+  process.env.PUBLIC_BASE_URL || "http://localhost:5001"
+).replace(/\/$/, "");
+
+// Setup multer for image uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/course-images/");
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, "course-" + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif/;
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
+    const mimetype = allowedTypes.test(file.mimetype);
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error("Only images are allowed (jpeg, jpg, png, gif)"));
+    }
+  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+});
 
 const assertValid = (req, res, next) => {
   const errors = validationResult(req);
@@ -17,10 +53,9 @@ const courseToJson = (c) => ({
   id: c._id.toString(),
   name: c.name,
   code: c.code,
-  instructor: c.instructor,
   description: c.description,
-  category: c.category,
   school: c.school,
+  imageFileName: c.imageFileName,
   duration: c.duration,
   level: c.level,
   status: c.status,
@@ -33,36 +68,53 @@ const resourceToJson = (r) => ({
   courseId: r.course.toString(),
   category: r.category,
   fileName: r.fileName,
+  fileUrl: r.fileName
+    ? `${PUBLIC_BASE_URL}/uploads/resources/${r.fileName}`
+    : null,
   uploadedBy: r.uploadedBy,
   uploadedAt: r.uploadedAt.toISOString(),
   verified: r.verified,
 });
 
-// POST /api/courses/create - make a new course
+// GET /api/courses/all - list all courses (any status) for dropdowns
+router.get("/all", async (_req, res) => {
+  try {
+    const courses = await Course.find().select("_id name code").lean();
+    return res.json(
+      courses.map((c) => ({
+        id: c._id.toString(),
+        name: c.name,
+        code: c.code,
+      }))
+    );
+  } catch (err) {
+    return res.status(500).json({ error: "Could not load courses" });
+  }
+});
+
+// POST /api/courses/create - make a new course with image upload
 router.post(
   "/create",
+  upload.single("image"),
   [
     body("name").trim().notEmpty().withMessage("Course name is required"),
     body("code").trim().notEmpty().withMessage("Course code is required"),
-    body("instructor").optional().trim(),
     body("description").optional().trim(),
-    body("category").optional().trim(),
     body("school").optional().trim(),
     body("duration").optional().trim(),
     body("level").optional().trim(),
   ],
   assertValid,
   async (req, res) => {
-    const { name, code, instructor, description, category, school, duration, level } = req.body;
+    const { name, code, description, school, duration, level } = req.body;
 
     try {
       const course = await Course.create({
         name,
         code,
-        instructor: instructor || "TBD",
         description: description || "",
-        category: category || "General",
         school: school || "—",
+        imageFileName: req.file ? req.file.filename : null,
         duration: duration || "",
         level: level || "",
         status: "pending",
@@ -73,10 +125,66 @@ router.post(
         course: courseToJson(course),
       });
     } catch (err) {
+      console.error("Course creation error:", err);
       if (err.code === 11000) {
-        return res.status(409).json({ error: "A course with this code already exists" });
+        return res
+          .status(409)
+          .json({ error: "A course with this code already exists" });
       }
-      return res.status(500).json({ error: "Could not create course" });
+      return res
+        .status(500)
+        .json({ error: "Could not create course", detail: err.message });
+    }
+  }
+);
+
+// GET /api/courses/:id - fetch a single course by ID
+router.get(
+  "/:id",
+  [param("id").isMongoId().withMessage("Invalid course id")],
+  assertValid,
+  async (req, res) => {
+    const { id } = req.params;
+    const course = await Course.findById(id);
+    if (!course) {
+      return res.status(404).json({ error: "Course not found" });
+    }
+    return res.json(courseToJson(course));
+  }
+);
+
+// POST /api/courses/:id/save - save a course for the logged-in user
+router.post(
+  "/:id/save",
+  protect,
+  [param("id").isMongoId().withMessage("Invalid course id")],
+  assertValid,
+  async (req, res) => {
+    try {
+      const course = await Course.findById(req.params.id);
+
+      if (!course) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+
+      const savedCourse = await SavedCourse.create({
+        userId: req.user.id,
+        courseId: req.params.id,
+      });
+
+      return res.status(201).json({
+        message: "Course saved successfully",
+        savedCourse,
+      });
+    } catch (err) {
+      if (err.code === 11000) {
+        return res.status(409).json({ error: "Course already saved" });
+      }
+
+      return res.status(500).json({
+        error: "Could not save course",
+        detail: err.message,
+      });
     }
   }
 );
@@ -94,7 +202,7 @@ router.get(
       return res.status(404).json({ error: "Course not found" });
     }
 
-    const courseRes = await Resource.find({ course: courseId });
+    const courseRes = await Resource.find({ course: courseId, verified: true });
     const grouped = {};
     courseRes.forEach((item) => {
       const r = resourceToJson(item);

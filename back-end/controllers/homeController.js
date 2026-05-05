@@ -11,7 +11,7 @@ const getAllCourses = async (req, res) => {
   try {
     const { search, category, recent, school } = req.query;
 
-    const q = { status: { $ne: "rejected" } };
+    const q = { status: "approved" };
     if (search) {
       const s = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const re = new RegExp(s, "i");
@@ -56,7 +56,7 @@ const getCourseById = async (req, res) => {
       return res.status(404).json({ error: "Course not found" });
     }
 
-    const resDocs = await Resource.find({ course: course._id }).sort({ uploadedAt: -1 });
+    const resDocs = await Resource.find({ course: course._id, verified: true }).sort({ uploadedAt: -1 });
     return res.json({
       id: course._id.toString(),
       name: course.name,

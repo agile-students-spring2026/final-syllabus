@@ -2,15 +2,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import "./ProfilePage.css";
 
+const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
+    try {
+      const res = await fetch(`${API_BASE}/auth/account`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed to delete account");
+      logout();
+      navigate("/login");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="profilePage">
       <header className="profilePageHeader">
-        <button className="profileBackBtn" onClick={() => navigate(-1)}>←</button>
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <button className="profileBackBtn" onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/home")}>←</button>
+        <Link to="/home" className="logoStub">Syllabus+</Link>
       </header>
 
       <div className="profileIdentity">
@@ -29,13 +46,13 @@ const ProfilePage = () => {
       <div className="profileDivider" />
 
       <nav className="profileMenu">
-        <button className="profileMenuItem">Profile Settings</button>
+        <button className="profileMenuItem" onClick={() => navigate("/profile/settings")}>Profile Settings</button>
         <div className="profileDivider" />
-        <button className="profileMenuItem">Security &amp; Privacy</button>
+        <button className="profileMenuItem" onClick={() => navigate("/profile/security")}>Security &amp; Privacy</button>
         <div className="profileDivider" />
-        <button className="profileMenuItem">Terms &amp; Conditions</button>
+        <button className="profileMenuItem" onClick={() => navigate("/profile/terms")}>Terms &amp; Conditions</button>
         <div className="profileDivider" />
-        <button className="profileMenuItem profileDelete">Delete Account</button>
+        <button className="profileMenuItem profileDelete" onClick={handleDeleteAccount}>Delete Account</button>
       </nav>
 
       <div className="profileLogoutWrap">

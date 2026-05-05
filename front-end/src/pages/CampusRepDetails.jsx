@@ -8,7 +8,7 @@ const CampusRepDetailsScreen = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <h1>LOGO</h1>
+          <h1>Syllabus+</h1>
           <p>Tell us about yourself</p>
         </div>
 

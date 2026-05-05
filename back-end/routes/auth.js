@@ -84,7 +84,8 @@ router.post(
         user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
       });
     } catch (err) {
-      return res.status(500).json({ error: "Server error" });
+      console.error("Login error:", err.message);
+      return res.status(500).json({ error: "Server error", detail: err.message });
     }
   }
 );
@@ -122,6 +123,58 @@ router.post(
     }
   }
 );
+
+// PATCH /api/auth/profile
+router.patch("/profile", protect, async (req, res) => {
+  const { fullName } = req.body;
+  if (!fullName || !fullName.trim()) {
+    return res.status(400).json({ error: "Full name is required" });
+  }
+  try {
+    const user = await User.findByIdAndUpdate(req.user.id, { fullName: fullName.trim() }, { new: true });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    return res.status(200).json({
+      message: "Profile updated",
+      user: { id: user._id, fullName: user.fullName, email: user.email, role: user.role },
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// PATCH /api/auth/password
+router.patch("/password", protect, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({ error: "Current and new password are required" });
+  }
+  if (newPassword.length < 6) {
+    return res.status(400).json({ error: "New password must be at least 6 characters" });
+  }
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const valid = await user.comparePassword(currentPassword);
+    if (!valid) return res.status(401).json({ error: "Current password is incorrect" });
+    user.password = newPassword;
+    await user.save();
+    return res.status(200).json({ message: "Password updated" });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// DELETE /api/auth/account
+router.delete("/account", protect, async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    return res.status(200).json({ message: "Account deleted" });
+  } catch (err) {
+    console.error("Delete account error:", err.message);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
 
 // PATCH /api/auth/role
 router.patch("/role", protect, async (req, res) => {

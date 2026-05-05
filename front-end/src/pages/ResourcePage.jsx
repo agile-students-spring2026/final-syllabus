@@ -70,6 +70,7 @@ const ResourcePage = () => {
     type: r.category,
     format: "File",
     added: r.uploadedAt ? new Date(r.uploadedAt).toLocaleDateString() : "",
+    fileUrl: r.fileUrl || null,
   }));
 
   return (
@@ -89,21 +90,25 @@ const ResourcePage = () => {
           </div>
         ) : (
           resources.map((item) => (
-            <div
-              key={item.id}
-              className="resourceCard"
-              role="button"
-              tabIndex={0}
-            >
+            <div key={item.id} className="resourceCard">
               <div className="resourceMeta">
                 <span className="pill">{item.type}</span>
                 <span className="pill pillGhost">{item.format}</span>
                 <span className="pill when">{item.added}</span>
               </div>
               <h3>{item.title}</h3>
-              <p className="resourceHint">
-                File: {item.title} — link stored as filename on the server.
-              </p>
+              {item.fileUrl ? (
+                <a
+                  href={item.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="resourceDownload"
+                >
+                  View / Download
+                </a>
+              ) : (
+                <p className="resourceHint">File not available</p>
+              )}
             </div>
           ))
         )}

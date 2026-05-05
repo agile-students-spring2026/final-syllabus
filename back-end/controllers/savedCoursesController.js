@@ -4,7 +4,19 @@ const SavedCourse = require("../models/SavedCourse");
 const getSavedCourses = async (req, res) => {
   try {
     const saved = await SavedCourse.find({ userId: req.user.id }).populate("courseId");
-    const courses = saved.map((s) => s.courseId);
+    const courses = saved
+      .map((s) => s.courseId)
+      .filter(Boolean)
+      .map((c) => ({
+        id: c._id.toString(),
+        name: c.name,
+        code: c.code,
+        description: c.description || "",
+        school: c.school || "",
+        category: c.category || "",
+        imageFileName: c.imageFileName || null,
+        status: c.status,
+      }));
     res.json(courses);
   } catch (err) {
     res.status(500).json({ error: "Failed to fetch saved courses", detail: err.message });

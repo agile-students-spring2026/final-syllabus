@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
+const API_BASE =
+  process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -29,7 +32,7 @@ function Login() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/auth/login", {
+      const res = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -51,8 +54,8 @@ function Login() {
 
   return (
     <AuthCard
-      title="LOGO"
-      subtitle="Log in / Sign in to access your study resources on Syllabus+"
+      title="Syllabus+"
+      subtitle="Log in / Sign up to access your study resources on Syllabus+"
     >
       <form className="auth-form" onSubmit={handleSubmit}>
         <AuthInput

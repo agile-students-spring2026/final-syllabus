@@ -23,7 +23,7 @@ The primary users are college students seeking supplemental academic resources, 
 ## Core Team Members
 
 - **Abir Mahmood** (Scrum Master) – GitHub: [link](https://github.com/abirmahmood6)  
-- **Mohamed Mudawi** (Product Owner) – GitHub: TBD  
+- **Mohamed Mudawi** (Product Owner) – GitHub: [link](https://github.com/Mohamed-Mudawi)  
 - **Yusef Moustafa** – GitHub: TBD  
 - **Richmond** – GitHub: [link](https://github.com/iam-agyenim)  
 
@@ -43,32 +43,136 @@ Syllabus+ was proposed as a solution to help students access reliable peer-creat
 
 ---
 
-## Build & Test Instructions
+## Prerequisites
 
-> To be added once the project reaches this stage.
+- **Node.js** v18 or higher (`node --version` to check)
+- **npm** v9 or higher
+- A **MongoDB** connection string — either [MongoDB Atlas](https://www.mongodb.com/atlas) (free tier) or a local `mongod` instance
 
 ---
 
-## Additional Notes (will be deleted later)
+## Build & Run Instructions
 
-> This section exists for navigation and reference only. It will be removed once the team project is fully set up.
+### 1. Clone the repository
 
-This repository will be used for team projects.
+```bash
+git clone https://github.com/agile-students-spring2026/final-syllabus.git
+cd final-syllabus
+```
 
-Several sets of instructions are included in this repository. They should each be treated as separate assignments with their own due dates and sets of requirements.
+### 2. Set up the back-end
 
-1. See the [App Map & Wireframes](instructions-0a-app-map-wireframes.md) and [Prototyping](./instructions-0b-prototyping.md) instructions for the requirements of the initial user experience design of the app.
+```bash
+cd back-end
+npm install
+```
 
-2. Delete the contents of this file and replace with the contents of a proper README.md, as described in the [project setup instructions](./instructions-0c-project-setup.md)
+Create a `.env` file inside `back-end/` with the following:
 
-3. See the [Sprint Planning instructions](instructions-0d-sprint-planning.md) for the requirements of Sprint Planning for each Sprint.
+```
+MONGO_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/syllabus
+JWT_SECRET=your_jwt_secret_here
+PORT=5001
+```
 
-4. See the [Front-End Development instructions](./instructions-1-front-end.md) for the requirements of the initial Front-End Development.
+Start the development server (auto-restarts on file changes):
 
-5. See the [Back-End Development instructions](./instructions-2-back-end.md) for the requirements of the initial Back-End Development.
+```bash
+npm run dev
+```
 
-6. See the [Database Integration instructions](./instructions-3-database.md) for the requirements of integrating a database into the back-end.
+Or without auto-restart:
 
-7. See the [Deployment instructions](./instructions-4-deployment.md) for the requirements of deploying an app.
+```bash
+npm start
+```
+
+The API will be available at `http://localhost:5001`.
+
+---
+
+### 3. Set up the front-end
+
+Open a **new terminal tab**, then:
+
+```bash
+cd front-end
+npm install
+npm start
+```
+
+The app opens automatically at `http://localhost:3000`.
+
+> If you changed the back-end port, create a `front-end/.env` file and add:
+> ```
+> REACT_APP_API_URL=http://localhost:<your-port>/api
+> ```
+
+---
+
+## Running Tests
+
+From the `back-end/` directory:
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage report
+npm run coverage
+```
+
+---
+
+## Project Structure
+
+```
+final-syllabus/
+├── back-end/
+│   ├── controllers/       # Route handler logic
+│   ├── middleware/        # JWT auth middleware
+│   ├── models/            # Mongoose schemas (Course, Resource, User, SavedCourse)
+│   ├── routes/            # Express routers
+│   ├── uploads/
+│   │   ├── course-images/ # Uploaded course cover images
+│   │   └── resources/     # Uploaded study resource files
+│   ├── tests/             # Mocha/Chai/Supertest test suites
+│   └── server.js          # Entry point
+└── front-end/
+    └── src/
+        ├── components/    # Shared components (Navbar, CourseCard, etc.)
+        ├── context/       # AuthContext, VerificationContext
+        ├── pages/         # One file per screen/route
+        └── App.jsx        # Route definitions
+```
+
+---
+
+## Key API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Log in, returns JWT |
+| `GET` | `/api/courses` | List all approved courses |
+| `GET` | `/api/courses/all` | List all courses (any status) |
+| `POST` | `/api/courses/create` | Create a course (with image upload) |
+| `GET` | `/api/courses/:id` | Get a single course |
+| `POST` | `/api/courses/:id/save` | Save a course (auth required) |
+| `GET` | `/api/courses/:id/resources` | Get verified resources for a course |
+| `POST` | `/api/resources/upload` | Upload a resource file (auth required) |
+| `GET` | `/api/resources/history` | Current user's upload history (auth required) |
+| `GET` | `/api/admin/pending` | List pending courses and resources |
+| `POST` | `/api/admin/courses/:id/approve` | Approve a course |
+| `POST` | `/api/admin/resources/:id/approve` | Approve all resources for a course |
+
+---
+
+## User Roles
+
+| Role | Access |
+|---|---|
+| **Student** | Browse courses, save courses, view resources, upload resources |
+| **Campus Rep (Admin)** | Everything above + review and approve/reject pending courses and resources |
 
 ---

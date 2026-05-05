@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+const API_BASE =
+  process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+
 const RoleSelectionScreen = () => {
   const navigate = useNavigate();
   const { token, login } = useAuth();
@@ -10,7 +13,7 @@ const RoleSelectionScreen = () => {
   const handleRoleSelect = async (role, path) => {
     setError('');
     try {
-      const res = await fetch('http://localhost:5001/api/auth/role', {
+      const res = await fetch(`${API_BASE}/auth/role`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -37,7 +40,7 @@ const RoleSelectionScreen = () => {
     <div className="auth-page">
       <div className="auth-card role-selection-card">
         <div className="auth-header">
-          <h1>LOGO</h1>
+          <h1>Syllabus+</h1>
           <p>Are you a student or a campus rep</p>
         </div>
 
