@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -40,7 +41,7 @@ const RoleSelectionScreen = () => {
     <div className="auth-page">
       <div className="auth-card role-selection-card">
         <div className="auth-header">
-          <h1>Syllabus+</h1>
+          <img src={logo} alt="Syllabus+" height="40" />
           <p>Are you a student or a campus rep</p>
         </div>
 

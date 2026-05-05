@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HiMagnifyingGlassCircle } from "react-icons/hi2";
@@ -39,7 +40,7 @@ const HomePage = () => {
   return (
     <div className='homePage'>
       <header className="pageTopBar">
-        <Link to="/home" className="logoStub">Syllabus+</Link>
+        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
         <Link to="/profile" className="profileCircleLink" aria-label="profile">
           <div className="profileCircle">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">

@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -53,7 +54,7 @@ const VerificationPage = () => {
   return (
     <div className="verifyPage">
       <header className="verifyHeader">
-        <Link to="/home" className="logoStub">Syllabus+</Link>
+        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
         <Link to="/profile" className="profileStub" aria-label="profile">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">
             <circle cx="12" cy="8" r="4" />
