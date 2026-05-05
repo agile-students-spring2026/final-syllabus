@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth.js");
@@ -12,6 +14,13 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+[
+  path.join(__dirname, "uploads", "resources"),
+  path.join(__dirname, "uploads", "course-images"),
+].forEach((dir) => {
+  fs.mkdirSync(dir, { recursive: true });
+});
 
 mongoose
   .connect(process.env.MONGO_URI)
