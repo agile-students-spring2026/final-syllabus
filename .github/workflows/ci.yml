@@ -28,11 +28,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-          cache: "npm"
-          cache-dependency-path: back-end/package-lock.json
 
       - name: Install backend dependencies
-        run: npm ci
+        run: npm install
         working-directory: back-end
 
       - name: Run backend tests
@@ -50,11 +48,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-          cache: "npm"
-          cache-dependency-path: front-end/package-lock.json
 
       - name: Install frontend dependencies
-        run: npm ci
+        run: npm install
         working-directory: front-end
 
       - name: Build frontend
@@ -62,3 +58,4 @@ jobs:
         working-directory: front-end
         env:
           CI: false
+          REACT_APP_API_URL: http://localhost:5001
