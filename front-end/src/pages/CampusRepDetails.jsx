@@ -1,4 +1,3 @@
-import logo from '../assets/syllabus_plus_logo.svg';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +8,7 @@ const CampusRepDetailsScreen = () => {
     <div className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <img src={logo} alt="Syllabus+" height="40" />
+          <h1>LOGO</h1>
           <p>Tell us about yourself</p>
         </div>
 

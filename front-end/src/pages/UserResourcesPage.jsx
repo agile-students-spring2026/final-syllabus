@@ -1,4 +1,3 @@
-import logo from '../assets/syllabus_plus_logo.svg';
 import { Link } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 import "./UserResourcesPage.css";
@@ -62,7 +61,7 @@ const UserResourcesPage = () => {
   return (
     <div className="userResPage">
       <header className="userResHeader">
-        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
+        <Link to="/home" className="logoStub">LOGO</Link>
         <div className="headerRight">
           <Link to="/verification" className="iconBtn" style={{ textDecoration: 'none' }}>AB</Link>
           <div className="fabWrap">

@@ -1,4 +1,3 @@
-import logo from '../assets/syllabus_plus_logo.svg';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +6,7 @@ const VerifyingScreen = () => {
 
   return (
     <div className="auth-screen centered-screen">
-      <div className="auth-logo-placeholder mt-12 mb-auto"><img src={logo} alt="Syllabus+" height="40" /></div>
+      <div className="auth-logo-placeholder mt-12 mb-auto">LOGO</div>
 
       <div className="success-content mb-auto flex flex-col items-center">
         <h2 className="success-title mb-6">Verifying your account</h2>

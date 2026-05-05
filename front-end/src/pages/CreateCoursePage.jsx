@@ -1,4 +1,3 @@
-import logo from '../assets/syllabus_plus_logo.svg';
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -55,7 +54,7 @@ const CreateCoursePage = () => {
   return (
     <div className="createFormPage">
       <header className="createHeader">
-        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
+        <Link to="/home" className="logoStub">LOGO</Link>
         <Link to="/resources" className="backLink">
             Back
         </Link>
