@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
+const API_BASE =
+  process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+
 function Signup() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -11,7 +14,7 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
-  
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -32,7 +35,7 @@ function Signup() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/auth/signup", {
+      const res = await fetch(`${API_BASE}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -51,7 +54,6 @@ function Signup() {
       setError("Could not connect to server");
     }
   }
-
 
   return (
     <AuthCard
