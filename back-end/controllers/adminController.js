@@ -139,7 +139,8 @@ const toAdminResource = (r) => ({
   type: typeLabelFromCategory(r.category),
   format: "File",
   added: recentLabelFromDate(r.uploadedAt),
-  link: r.fileName,
+  fileName: r.fileName,
+  fileUrl: r.fileName ? `http://localhost:5001/uploads/resources/${r.fileName}` : null,
 });
 
 const getResourceById = async (req, res) => {

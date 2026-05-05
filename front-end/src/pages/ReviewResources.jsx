@@ -51,15 +51,19 @@ const ReviewResources = () => {
     );
   }
 
+  const visibleResources = activeTypes.length > 0
+    ? (resourceData.resources || []).filter((r) => activeTypes.includes(r.type))
+    : (resourceData.resources || []);
+
   return (
     <div className="reviewResPage">
       <header className="reviewResHeader">
-        <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
+        <Link to="/camp-rep-dashboard" className="logoStub">Syllabus+</Link>
         <Link to="/profile" className="profileStub" aria-label="profile" />
       </header>
 
       <div className="reviewResBackBtn">
-        <Link to={-1}>&#8592; Review</Link>
+        <Link to="/camp-rep-dashboard">&#8592; Review</Link>
       </div>
 
       <main className="reviewResMain">
@@ -74,8 +78,6 @@ const ReviewResources = () => {
           </div>
         </div>
 
-        <div className="reviewResPreview" aria-label="Content preview" />
-
         <div className="reviewResFilterRow">
           <span className="reviewResFilterLabel">Resource type</span>
           <div className="reviewResChips">
@@ -88,13 +90,40 @@ const ReviewResources = () => {
                 {type}
               </button>
             ))}
-            <button className="reviewResChipAdd" aria-label="Add resource type">+</button>
           </div>
         </div>
 
+        <div className="reviewResFileList">
+          {visibleResources.length === 0 ? (
+            <p className="reviewResEmpty">No resources for the selected type.</p>
+          ) : (
+            visibleResources.map((item) => (
+              <div key={item.id} className="reviewResFileItem">
+                <div className="reviewResFileInfo">
+                  <span className="reviewResFileType">{item.type}</span>
+                  <span className="reviewResFileTitle">{item.title}</span>
+                  <span className="reviewResFileAdded">{item.added}</span>
+                </div>
+                {item.fileUrl ? (
+                  <a
+                    href={item.fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="reviewResFileLink"
+                  >
+                    View File
+                  </a>
+                ) : (
+                  <span className="reviewResFileLink reviewResFileLink--missing">No file</span>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+
         <div className="reviewResActions">
-          <button className="reviewResBtn reviewResBtn--reject" onClick={handleReject}>Reject</button>
-          <button className="reviewResBtn reviewResBtn--accept" onClick={handleAccept}>Accept</button>
+          <button className="reviewResBtn reviewResBtn--reject" onClick={handleReject}>Reject All</button>
+          <button className="reviewResBtn reviewResBtn--accept" onClick={handleAccept}>Accept All</button>
         </div>
       </main>
     </div>

@@ -6,7 +6,7 @@ const VerifyingScreen = () => {
 
   return (
     <div className="auth-screen centered-screen">
-      <div className="auth-logo-placeholder mt-12 mb-auto">LOGO</div>
+      <div className="auth-logo-placeholder mt-12 mb-auto">Syllabus+</div>
 
       <div className="success-content mb-auto flex flex-col items-center">
         <h2 className="success-title mb-6">Verifying your account</h2>

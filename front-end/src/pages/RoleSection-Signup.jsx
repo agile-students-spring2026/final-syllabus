@@ -37,7 +37,7 @@ const RoleSelectionScreen = () => {
     <div className="auth-page">
       <div className="auth-card role-selection-card">
         <div className="auth-header">
-          <h1>LOGO</h1>
+          <h1>Syllabus+</h1>
           <p>Are you a student or a campus rep</p>
         </div>
 
