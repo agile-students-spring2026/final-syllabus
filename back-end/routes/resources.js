@@ -8,6 +8,10 @@ const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+const PUBLIC_BASE_URL = (
+  process.env.PUBLIC_BASE_URL || "http://localhost:5001"
+).replace(/\/$/, "");
+
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, "uploads/resources/"),
   filename: (_req, file, cb) => {
@@ -39,7 +43,9 @@ const resourceToJson = (r) => ({
   courseId: courseIdString(r),
   category: r.category,
   fileName: r.fileName,
-  fileUrl: r.fileName ? `http://localhost:5001/uploads/resources/${r.fileName}` : null,
+  fileUrl: r.fileName
+    ? `${PUBLIC_BASE_URL}/uploads/resources/${r.fileName}`
+    : null,
   uploadedBy: r.uploadedBy,
   uploadedAt: r.uploadedAt.toISOString(),
   verified: r.verified,
@@ -55,7 +61,9 @@ router.post(
     body("courseId").isMongoId().withMessage("courseId must be a valid id"),
     body("category")
       .isIn(["notes", "flashcards", "past-questions", "videos", "practice"])
-      .withMessage("category must be notes, flashcards, past-questions, videos, or practice"),
+      .withMessage(
+        "category must be notes, flashcards, past-questions, videos, or practice"
+      ),
   ],
   assertValid,
   async (req, res) => {
@@ -96,7 +104,11 @@ router.get("/history", protect, async (req, res) => {
     resources: sorted.map((r) => {
       const base = resourceToJson(r);
       const c = r.course;
-      return { ...base, courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—" };
+      return {
+        ...base,
+        courseLabel:
+          c && c.code ? c.code : c && c.name ? c.name : "—",
+      };
     }),
   });
 });
@@ -112,7 +124,11 @@ router.get("/all", protect, async (req, res) => {
     resources: sorted.map((r) => {
       const base = resourceToJson(r);
       const c = r.course;
-      return { ...base, courseLabel: c && c.code ? c.code : c && c.name ? c.name : "—" };
+      return {
+        ...base,
+        courseLabel:
+          c && c.code ? c.code : c && c.name ? c.name : "—",
+      };
     }),
   });
 });

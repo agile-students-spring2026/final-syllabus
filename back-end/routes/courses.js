@@ -9,6 +9,10 @@ const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+const PUBLIC_BASE_URL = (
+  process.env.PUBLIC_BASE_URL || "http://localhost:5001"
+).replace(/\/$/, "");
+
 // Setup multer for image uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,7 +28,9 @@ const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const extname = allowedTypes.test(
+      path.extname(file.originalname).toLowerCase()
+    );
     const mimetype = allowedTypes.test(file.mimetype);
     if (mimetype && extname) {
       return cb(null, true);
@@ -62,7 +68,9 @@ const resourceToJson = (r) => ({
   courseId: r.course.toString(),
   category: r.category,
   fileName: r.fileName,
-  fileUrl: r.fileName ? `http://localhost:5001/uploads/resources/${r.fileName}` : null,
+  fileUrl: r.fileName
+    ? `${PUBLIC_BASE_URL}/uploads/resources/${r.fileName}`
+    : null,
   uploadedBy: r.uploadedBy,
   uploadedAt: r.uploadedAt.toISOString(),
   verified: r.verified,
@@ -72,7 +80,13 @@ const resourceToJson = (r) => ({
 router.get("/all", async (_req, res) => {
   try {
     const courses = await Course.find().select("_id name code").lean();
-    return res.json(courses.map((c) => ({ id: c._id.toString(), name: c.name, code: c.code })));
+    return res.json(
+      courses.map((c) => ({
+        id: c._id.toString(),
+        name: c.name,
+        code: c.code,
+      }))
+    );
   } catch (err) {
     return res.status(500).json({ error: "Could not load courses" });
   }
@@ -113,9 +127,13 @@ router.post(
     } catch (err) {
       console.error("Course creation error:", err);
       if (err.code === 11000) {
-        return res.status(409).json({ error: "A course with this code already exists" });
+        return res
+          .status(409)
+          .json({ error: "A course with this code already exists" });
       }
-      return res.status(500).json({ error: "Could not create course", detail: err.message });
+      return res
+        .status(500)
+        .json({ error: "Could not create course", detail: err.message });
     }
   }
 );
