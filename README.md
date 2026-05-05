@@ -23,7 +23,7 @@ The primary users are college students seeking supplemental academic resources, 
 ## Core Team Members
 
 - **Abir Mahmood** (Scrum Master) – GitHub: [link](https://github.com/abirmahmood6)  
-- **Mohamed Mudawi** (Product Owner) – GitHub: TBD  
+- **Mohamed Mudawi** (Product Owner) – GitHub: [link](https://github.com/Mohamed-Mudawi)  
 - **Yusef Moustafa** – GitHub: TBD  
 - **Richmond** – GitHub: [link](https://github.com/iam-agyenim)  
 
