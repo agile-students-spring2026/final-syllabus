@@ -4,6 +4,9 @@ import { useAuth } from "../context/AuthContext";
 import AuthCard from "../components/AuthCard";
 import AuthInput from "../components/AuthInputs";
 
+const API_BASE =
+  process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+
 function AdminLogin() {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -29,7 +32,7 @@ function AdminLogin() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5001/api/auth/campus-rep/login", {
+      const res = await fetch(`${API_BASE}/auth/campus-rep/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
