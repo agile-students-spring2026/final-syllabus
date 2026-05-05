@@ -1,10 +1,9 @@
 // src/components/CourseCard.jsx
-import React from "react";
 import { Link } from "react-router-dom";
 
-const CourseCard = ({ course }) => {
+const CourseCard = ({ course, linkState }) => {
     return (
-        <Link to={`/courses/${course.id}`} className="course-card">
+        <Link to={`/courses/${course.id}`} state={linkState} className="course-card">
             <h2>{course.name}</h2>
             <p>{course.description}</p>
             <div className="course-info">

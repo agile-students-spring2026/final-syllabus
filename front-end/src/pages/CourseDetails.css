@@ -116,6 +116,16 @@
   color: #0a0d18;
 }
 
+.actionUnsaveButton {
+  border-color: #f28b82;
+  color: #f28b82;
+}
+
+.actionUnsaveButton:hover {
+  background: #f28b82;
+  color: #0a0d18;
+}
+
 .actionLinkButton {
   text-decoration: none;
   display: flex;

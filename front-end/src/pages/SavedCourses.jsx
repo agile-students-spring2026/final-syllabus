@@ -106,7 +106,7 @@ const SavedCourses = () => {
                     {filtered.length === 0
                         ? <p className="status-message">No saved courses found.</p>
                         : filtered.map((course) => (
-                            <CourseCard key={course.id} course={course} />
+                            <CourseCard key={course.id} course={course} linkState={{ fromSaved: true }} />
                         ))
                     }
                 </div>
