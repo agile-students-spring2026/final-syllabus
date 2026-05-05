@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { Link } from "react-router-dom";
 import "./SubmissionConfirmPage.css";
 
@@ -5,7 +6,7 @@ const SubmissionConfirmPage = () => {
   return (
     <div className="confirmPage">
       <header className="confirmHeader">
-        <Link to="/home" className="logoStub">Syllabus+</Link>
+        <Link to="/home" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
         <Link to="/profile" className="profileStub" aria-label="profile">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">
             <circle cx="12" cy="8" r="4" />

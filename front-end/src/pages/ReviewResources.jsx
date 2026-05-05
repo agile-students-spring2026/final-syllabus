@@ -1,3 +1,4 @@
+import logo from '../assets/syllabus_plus_logo.svg';
 import { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import "./ReviewResources.css";
@@ -58,7 +59,7 @@ const ReviewResources = () => {
   return (
     <div className="reviewResPage">
       <header className="reviewResHeader">
-        <Link to="/camp-rep-dashboard" className="logoStub">Syllabus+</Link>
+        <Link to="/camp-rep-dashboard" className="logoStub"><img src={logo} alt="Syllabus+" height="32" /></Link>
         <Link to="/profile" className="profileStub" aria-label="profile" />
       </header>
 
