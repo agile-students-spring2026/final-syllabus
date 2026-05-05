@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+jobs:
+  backend-test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+
+    env:
+      MONGO_URI: mongodb://localhost:27017/testdb
+      JWT_SECRET: ci-test-secret
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: back-end/package-lock.json
+
+      - name: Install backend dependencies
+        run: npm ci
+        working-directory: back-end
+
+      - name: Run backend tests
+        run: npm test
+        working-directory: back-end
+
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+          cache: "npm"
+          cache-dependency-path: front-end/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+        working-directory: front-end
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: front-end
+        env:
+          CI: false
