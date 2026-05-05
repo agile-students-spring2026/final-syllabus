@@ -1,5 +1,7 @@
 # Syllabus+
 
+Deployed app: [link](https://final-syllabus-frontend.vercel.app/)
+
 ## Product Vision Statement
 
 Syllabus+ is a mobile web application that enables college students to create, share, and access reliable peer-created learning resources for their courses.
