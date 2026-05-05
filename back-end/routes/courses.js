@@ -4,6 +4,8 @@ const multer = require("multer");
 const path = require("path");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
+const SavedCourse = require("../models/SavedCourse");
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -81,6 +83,22 @@ router.post(
   async (req, res) => {
     const { name, code, description, school, duration, level } = req.body;
 
+    const VALID_LEVELS = ["Beginner", "Intermediate", "Advanced"];
+    const levelTrimmed = typeof level === "string" ? level.trim() : "";
+    const doc = {
+      name,
+      code,
+      instructor: instructor || "TBD",
+      description: description || "",
+      category: category || "General",
+      school: school || "—",
+      duration: duration || "",
+      status: "pending",
+    };
+    if (levelTrimmed && VALID_LEVELS.includes(levelTrimmed)) {
+      doc.level = levelTrimmed;
+    }
+
     try {
       const course = await Course.create({
         name,
@@ -122,6 +140,42 @@ router.get(
   }
 );
 
+// POST /api/courses/:id/save - save a course for the logged-in user
+router.post(
+  "/:id/save",
+  protect,
+  [param("id").isMongoId().withMessage("Invalid course id")],
+  assertValid,
+  async (req, res) => {
+    try {
+      const course = await Course.findById(req.params.id);
+
+      if (!course) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+
+      const savedCourse = await SavedCourse.create({
+        userId: req.user.id,
+        courseId: req.params.id,
+      });
+
+      return res.status(201).json({
+        message: "Course saved successfully",
+        savedCourse,
+      });
+    } catch (err) {
+      if (err.code === 11000) {
+        return res.status(409).json({ error: "Course already saved" });
+      }
+
+      return res.status(500).json({
+        error: "Could not save course",
+        detail: err.message,
+      });
+    }
+  }
+);
+
 // GET /api/courses/:id/resources - all resources grouped by category
 router.get(
   "/:id/resources",
@@ -135,7 +189,7 @@ router.get(
       return res.status(404).json({ error: "Course not found" });
     }
 
-    const courseRes = await Resource.find({ course: courseId });
+    const courseRes = await Resource.find({ course: courseId, verified: true });
     const grouped = {};
     courseRes.forEach((item) => {
       const r = resourceToJson(item);
