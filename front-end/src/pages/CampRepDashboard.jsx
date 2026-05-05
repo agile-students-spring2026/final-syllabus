@@ -45,7 +45,7 @@ const CampRepDashboard = () => {
   return (
     <div className="campRepDash">
       <header className="campRepDashHeader">
-        <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
+        <Link to="/camp-rep-dashboard" className="logoStub">Syllabus+</Link>
         <Link to="/profile" className="profileStub" aria-label="profile">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">
             <circle cx="12" cy="8" r="4" />

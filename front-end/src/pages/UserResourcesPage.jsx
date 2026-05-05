@@ -70,7 +70,7 @@ const UserResourcesPage = () => {
   return (
     <div className="userResPage">
       <header className="userResHeader">
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to="/home" className="logoStub">Syllabus+</Link>
         <div className="headerRight">
           <Link to="/verification" className="iconBtn" style={{ textDecoration: 'none' }}>AB</Link>
           <div className="fabWrap">
@@ -117,7 +117,7 @@ const UserResourcesPage = () => {
 
         {!loading && !error &&
           userResources.length > 0 &&
-          grouped.map((group) => (
+          grouped.filter((group) => group.items.length > 0).map((group) => (
             <section key={group.name} className="userResSection">
               <div className="sectionHead">
                 <span className="sectionPill">{group.name}</span>

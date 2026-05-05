@@ -180,6 +180,83 @@
   background: rgba(143, 233, 230, 0.12);
 }
 
+/* ── File list ── */
+.reviewResFileList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reviewResEmpty {
+  color: #8a9ab5;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 16px;
+}
+
+.reviewResFileItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #14182c;
+  border: 1px solid #2e3a52;
+  border-radius: 8px;
+  padding: 12px 16px;
+  gap: 12px;
+}
+
+.reviewResFileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reviewResFileType {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #8fe9e6;
+  letter-spacing: 0.8px;
+}
+
+.reviewResFileTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f5f5f5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.reviewResFileAdded {
+  font-size: 0.8rem;
+  color: #8a9ab5;
+}
+
+.reviewResFileLink {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #8fe9e6;
+  color: #0c1020;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.reviewResFileLink:hover {
+  background: #6dd9d6;
+}
+
+.reviewResFileLink--missing {
+  background: #2e3a52;
+  color: #8a9ab5;
+  cursor: default;
+}
+
 /* ── Actions ── */
 .reviewResActions {
   display: flex;

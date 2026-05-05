@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import placeHolderImage from "../assets/placeHolderImage.png";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { GoArrowLeft } from "react-icons/go";
@@ -93,9 +93,9 @@ const CourseDetails = () => {
   return (
     <div className="courseDetails">
       <div className="backBtn">
-        <Link to="/home">
+        <button onClick={() => navigate(-1)} style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px", fontSize: "inherit", fontFamily: "inherit" }}>
           <GoArrowLeft /> Back
-        </Link>
+        </button>
       </div>
 
       <div className="title">

@@ -44,7 +44,7 @@ const ReviewCourse = () => {
   return (
     <div className="reviewCoursePage">
       <header className="reviewCourseHeader">
-        <Link to="/camp-rep-dashboard" className="logoStub">LOGO</Link>
+        <Link to="/camp-rep-dashboard" className="logoStub">Syllabus+</Link>
         <Link to="/profile" className="profileStub" aria-label="profile">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">
             <circle cx="12" cy="8" r="4" />
@@ -54,7 +54,7 @@ const ReviewCourse = () => {
       </header>
 
       <div className="reviewCourseBackBtn">
-        <Link to={-1}>&#8592; Review</Link>
+        <Link to="/camp-rep-dashboard">&#8592; Review</Link>
       </div>
 
       <main className="reviewCourseMain">

@@ -55,7 +55,7 @@ function Signup() {
 
   return (
     <AuthCard
-      title="LOGO"
+      title="Syllabus+"
       subtitle="Join Syllabus+ and start learning from peer-created resources"
     >
       <form className="auth-form" onSubmit={handleSubmit}>

@@ -26,8 +26,8 @@ const ProfilePage = () => {
   return (
     <div className="profilePage">
       <header className="profilePageHeader">
-        <button className="profileBackBtn" onClick={() => navigate(-1)}>←</button>
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <button className="profileBackBtn" onClick={() => window.history.length > 1 ? navigate(-1) : navigate("/home")}>←</button>
+        <Link to="/home" className="logoStub">Syllabus+</Link>
       </header>
 
       <div className="profileIdentity">

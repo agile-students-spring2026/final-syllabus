@@ -62,9 +62,20 @@ const resourceToJson = (r) => ({
   courseId: r.course.toString(),
   category: r.category,
   fileName: r.fileName,
+  fileUrl: r.fileName ? `http://localhost:5001/uploads/resources/${r.fileName}` : null,
   uploadedBy: r.uploadedBy,
   uploadedAt: r.uploadedAt.toISOString(),
   verified: r.verified,
+});
+
+// GET /api/courses/all - list all courses (any status) for dropdowns
+router.get("/all", async (_req, res) => {
+  try {
+    const courses = await Course.find().select("_id name code").lean();
+    return res.json(courses.map((c) => ({ id: c._id.toString(), name: c.name, code: c.code })));
+  } catch (err) {
+    return res.status(500).json({ error: "Could not load courses" });
+  }
 });
 
 // POST /api/courses/create - make a new course with image upload
@@ -82,22 +93,6 @@ router.post(
   assertValid,
   async (req, res) => {
     const { name, code, description, school, duration, level } = req.body;
-
-    const VALID_LEVELS = ["Beginner", "Intermediate", "Advanced"];
-    const levelTrimmed = typeof level === "string" ? level.trim() : "";
-    const doc = {
-      name,
-      code,
-      instructor: instructor || "TBD",
-      description: description || "",
-      category: category || "General",
-      school: school || "—",
-      duration: duration || "",
-      status: "pending",
-    };
-    if (levelTrimmed && VALID_LEVELS.includes(levelTrimmed)) {
-      doc.level = levelTrimmed;
-    }
 
     try {
       const course = await Course.create({

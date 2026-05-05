@@ -69,7 +69,7 @@ const CreateCoursePage = () => {
   return (
     <div className="createFormPage">
       <header className="createHeader">
-        <Link to="/home" className="logoStub">LOGO</Link>
+        <Link to="/home" className="logoStub">Syllabus+</Link>
         <Link to="/resources" className="backLink">
           Back
         </Link>

@@ -1,10 +1,22 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
+const multer = require("multer");
+const path = require("path");
 const Course = require("../models/Course");
 const Resource = require("../models/Resource");
 const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, "uploads/resources/"),
+  filename: (_req, file, cb) => {
+    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, "resource-" + unique + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } });
 
 const assertValid = (req, res, next) => {
   const errors = validationResult(req);
@@ -27,48 +39,53 @@ const resourceToJson = (r) => ({
   courseId: courseIdString(r),
   category: r.category,
   fileName: r.fileName,
+  fileUrl: r.fileName ? `http://localhost:5001/uploads/resources/${r.fileName}` : null,
   uploadedBy: r.uploadedBy,
   uploadedAt: r.uploadedAt.toISOString(),
   verified: r.verified,
 });
 
-// POST /api/resources/upload - upload a new resource to a course
+// POST /api/resources/upload - upload a new resource file to a course
 router.post(
   "/upload",
   protect,
+  upload.single("file"),
   [
     body("title").trim().notEmpty().withMessage("title is required"),
     body("courseId").isMongoId().withMessage("courseId must be a valid id"),
     body("category")
-      .isIn(["notes", "flashcards", "videos", "practice"])
-      .withMessage("category has to be notes, flashcards, videos, or practice"),
-    body("fileName").trim().notEmpty().withMessage("fileName is required"),
+      .isIn(["notes", "flashcards", "past-questions", "videos", "practice"])
+      .withMessage("category must be notes, flashcards, past-questions, videos, or practice"),
   ],
   assertValid,
   async (req, res) => {
-    const { title, courseId, category, fileName } = req.body;
+    if (!req.file) {
+      return res.status(400).json({ error: "A file is required" });
+    }
+
+    const { title, courseId, category } = req.body;
 
     const courseExists = await Course.findById(courseId);
     if (!courseExists) {
-      return res.status(404).json({ error: "Course not found, cant upload to a course that doesnt exist" });
+      return res.status(404).json({ error: "Course not found" });
     }
 
     const created = await Resource.create({
       title,
       course: courseId,
       category,
-      fileName,
+      fileName: req.file.filename,
       uploadedBy: req.user.id,
     });
 
     return res.status(201).json({
-      message: "Resource uploaded",
+      message: "Resource uploaded and pending review",
       resource: resourceToJson(created),
     });
   }
 );
 
-// GET /api/resources/history - get uploads by the logged-in user
+// GET /api/resources/history - uploads by the logged-in user
 router.get("/history", protect, async (req, res) => {
   const sorted = await Resource.find({ uploadedBy: req.user.id })
     .sort({ uploadedAt: -1 })
@@ -84,7 +101,7 @@ router.get("/history", protect, async (req, res) => {
   });
 });
 
-// GET /api/resources/all - all resources in the system with verification status (for verification page)
+// GET /api/resources/all - all resources with verification status
 router.get("/all", protect, async (req, res) => {
   const sorted = await Resource.find()
     .sort({ uploadedAt: -1 })
@@ -100,7 +117,7 @@ router.get("/all", protect, async (req, res) => {
   });
 });
 
-// GET /api/resources/verification - check whats verified and whats not
+// GET /api/resources/verification - verification counts
 router.get("/verification", async (req, res) => {
   const all = await Resource.find();
   const verifyList = all.map((r) => {

@@ -53,7 +53,7 @@ const SavedCourses = () => {
     return (
         <div className='homePage'>
             <header className="pageTopBar">
-                <Link to="/home" className="logoStub">LOGO</Link>
+                <Link to="/home" className="logoStub">Syllabus+</Link>
                 <Link to="/profile" className="profileCircleLink" aria-label="profile">
                     <div className="profileCircle">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="#0a0d18">

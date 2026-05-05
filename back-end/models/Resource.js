@@ -7,7 +7,7 @@ const resourceSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["notes", "flashcards", "videos", "practice"],
+      enum: ["notes", "flashcards", "past-questions", "videos", "practice"],
     },
     fileName: { type: String, required: true, trim: true },
     uploadedBy: { type: String, default: "anonymous", trim: true },
