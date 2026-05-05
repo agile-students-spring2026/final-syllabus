@@ -6,6 +6,10 @@ Deployed app: [link](https://final-syllabus-frontend.vercel.app/)
 
 Syllabus+ is a mobile web application that enables college students to create, share, and access reliable peer-created learning resources for their courses.
 
+Our team did CD for the extra credit part of sprint 4, and this was done through vercel. Everytime a push is made to the master branch, vercel creates a new deployment, automatically rebuilding the app. 
+
+Additionally, our team did CI using Vercel as well. Everytime a push is made to the master branch, Vercel automatically runs tests to determine if a branch should be merged or not.
+
 ---
 
 ## Overview
