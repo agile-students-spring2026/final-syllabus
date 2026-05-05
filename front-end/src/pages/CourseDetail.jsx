@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import placeHolderImage from "../assets/placeHolderImage.png";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate, useLocation } from "react-router-dom";
 import { GoArrowLeft } from "react-icons/go";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
@@ -11,7 +11,9 @@ const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 const CourseDetails = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { token } = useAuth();
+  const fromSaved = location.state?.fromSaved === true;
 
   const [course, setCourse] = useState(null);
   const [error, setError] = useState(null);
@@ -67,12 +69,32 @@ const CourseDetails = () => {
           toast("Course already saved.");
           return;
         }
-
         toast.error(data.error || "Could not save course.");
         return;
       }
 
       toast.success(data.message || "Course saved!");
+    } catch {
+      toast.error("Could not connect to the server.");
+    }
+  };
+
+  const handleUnsave = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/saved-courses/${courseId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.error || "Could not unsave course.");
+        return;
+      }
+
+      toast.success("Course removed from saved.");
+      navigate("/saved");
     } catch {
       toast.error("Could not connect to the server.");
     }
@@ -122,9 +144,15 @@ const CourseDetails = () => {
       </div>
 
       <div className="actionRow">
-        <button className="actionButton" onClick={handleSave}>
-          Save
-        </button>
+        {fromSaved ? (
+          <button className="actionButton actionUnsaveButton" onClick={handleUnsave}>
+            Unsave
+          </button>
+        ) : (
+          <button className="actionButton" onClick={handleSave}>
+            Save
+          </button>
+        )}
 
         <Link
           to={`/courses/${course.id}/resources`}
